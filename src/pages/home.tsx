@@ -1,0 +1,114 @@
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { MainLayout } from '@/layouts/MainLayout';
+import { HeroSlider } from '@/components/Home/HeroSlider';
+import { CategoryGrid } from '@/components/Home/CategoryGrid';
+import { ProductGrid } from '@/components/Home/ProductGrid';
+import { FeaturedProducts } from '@/components/Home/FeaturedProducts';
+import { FeaturedSection } from '@/components/Home/FeaturedSection';
+
+interface Product {
+  id: number;
+  title: string;
+  brand: string;
+  thumbnail: string;
+  price: number;
+  discountPercentage: number;
+  rating: number;
+}
+
+export default function HomePage() {
+  const [promotions, setPromotions] = useState<any>(null);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [bestSellerProducts, setBestSellerProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    // Fetch promotions
+    fetch('/tempData/promotion.json')
+      .then((res) => res.json())
+      .then((data) => setPromotions(data.promotion));
+
+    // Fetch categories
+    fetch('/tempData/categories.json')
+      .then((res) => res.json())
+      .then((data) => setCategories(data.categories));
+    // Fetch products
+    fetch('https://dummyjson.com/products?limit=20')
+      .then((res) => res.json())
+      .then((data) => {
+        // Randomly assign products to featured and bestseller for now
+        const shuffled = [...data.products].sort(() => 0.5 - Math.random());
+        setFeaturedProducts(shuffled.slice(0, 10));
+        setBestSellerProducts(shuffled.slice(10, 20));
+      });
+  }, []);
+
+  useEffect(() => {
+    console.log('Categories', categories);
+  }, []);
+
+  if (!promotions || !categories.length || !featuredProducts.length) {
+    return <div></div>;
+  }
+
+  return (
+    <MainLayout>
+      <div className='container mx-auto'>
+        <HeroSlider slides={promotions.slider} />
+
+        <CategoryGrid categories={categories} />
+
+        {promotions.mini_banner && (
+          <Link
+            href={promotions.mini_banner.href}
+            className='flex justify-center my-8'
+          >
+            <img
+              src={promotions.mini_banner.image || '/placeholder.svg'}
+              alt='Promotional banner'
+              className='w-full max-w-[70vw] max-h-[20vh]'
+            />
+          </Link>
+        )}
+
+        <ProductGrid
+          featuredProducts={featuredProducts}
+          bestSellerProducts={bestSellerProducts}
+        />
+
+        {promotions.mid_banner && promotions.mid_banner.length > 0 && (
+          <div className='my-8 flex gap-4 justify-center'>
+            {promotions.mid_banner.map((banner: any, index: number) => (
+              <Link key={index} href={banner.href}>
+                <img
+                  src={banner.image || '/placeholder.svg'}
+                  alt={`Mid Banner ${index + 1}`}
+                  className='max-w-[45vw] max-h-[30vh]'
+                />
+              </Link>
+            ))}
+          </div>
+        )}
+
+        <FeaturedProducts />
+        <FeaturedSection />
+
+        {promotions.footer_banner && promotions.footer_banner.length > 0 && (
+          <div className='my-2 flex gap-4 justify-center'>
+            {promotions.footer_banner.map((banner: any, index: number) => (
+              <Link key={index} href={banner.href}>
+                <img
+                  src={banner.image || '/placeholder.svg'}
+                  alt={`Footer Banner ${index + 1}`}
+                  className='max-w-[35vw] max-h-[30vh] h-fit'
+                />
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    </MainLayout>
+  );
+}

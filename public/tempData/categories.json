@@ -1,0 +1,84 @@
+{
+  "categories": [
+    {
+      "name": "Furniture",
+      "href": "/categories/furniture",
+      "icon": "https://dummyimage.com/60x60/ff5733/fff.png"
+    },
+    {
+      "name": "Hand Tools",
+      "href": "/categories/hand-tools",
+      "icon": "https://dummyimage.com/60x60/33ff57/fff.png"
+    },
+    {
+      "name": "Bearing",
+      "href": "/categories/bearing",
+      "icon": "https://dummyimage.com/60x60/3357ff/fff.png"
+    },
+    {
+      "name": "Lubricants",
+      "href": "/categories/lubricants",
+      "icon": "https://dummyimage.com/60x60/ff33a8/fff.png"
+    },
+    {
+      "name": "Beltings",
+      "href": "/categories/beltings",
+      "icon": "https://dummyimage.com/60x60/a833ff/fff.png"
+    },
+    {
+      "name": "Insulations",
+      "href": "/categories/insulations",
+      "icon": "https://dummyimage.com/60x60/33fff5/fff.png"
+    },
+    {
+      "name": "Electricals",
+      "href": "/categories/electricals",
+      "icon": "https://dummyimage.com/60x60/ff8c33/fff.png"
+    },
+    {
+      "name": "Adhesives",
+      "href": "/categories/adhesives",
+      "icon": "https://dummyimage.com/60x60/ff3333/fff.png"
+    },
+    {
+      "name": "HVAC",
+      "href": "/categories/hvac",
+      "icon": "https://dummyimage.com/60x60/33a8ff/fff.png"
+    },
+    {
+      "name": "Abrasives",
+      "href": "/categories/abrasives",
+      "icon": "https://dummyimage.com/60x60/ffcc33/fff.png"
+    },
+    {
+      "name": "Industrial Sprays",
+      "href": "/categories/industrial-sprays",
+      "icon": "https://dummyimage.com/60x60/cc33ff/fff.png"
+    },
+    {
+      "name": "Measuring Tools",
+      "href": "/categories/measuring-tools",
+      "icon": "https://dummyimage.com/60x60/33ffcc/fff.png"
+    },
+    {
+      "name": "Painting Tools",
+      "href": "/categories/painting-tools",
+      "icon": "https://dummyimage.com/60x60/ff6633/fff.png"
+    },
+    {
+      "name": "Welding Equipments",
+      "href": "/categories/welding-equipments",
+      "icon": "https://dummyimage.com/60x60/3366ff/fff.png"
+    },
+    {
+      "name": "Copper Fitting",
+      "href": "/categories/copper-fitting",
+      "icon": "https://dummyimage.com/60x60/66ff33/fff.png"
+    },
+    {
+      "name": "Safety Equipments",
+      "href": "/categories/safety-equipments",
+      "icon": "https://dummyimage.com/60x60/ff3366/fff.png"
+    }
+  ]
+}

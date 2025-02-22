@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import LoginPage from './pages/login';
+import RegisterPage from './pages/register';
+import HomePage from './pages/home';
+import CategoryPage from './pages/category/[slug]';
+import MainCategoryPage from './pages/categorypage';
+import ProductPage from './pages/product/[id]';
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: 'AIzaSyACEOM0JvL7Z9MTX59oa-d8AKx0Q6aPL2c',
+  authDomain: 'industry-waala.firebaseapp.com',
+  projectId: 'industry-waala',
+  storageBucket: 'industry-waala.firebasestorage.app',
+  messagingSenderId: '393703824453',
+  appId: '1:393703824453:web:15ed444e96c6d7e971d72c',
+  measurementId: 'G-HD7K1RPETG',
+};
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path='/login' element={<LoginPage />} />
+        <Route path='/register' element={<RegisterPage />} />
+        <Route path='/' element={<HomePage />} />
+        <Route path='/categories' element={<MainCategoryPage />} />
+        <Route path='/categories/:slug' element={<CategoryPage />} />
+        <Route path='/product/:id' element={<ProductPage />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

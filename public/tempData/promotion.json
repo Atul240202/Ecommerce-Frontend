@@ -1,0 +1,42 @@
+{
+  "promotion": {
+    "slider": [
+      {
+        "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1740071780/home5_1_1_ak8dkz.png",
+        "href": "/promotions/"
+      },
+      {
+        "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1740071780/home5_1_1_ak8dkz.png",
+        "href": "/promotions/"
+      },
+      {
+        "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1740071780/home5_1_1_ak8dkz.png",
+        "href": "/promotions/"
+      }
+    ],
+    "mini_banner": {
+      "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1740072537/banner_zqxgab.png",
+      "href": "/promotions/"
+    },
+    "footer_banner": [
+      {
+        "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1740168022/webpagebannerone-stop_1_musv9g.png",
+        "href": "/promotions/"
+      },
+      {
+        "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1740168022/dewat-banner-6789_1_uxv0wu.png",
+        "href": "/promotions/"
+      }
+    ],
+    "mid_banner": [
+      {
+        "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1740072537/banner_zqxgab.png",
+        "href": "/promotions/"
+      },
+      {
+        "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1740168022/dewat-banner-6789_1_uxv0wu.png",
+        "href": "/promotions/"
+      }
+    ]
+  }
+}
