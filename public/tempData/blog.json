@@ -1,0 +1,304 @@
+{
+  "blogs": [
+    {
+      "id": 1,
+      "title": "The Future of Artificial Intelligence",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "Exploring the advancements and ethical considerations of AI",
+      "content": [
+        "Artificial Intelligence (AI) is transforming industries across the globe...",
+        "From healthcare to finance, AI is enabling new possibilities...",
+        "However, ethical concerns such as bias and privacy remain critical..."
+      ],
+      "tags": ["AI", "Technology", "Ethics"],
+      "priorityStatus": "High",
+      "createdDateTime": "2023-10-01T09:15:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 2,
+      "title": "Sustainable Living: A Beginner's Guide",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "Simple steps to reduce your carbon footprint",
+      "content": [
+        "Sustainable living is about making choices that reduce your environmental impact...",
+        "Start by reducing waste, conserving energy, and supporting eco-friendly products...",
+        "Small changes can lead to a big difference over time..."
+      ],
+      "tags": ["Sustainability", "Eco-Friendly", "Lifestyle"],
+      "priorityStatus": "Medium",
+      "createdDateTime": "2023-09-25T14:30:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 3,
+      "title": "The Rise of Remote Work",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "How remote work is reshaping the modern workplace",
+      "content": [
+        "The COVID-19 pandemic accelerated the adoption of remote work...",
+        "Companies are now embracing hybrid models to attract talent...",
+        "But challenges like communication and work-life balance persist..."
+      ],
+      "tags": ["Remote Work", "Workplace", "Productivity"],
+      "priorityStatus": "High",
+      "createdDateTime": "2023-09-18T11:45:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 4,
+      "title": "Exploring the Wonders of Space",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "A journey through the cosmos",
+      "content": [
+        "Space has always fascinated humanity...",
+        "From black holes to distant galaxies, the universe is full of mysteries...",
+        "Recent advancements in technology are helping us explore further than ever before..."
+      ],
+      "tags": ["Space", "Science", "Astronomy"],
+      "priorityStatus": "Medium",
+      "createdDateTime": "2023-09-10T16:20:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 5,
+      "title": "The Art of Mindfulness",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "Finding peace in a busy world",
+      "content": [
+        "Mindfulness is the practice of being present in the moment...",
+        "It can reduce stress, improve focus, and enhance overall well-being...",
+        "Simple techniques like meditation and deep breathing can make a big difference..."
+      ],
+      "tags": ["Mindfulness", "Mental Health", "Wellness"],
+      "priorityStatus": "Low",
+      "createdDateTime": "2023-09-05T08:00:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 6,
+      "title": "The Evolution of E-Commerce",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "How online shopping is changing the retail landscape",
+      "content": [
+        "E-commerce has revolutionized the way we shop...",
+        "From convenience to personalized experiences, it offers numerous benefits...",
+        "But challenges like cybersecurity and logistics remain..."
+      ],
+      "tags": ["E-Commerce", "Retail", "Technology"],
+      "priorityStatus": "High",
+      "createdDateTime": "2023-08-28T12:10:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 7,
+      "title": "The Power of Positive Thinking",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "How optimism can transform your life",
+      "content": [
+        "Positive thinking is more than just a mindset...",
+        "It can improve mental health, boost resilience, and enhance relationships...",
+        "Learn how to cultivate positivity in your daily life..."
+      ],
+      "tags": ["Positive Thinking", "Mental Health", "Self-Improvement"],
+      "priorityStatus": "Medium",
+      "createdDateTime": "2023-08-20T10:05:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 8,
+      "title": "The Impact of Climate Change",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "Understanding the global crisis",
+      "content": [
+        "Climate change is one of the most pressing issues of our time...",
+        "Rising temperatures, melting ice caps, and extreme weather events are just the beginning...",
+        "Collective action is needed to mitigate its effects..."
+      ],
+      "tags": ["Climate Change", "Environment", "Sustainability"],
+      "priorityStatus": "High",
+      "createdDateTime": "2023-08-15T17:50:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 9,
+      "title": "The Joy of Cooking",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "Discovering the art of culinary creativity",
+      "content": [
+        "Cooking is more than just a necessity...",
+        "It's a way to express creativity, connect with others, and explore cultures...",
+        "Learn how to make cooking a joyful part of your life..."
+      ],
+      "tags": ["Cooking", "Food", "Lifestyle"],
+      "priorityStatus": "Low",
+      "createdDateTime": "2023-08-10T09:30:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 10,
+      "title": "The World of Cryptocurrency",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "Understanding the digital currency revolution",
+      "content": [
+        "Cryptocurrency is changing the way we think about money...",
+        "From Bitcoin to Ethereum, digital currencies offer new opportunities...",
+        "But they also come with risks and challenges..."
+      ],
+      "tags": ["Cryptocurrency", "Finance", "Technology"],
+      "priorityStatus": "High",
+      "createdDateTime": "2023-08-05T14:15:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 11,
+      "title": "The Benefits of Yoga",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "Improving physical and mental health through yoga",
+      "content": [
+        "Yoga is a practice that combines physical postures, breathing, and meditation...",
+        "It can improve flexibility, reduce stress, and enhance overall well-being...",
+        "Discover how to incorporate yoga into your daily routine..."
+      ],
+      "tags": ["Yoga", "Fitness", "Wellness"],
+      "priorityStatus": "Medium",
+      "createdDateTime": "2023-07-30T07:45:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 12,
+      "title": "The History of Photography",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "From daguerreotypes to digital cameras",
+      "content": [
+        "Photography has come a long way since its invention...",
+        "Explore the evolution of cameras and techniques over the years...",
+        "Learn how photography has shaped our perception of the world..."
+      ],
+      "tags": ["Photography", "History", "Art"],
+      "priorityStatus": "Low",
+      "createdDateTime": "2023-07-25T13:20:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 13,
+      "title": "The Science of Sleep",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "Understanding the importance of rest",
+      "content": [
+        "Sleep is essential for physical and mental health...",
+        "Learn about the stages of sleep and how to improve your sleep quality...",
+        "Discover the impact of sleep on productivity and well-being..."
+      ],
+      "tags": ["Sleep", "Health", "Science"],
+      "priorityStatus": "Medium",
+      "createdDateTime": "2023-07-20T18:10:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 14,
+      "title": "The Rise of Electric Vehicles",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "How EVs are transforming the automotive industry",
+      "content": [
+        "Electric vehicles (EVs) are becoming increasingly popular...",
+        "They offer environmental benefits and lower operating costs...",
+        "But challenges like charging infrastructure remain..."
+      ],
+      "tags": ["Electric Vehicles", "Automotive", "Sustainability"],
+      "priorityStatus": "High",
+      "createdDateTime": "2023-07-15T11:55:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 15,
+      "title": "The Art of Storytelling",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "Crafting compelling narratives",
+      "content": [
+        "Storytelling is a powerful tool for communication...",
+        "Whether in writing, film, or marketing, stories captivate audiences...",
+        "Learn how to create stories that resonate with others..."
+      ],
+      "tags": ["Storytelling", "Writing", "Communication"],
+      "priorityStatus": "Medium",
+      "createdDateTime": "2023-07-10T09:40:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 16,
+      "title": "The Future of Renewable Energy",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "Exploring sustainable energy solutions",
+      "content": [
+        "Renewable energy is key to combating climate change...",
+        "From solar to wind power, new technologies are emerging...",
+        "Discover how renewable energy is shaping the future..."
+      ],
+      "tags": ["Renewable Energy", "Sustainability", "Technology"],
+      "priorityStatus": "High",
+      "createdDateTime": "2023-07-05T16:25:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 17,
+      "title": "The Psychology of Happiness",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "Understanding what makes us happy",
+      "content": [
+        "Happiness is a complex emotion influenced by various factors...",
+        "From relationships to personal goals, learn what contributes to happiness...",
+        "Discover practical tips to increase your happiness..."
+      ],
+      "tags": ["Happiness", "Psychology", "Wellness"],
+      "priorityStatus": "Medium",
+      "createdDateTime": "2023-06-30T12:15:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 18,
+      "title": "The World of Virtual Reality",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "Exploring immersive technologies",
+      "content": [
+        "Virtual reality (VR) is transforming entertainment, education, and more...",
+        "From gaming to training simulations, VR offers endless possibilities...",
+        "Learn about the challenges and future of VR..."
+      ],
+      "tags": ["Virtual Reality", "Technology", "Innovation"],
+      "priorityStatus": "High",
+      "createdDateTime": "2023-06-25T14:50:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 19,
+      "title": "The Benefits of Reading",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "Why reading is good for your mind and soul",
+      "content": [
+        "Reading is a habit that offers numerous benefits...",
+        "It improves knowledge, reduces stress, and enhances empathy...",
+        "Discover how to make reading a regular part of your life..."
+      ],
+      "tags": ["Reading", "Books", "Self-Improvement"],
+      "priorityStatus": "Low",
+      "createdDateTime": "2023-06-20T10:30:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    },
+    {
+      "id": 20,
+      "title": "The Evolution of Social Media",
+      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
+      "subTitle": "How social media has changed the way we connect",
+      "content": [
+        "Social media has revolutionized communication...",
+        "From Facebook to TikTok, platforms have evolved over the years...",
+        "Explore the impact of social media on society and relationships..."
+      ],
+      "tags": ["Social Media", "Technology", "Communication"],
+      "priorityStatus": "High",
+      "createdDateTime": "2023-06-15T15:05:00Z",
+      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+    }
+  ]
+}

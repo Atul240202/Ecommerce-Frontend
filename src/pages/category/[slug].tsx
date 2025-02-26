@@ -7,16 +7,18 @@ import { ProductSort } from '@/components/ProductPage/ProductSort';
 import { ProductCard } from '@/components/ProductCard';
 import { Button } from '@/components/ui/button';
 import { Breadcrumb } from '@/components/Breadcrumb';
+import { ProductCardFeatured } from '../../components/Home/ProductCardFeatured';
 
 interface Product {
   id: number;
   title: string;
+  description: string;
   brand: string;
   thumbnail: string;
   price: number;
   discountPercentage: number;
   rating: number;
-  category: string;
+  stock: number;
 }
 
 export default function CategoryPage() {
@@ -145,11 +147,11 @@ export default function CategoryPage() {
               <>
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
                   {currentProducts.map((product) => (
-                    <ProductCard
+                    <ProductCardFeatured
                       key={product.id}
                       product={product}
-                      onAddToWishlist={handleAddToWishlist}
-                      isInWishlist={wishlist.includes(product.id)}
+                      // onAddToWishlist={handleAddToWishlist}
+                      // isInWishlist={wishlist.includes(product.id)}
                     />
                   ))}
                 </div>

@@ -9,6 +9,7 @@ import { RelatedProducts } from '@/components/ProductPage/RelatedProducts';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Star } from 'lucide-react';
+import { useShop } from '@/contexts/ShopContext';
 
 interface Product {
   id: number;
@@ -44,6 +45,8 @@ interface Product {
 }
 
 export default function ProductPage() {
+  const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } =
+    useShop();
   const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -72,6 +75,18 @@ export default function ProductPage() {
     }
   };
 
+  const handleAddToCart = async () => {
+    await addToCart(product.id, quantity);
+  };
+
+  const handleWishlistClick = () => {
+    if (isWishlisted) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product.id);
+    }
+  };
+
   if (isLoading) {
     return (
       <MainLayout>
@@ -97,10 +112,7 @@ export default function ProductPage() {
 
   return (
     <MainLayout>
-      <div
-        className='container mx-6 px-4 py-8'
-        style={{ width: 'calc(100% - 3rem)' }}
-      >
+      <div className='container mx-auto px-12 py-8'>
         <Breadcrumb
           items={[
             { label: 'Home', href: '/' },
@@ -184,7 +196,7 @@ export default function ProductPage() {
               <Button
                 variant='outline'
                 size='icon'
-                onClick={() => setIsWishlisted(!isWishlisted)}
+                onClick={handleWishlistClick}
               >
                 <Heart
                   className={`h-5 w-5 ${
@@ -195,7 +207,7 @@ export default function ProductPage() {
             </div>
 
             <div className='space-y-4'>
-              <Button className='w-full' size='lg'>
+              <Button className='w-full' size='lg' onClick={handleAddToCart}>
                 Add to Cart
               </Button>
               <Button variant='secondary' className='w-full' size='lg'>

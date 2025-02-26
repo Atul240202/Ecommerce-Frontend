@@ -7,6 +7,7 @@ import { CategoryGrid } from '@/components/Home/CategoryGrid';
 import { ProductGrid } from '@/components/Home/ProductGrid';
 import { FeaturedProducts } from '@/components/Home/FeaturedProducts';
 import { FeaturedSection } from '@/components/Home/FeaturedSection';
+import { BlogCard } from '../components/Blogs/BlogCard';
 
 interface Product {
   id: number;
@@ -18,11 +19,24 @@ interface Product {
   rating: number;
 }
 
+interface Blog {
+  id: number;
+  title: string;
+  thumbnail: string;
+  subTitle: string;
+  content: string[];
+  tags: string[];
+  priorityStatus: 'High' | 'Medium' | 'Low';
+  createdDateTime: string;
+  insidePageImage: string;
+}
+
 export default function HomePage() {
   const [promotions, setPromotions] = useState<any>(null);
   const [categories, setCategories] = useState<any[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [bestSellerProducts, setBestSellerProducts] = useState<Product[]>([]);
+  const [latestBlogs, setLatestBlogs] = useState<Blog[]>([]);
 
   useEffect(() => {
     // Fetch promotions
@@ -43,6 +57,19 @@ export default function HomePage() {
         setFeaturedProducts(shuffled.slice(0, 10));
         setBestSellerProducts(shuffled.slice(10, 20));
       });
+    // Fetch blogs
+    fetch('/tempData/blog.json')
+      .then((res) => res.json())
+      .then((data) => {
+        // Sort blogs by createdDateTime, newest first
+        const sortedBlogs = data.blogs.sort(
+          (a: Blog, b: Blog) =>
+            new Date(b.createdDateTime).getTime() -
+            new Date(a.createdDateTime).getTime()
+        );
+        // Get the 5 latest blogs
+        setLatestBlogs(sortedBlogs.slice(0, 5));
+      });
   }, []);
 
   useEffect(() => {
@@ -55,7 +82,7 @@ export default function HomePage() {
 
   return (
     <MainLayout>
-      <div className='container mx-auto'>
+      <div className='mx-auto'>
         <HeroSlider slides={promotions.slider} />
 
         <CategoryGrid categories={categories} />
@@ -108,6 +135,24 @@ export default function HomePage() {
             ))}
           </div>
         )}
+
+        {/* Latest Blogs Section */}
+        <section className='my-12 mx-16'>
+          <h2 className='text-2xl font-bold mb-6'>Latest from Our Blog</h2>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6'>
+            {latestBlogs.map((blog) => (
+              <BlogCard key={blog.id} blog={blog} />
+            ))}
+          </div>
+          <div className='text-center mt-8'>
+            <Link
+              href='/blog'
+              className='text-blue-600 hover:text-blue-800 font-semibold'
+            >
+              View All Blog Posts
+            </Link>
+          </div>
+        </section>
       </div>
     </MainLayout>
   );

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ProductCard } from '../ProductCard';
-
+import { ProductCardFeatured } from '../Home/ProductCardFeatured';
 interface Product {
   id: number;
   title: string;
@@ -9,6 +8,8 @@ interface Product {
   price: number;
   discountPercentage: number;
   rating: number;
+  description: string;
+  stock: number;
 }
 
 interface RelatedProductsProps {
@@ -38,12 +39,7 @@ export function RelatedProducts({
       <h2 className='text-2xl font-semibold mb-6'>Related Products</h2>
       <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6'>
         {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onAddToWishlist={() => {}}
-            isInWishlist={false}
-          />
+          <ProductCardFeatured key={product.id} product={product} />
         ))}
       </div>
     </div>

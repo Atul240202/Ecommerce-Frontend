@@ -15,7 +15,7 @@ interface Product {
 export function BestSellerSidebar() {
   const [products, setProducts] = useState<Product[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const productsPerPage = 6;
+  const productsPerPage = 11;
 
   useEffect(() => {
     fetch('https://dummyjson.com/products?limit=30')

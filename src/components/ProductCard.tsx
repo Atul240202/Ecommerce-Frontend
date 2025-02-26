@@ -1,7 +1,9 @@
+import type React from 'react';
 import Image from 'next/image';
 import { Heart, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { useShop } from '@/contexts/ShopContext';
 
 interface Product {
   id: number;
@@ -15,17 +17,28 @@ interface Product {
 
 interface ProductCardProps {
   product: Product;
-  onAddToWishlist: (productId: number) => void;
-  isInWishlist: boolean;
 }
 
-export function ProductCard({
-  product,
-  onAddToWishlist,
-  isInWishlist,
-}: ProductCardProps) {
+export function ProductCard({ product }: ProductCardProps) {
+  const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } =
+    useShop();
+  const isWishlisted = isInWishlist(product.id);
   const discountedPrice =
     product.price * (1 - product.discountPercentage / 100);
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation
+    await addToCart(product.id, 1);
+  };
+
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation
+    if (isWishlisted) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product.id);
+    }
+  };
 
   return (
     <div className='group relative border rounded-lg p-4 hover:border-primary transition-colors'>
@@ -35,14 +48,11 @@ export function ProductCard({
           variant='ghost'
           size='icon'
           className='h-8 w-8 rounded-full bg-white/80 hover:bg-white'
-          onClick={(e) => {
-            e.preventDefault(); // Prevent navigation when clicking wishlist
-            onAddToWishlist(product.id);
-          }}
+          onClick={handleWishlistClick}
         >
           <Heart
             className={`h-5 w-5 ${
-              isInWishlist ? 'fill-red-500 text-red-500' : 'text-gray-500'
+              isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-500'
             }`}
           />
         </Button>
@@ -96,7 +106,9 @@ export function ProductCard({
             </div>
             <p className='text-xs text-gray-500'>Inclusive of GST</p>
           </div>
-          <Button className='w-full'>Add to Cart</Button>
+          <Button className='w-full' onClick={handleAddToCart}>
+            Add to Cart
+          </Button>
         </div>
       </Link>
     </div>

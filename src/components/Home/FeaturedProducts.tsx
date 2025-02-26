@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ProductCard } from '../ProductCard';
 import { ProductCardFeatured } from './ProductCardFeatured';
 
 interface Product {
@@ -15,18 +14,6 @@ interface Product {
   rating: number;
   tags: string[];
   stock: number;
-}
-
-interface ProductCardFeatureProps {
-  product: Product;
-}
-
-function ProductCardFeature({ product }: ProductCardFeatureProps) {
-  return (
-    <div>
-      <ProductCard product={product} />
-    </div>
-  );
 }
 
 export function FeaturedProducts() {

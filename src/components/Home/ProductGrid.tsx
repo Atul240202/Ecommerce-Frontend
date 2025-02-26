@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { ProductCard } from '../ProductCard';
-import { Button } from '@/components/ui/button.tsx';
+import { ProductCardFeatured } from './ProductCardFeatured';
+import { Button } from '@/components/ui/button';
 
 interface Product {
   id: number;
@@ -10,6 +10,8 @@ interface Product {
   price: number;
   discountPercentage: number;
   rating: number;
+  description: string;
+  stock: number;
 }
 
 interface ProductGridProps {
@@ -26,8 +28,8 @@ export function ProductGrid({
   );
 
   return (
-    <div className='pt-12 pb-6 px-12'>
-      <div className='flex gap-4 mb-8 px-4'>
+    <div className='py-12 px-12'>
+      <div className='flex gap-4 mb-8'>
         <Button
           variant={activeTab === 'featured' ? 'default' : 'outline'}
           onClick={() => setActiveTab('featured')}
@@ -41,10 +43,10 @@ export function ProductGrid({
           Best Seller
         </Button>
       </div>
-      <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 px-4'>
+      <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6'>
         {(activeTab === 'featured' ? featuredProducts : bestSellerProducts).map(
           (product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCardFeatured key={product.id} product={product} />
           )
         )}
       </div>
