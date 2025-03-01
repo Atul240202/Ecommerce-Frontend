@@ -17,6 +17,7 @@ import ShippingAndReturnsPage from './pages/shipping-and-returns';
 import { NotFound } from './components/NotFound';
 import { CheckoutProvider } from './contexts/CheckoutContext';
 import CheckoutPage from './pages/checkout';
+import AccountPage from './pages/account';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -57,6 +58,7 @@ function App() {
               element={<ShippingAndReturnsPage />}
             />
             <Route path='/checkout' element={<CheckoutPage />} />
+            <Route path='/account' element={<AccountPage />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
         </Router>
