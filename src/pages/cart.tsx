@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Loader2, Minus, Plus, Trash2 } from 'lucide-react';
 import { MainLayout } from '@/layouts/MainLayout';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,20 @@ export default function CartPage() {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [couponCode, setCouponCode] = useState('');
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const { addProducts } = useCheckout();
+  const navigate = useNavigate();
+
+  const handleProceedToCheckout = () => {
+    const checkoutProducts = cart.products.map((product) => ({
+      id: product.id,
+      title: product.title,
+      thumbnail: product.thumbnail,
+      price: product.price,
+      quantity: product.quantity,
+    }));
+    addProducts(checkoutProducts);
+    navigate('/checkout');
+  };
 
   const handleQuantityChange = async (
     productId: number,
@@ -220,7 +234,11 @@ export default function CartPage() {
                     )}
                   </Button>
                 </div>
-                <Button className='w-full' size='lg'>
+                <Button
+                  className='w-full'
+                  size='lg'
+                  onClick={handleProceedToCheckout}
+                >
                   Proceed to Checkout
                 </Button>
                 <Button variant='outline' className='w-full' asChild>

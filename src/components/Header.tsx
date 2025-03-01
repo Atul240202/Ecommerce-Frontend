@@ -1,9 +1,28 @@
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import Cookies from 'js-cookie';
 import logo from '../assets/logo.webp';
 
 export function Header() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const authToken = Cookies.get('authToken');
+      const loggedIn = Cookies.get('isLoggedIn') === 'true';
+      setIsLoggedIn(authToken != null && loggedIn);
+    };
+
+    checkLoginStatus();
+    window.addEventListener('storage', checkLoginStatus);
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+    };
+  }, []);
+
   return (
     <header className='border-b'>
       <div className='container mx-auto px-12 py-4'>
@@ -84,22 +103,30 @@ export function Header() {
               </span>
               <span className='hidden md:inline'>Cart</span>
             </Link>
-            <Link href='/account' className='flex items-center gap-1'>
-              <svg
-                className='h-6 w-6'
-                fill='none'
-                stroke='currentColor'
-                viewBox='0 0 24 24'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth={2}
-                  d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
-                />
-              </svg>
-              <span className='hidden md:inline'>Account</span>
-            </Link>
+            {isLoggedIn ? (
+              <Link href='/account' className='flex items-center gap-1'>
+                <svg
+                  className='h-6 w-6'
+                  fill='none'
+                  stroke='currentColor'
+                  viewBox='0 0 24 24'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth={2}
+                    d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
+                  />
+                </svg>
+                <span className='hidden md:inline'>Account</span>
+              </Link>
+            ) : (
+              <Link href='/login'>
+                <Button className='bg-[#4280ef] hover:bg-[#3a72d4] text-white'>
+                  Login
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>

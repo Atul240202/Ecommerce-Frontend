@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, Loader2, Minus, Plus } from 'lucide-react';
 import { MainLayout } from '@/layouts/MainLayout';
 import { Breadcrumb } from '@/components/Breadcrumb';
@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Star } from 'lucide-react';
 import { useShop } from '@/contexts/ShopContext';
+import { useCheckout } from '@/contexts/CheckoutContext';
 
 interface Product {
   id: number;
@@ -47,7 +48,9 @@ interface Product {
 export default function ProductPage() {
   const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } =
     useShop();
+  const navigate = useNavigate();
   const { id } = useParams();
+  const { addProduct } = useCheckout();
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -77,6 +80,17 @@ export default function ProductPage() {
 
   const handleAddToCart = async () => {
     await addToCart(product.id, quantity);
+  };
+
+  const handleBuyNow = () => {
+    addProduct({
+      id: product.id,
+      title: product.title,
+      thumbnail: product.thumbnail,
+      price: discountedPrice,
+      quantity: quantity,
+    });
+    navigate('/checkout');
   };
 
   const handleWishlistClick = () => {
@@ -210,7 +224,12 @@ export default function ProductPage() {
               <Button className='w-full' size='lg' onClick={handleAddToCart}>
                 Add to Cart
               </Button>
-              <Button variant='secondary' className='w-full' size='lg'>
+              <Button
+                variant='secondary'
+                className='w-full'
+                size='lg'
+                onClick={handleBuyNow}
+              >
                 Buy Now
               </Button>
             </div>

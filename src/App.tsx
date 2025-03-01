@@ -15,6 +15,8 @@ import ContactPage from './pages/contact-us';
 import TermsAndConditionsPage from './pages/terms-and-condition';
 import ShippingAndReturnsPage from './pages/shipping-and-returns';
 import { NotFound } from './components/NotFound';
+import { CheckoutProvider } from './contexts/CheckoutContext';
+import CheckoutPage from './pages/checkout';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -32,31 +34,34 @@ export const auth = getAuth(app);
 
 function App() {
   return (
-    <ShopProvider>
-      <Router>
-        <Routes>
-          <Route path='/login' element={<LoginPage />} />
-          <Route path='/register' element={<RegisterPage />} />
-          <Route path='/' element={<HomePage />} />
-          <Route path='/categories/:slug' element={<CategoryPage />} />
-          <Route path='/categories' element={<MainCategoryPage />} />
-          <Route path='/product/:id' element={<ProductPage />} />
-          <Route path='/cart' element={<CartPage />} />
-          <Route path='/blog' element={<BlogPage />} />
-          <Route path='/blog/:id' element={<BlogPostPage />} />
-          <Route path='/contact' element={<ContactPage />} />
-          <Route
-            path='/terms-and-conditions'
-            element={<TermsAndConditionsPage />}
-          />
-          <Route
-            path='/shipping-and-returns'
-            element={<ShippingAndReturnsPage />}
-          />
-          <Route path='*' element={<NotFound />} />
-        </Routes>
-      </Router>
-    </ShopProvider>
+    <CheckoutProvider>
+      <ShopProvider>
+        <Router>
+          <Routes>
+            <Route path='/login' element={<LoginPage />} />
+            <Route path='/register' element={<RegisterPage />} />
+            <Route path='/' element={<HomePage />} />
+            <Route path='/categories/:slug' element={<CategoryPage />} />
+            <Route path='/categories' element={<MainCategoryPage />} />
+            <Route path='/product/:id' element={<ProductPage />} />
+            <Route path='/cart' element={<CartPage />} />
+            <Route path='/blog' element={<BlogPage />} />
+            <Route path='/blog/:id' element={<BlogPostPage />} />
+            <Route path='/contact' element={<ContactPage />} />
+            <Route
+              path='/terms-and-conditions'
+              element={<TermsAndConditionsPage />}
+            />
+            <Route
+              path='/shipping-and-returns'
+              element={<ShippingAndReturnsPage />}
+            />
+            <Route path='/checkout' element={<CheckoutPage />} />
+            <Route path='*' element={<NotFound />} />
+          </Routes>
+        </Router>
+      </ShopProvider>
+    </CheckoutProvider>
   );
 }
 
