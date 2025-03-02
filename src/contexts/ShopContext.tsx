@@ -60,7 +60,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      const res = await fetch(`https://dummyjson.com/carts/user/${authToken}`);
+      const res = await fetch(`https://dummyjson.com/carts/user/1`);
       const data = await res.json();
 
       // Check if the response has carts and at least one cart with products

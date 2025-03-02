@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useShop } from '@/contexts/ShopContext';
+import { useCheckout } from '@/contexts/CheckoutContext';
 import Image from 'next/image';
 
 export default function CartPage() {

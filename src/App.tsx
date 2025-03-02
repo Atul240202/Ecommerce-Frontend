@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 import { ShopProvider } from './contexts/ShopContext';
 import LoginPage from './pages/login';
 import RegisterPage from './pages/register';
@@ -18,6 +19,7 @@ import { NotFound } from './components/NotFound';
 import { CheckoutProvider } from './contexts/CheckoutContext';
 import CheckoutPage from './pages/checkout';
 import AccountPage from './pages/account';
+import WishlistPage from './pages/wishlist';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -32,6 +34,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export const db = getFirestore(app);
 
 function App() {
   return (
@@ -49,6 +52,7 @@ function App() {
             <Route path='/blog' element={<BlogPage />} />
             <Route path='/blog/:id' element={<BlogPostPage />} />
             <Route path='/contact' element={<ContactPage />} />
+            <Route path='/wishlist' element={<WishlistPage />} />
             <Route
               path='/terms-and-conditions'
               element={<TermsAndConditionsPage />}

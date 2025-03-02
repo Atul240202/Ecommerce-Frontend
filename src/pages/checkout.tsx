@@ -626,7 +626,11 @@ export default function CheckoutPage() {
                                   }
                                 />
                                 <Input
-                                  className='md:col-span-2'
+                                  className={`md:col-span-2 ${
+                                    formErrors.billing_phone
+                                      ? 'border-red-500'
+                                      : ''
+                                  }`}
                                   placeholder='Street address *'
                                   value={billingAddress?.street || ''}
                                   onChange={(e) =>
@@ -634,11 +638,6 @@ export default function CheckoutPage() {
                                       ...prev,
                                       street: e.target.value,
                                     }))
-                                  }
-                                  className={
-                                    formErrors.billing_street
-                                      ? 'border-red-500'
-                                      : ''
                                   }
                                 />
                                 <Input
@@ -719,7 +718,11 @@ export default function CheckoutPage() {
                                   }
                                 />
                                 <Input
-                                  className='md:col-span-2'
+                                  className={`md:col-span-2 ${
+                                    formErrors.billing_phone
+                                      ? 'border-red-500'
+                                      : ''
+                                  }`}
                                   placeholder='Phone *'
                                   value={billingAddress?.phone || ''}
                                   onChange={(e) =>
@@ -727,11 +730,6 @@ export default function CheckoutPage() {
                                       ...prev,
                                       phone: e.target.value,
                                     }))
-                                  }
-                                  className={
-                                    formErrors.billing_phone
-                                      ? 'border-red-500'
-                                      : ''
                                   }
                                 />
                               </div>

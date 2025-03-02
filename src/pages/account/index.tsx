@@ -20,11 +20,13 @@ export default function AccountPage() {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         // User is signed in
+        console.log('Current user', currentUser);
         setUser({
           uid: currentUser.uid,
           email: currentUser.email,
-          displayName: currentUser.displayName || 'User',
+          displayName: currentUser.displayName,
           photoURL: currentUser.photoURL,
+          phoneNumber: currentUser.phoneNumber,
         });
       } else {
         // User is signed out
@@ -47,6 +49,12 @@ export default function AccountPage() {
     return () => unsubscribe();
   }, [navigate]);
 
+  useEffect(() => {
+    if (user) {
+      console.log('loggedin user details', user);
+    }
+  }, [user]);
+
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     window.location.hash = value;
@@ -64,7 +72,7 @@ export default function AccountPage() {
 
   return (
     <MainLayout>
-      <div className='container mx-auto px-4 py-8'>
+      <div className='container mx-auto py-8'>
         <div className='max-w-6xl mx-auto'>
           <div className='mb-8'>
             <h1 className='text-2xl font-semibold text-[#0e224d]'>

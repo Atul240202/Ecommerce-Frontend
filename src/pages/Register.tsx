@@ -2,19 +2,28 @@ import type React from 'react';
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useNavigate } from 'react-router-dom';
 import {
   createUserWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
+  updateProfile,
 } from 'firebase/auth';
+import {
+  doc,
+  setDoc,
+  serverTimestamp,
+  getFirestore,
+  collection,
+} from 'firebase/firestore';
 import Cookies from 'js-cookie';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { MainLayout } from '@/layouts/MainLayout';
-import { auth } from '../App';
+import { auth, db } from '../App';
+
+// Initialize Firestore
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState('');
@@ -22,27 +31,50 @@ export default function RegisterPage() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [rePassword, setRePassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+
     if (password !== rePassword) {
-      alert("Passwords don't match");
+      setError("Passwords don't match");
       return;
     }
+
     try {
+      // Create user with email and password
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
+
+      // Update the user profile with display name
+      await updateProfile(userCredential.user, {
+        displayName: fullName,
+      });
+
+      // Create a reference to the users collection and the specific user document
+      const usersRef = collection(db, 'users');
+      const userDocRef = doc(usersRef, userCredential.user.uid);
+
+      // Store additional user data in Firestore
+      await setDoc(userDocRef, {
+        fullName,
+        email,
+        phone,
+        createdAt: serverTimestamp(),
+      });
+
       const token = await userCredential.user.getIdToken();
       Cookies.set('authToken', token);
       Cookies.set('isLoggedIn', 'true');
       navigate('/');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error registering:', error);
-      // Handle error (e.g., show error message to user)
+      setError(error.message || 'An error occurred during registration');
     }
   };
 
@@ -50,13 +82,30 @@ export default function RegisterPage() {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
+
+      // Create a reference to the users collection and the specific user document
+      const usersRef = collection(db, 'users');
+      const userDocRef = doc(usersRef, result.user.uid);
+
+      // Store additional user data in Firestore
+      await setDoc(
+        userDocRef,
+        {
+          fullName: result.user.displayName,
+          email: result.user.email,
+          phoneNumber: result.user.phoneNumber || '',
+          createdAt: serverTimestamp(),
+        },
+        { merge: true }
+      ); // Use merge to avoid overwriting existing data
+
       const token = await result.user.getIdToken();
       Cookies.set('authToken', token);
       Cookies.set('isLoggedIn', 'true');
       navigate('/');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error signing in with Google:', error);
-      // Handle error (e.g., show error message to user)
+      setError(error.message || 'An error occurred during Google sign-in');
     }
   };
 
@@ -69,6 +118,14 @@ export default function RegisterPage() {
               Create an account
             </h1>
           </div>
+          {error && (
+            <div
+              className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative'
+              role='alert'
+            >
+              <span className='block sm:inline'>{error}</span>
+            </div>
+          )}
           <form className='mt-8 space-y-6' onSubmit={handleRegister}>
             <div className='space-y-4'>
               <div>
