@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -32,7 +31,7 @@ export function HeroSlider({ slides }: HeroSliderProps) {
   };
 
   return (
-    <div className='relative w-full h-[400px] overflow-hidden'>
+    <div className='relative w-full h-[600px] overflow-hidden'>
       {slides.map((slide, index) => (
         <div
           key={index}

@@ -1,5 +1,4 @@
 import type React from 'react';
-import Image from 'next/image';
 import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -9,7 +8,7 @@ interface Product {
   id: number;
   title: string;
   description: string;
-  brand: string;
+  // brand: string;
   thumbnail: string;
   price: number;
   discountPercentage: number;
@@ -23,8 +22,9 @@ interface ProductCardFeaturedProps {
 
 export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
   const { addToCart } = useShop();
-  const discountedPrice =
-    product.price * (1 - product.discountPercentage / 100);
+  const discountedPrice = product.price
+    ? product.price * (1 - (product.discountPercentage || 0) / 100)
+    : 0;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation when clicking the button
@@ -58,7 +58,7 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
         {/* Product Info */}
         <div className='flex-1 flex flex-col'>
           <div className='mb-auto'>
-            <p className='text-sm text-gray-500 mb-1'>{product.brand}</p>
+            {/* <p className='text-sm text-gray-500 mb-1'>{product.brand}</p> */}
             <h3 className='font-medium text-[#1a2030] mb-2 line-clamp-2 min-h-[48px]'>
               {product.title}
             </h3>
@@ -75,20 +75,23 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
                   }`}
                 />
               ))}
-              <span className='text-xs text-gray-500 ml-1'>(65)</span>
+              <span className='text-xs text-gray-500 ml-1'></span>
             </div>
 
             {/* Price */}
             <div className='mb-2'>
               <div className='flex items-baseline gap-2'>
                 <span className='text-lg font-bold text-[#1a2030]'>
-                  ${discountedPrice.toFixed(2)}
+                  Rs.
+                  {isNaN(discountedPrice) ? '0.00' : discountedPrice.toFixed(2)}
                 </span>
-                {product.discountPercentage > 0 && (
-                  <span className='text-sm text-gray-500 line-through'>
-                    ${product.price.toFixed(2)}
-                  </span>
-                )}
+                {product.discountPercentage > 0 &&
+                  product.price &&
+                  !isNaN(product.price) && (
+                    <span className='text-sm text-gray-500 line-through'>
+                      Rs. {product.price.toFixed(2)}
+                    </span>
+                  )}
               </div>
               <p className='text-xs text-gray-500'>Inclusive of GST</p>
             </div>

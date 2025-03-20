@@ -2,41 +2,89 @@ import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProductCardFeatured } from './ProductCardFeatured';
+import { fetchFeaturedProducts, fetchBestSellerProducts } from '@/services/api';
 
-interface Product {
+interface ApiProduct {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  regular_price: string;
+  sale_price: string;
+  on_sale: boolean;
+  average_rating: string;
+  stock_status: string;
+  images: Array<{
+    src: string;
+  }>;
+  categories: Array<{
+    name: string;
+  }>;
+}
+
+interface TransformedProduct {
   id: number;
   title: string;
   description: string;
-  brand: string;
   thumbnail: string;
   price: number;
   discountPercentage: number;
   rating: number;
-  tags: string[];
   stock: number;
 }
 
 export function FeaturedProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<TransformedProduct[]>([]);
+  const [loading, setLoading] = useState(true);
   const [scrollContainer, setScrollContainer] = useState<HTMLDivElement | null>(
     null
   );
 
   useEffect(() => {
-    fetch('https://dummyjson.com/products?limit=30')
-      .then((res) => res.json())
-      .then((data) => {
-        // TODO: Uncomment this when API includes "featured" tag
-        // const featuredProducts = data.products.filter(product =>
-        //   product.tags.includes('featured')
-        // ).slice(0, 5);
+    const getProducts = async () => {
+      try {
+        setLoading(true);
+        const featuredProducts = await fetchBestSellerProducts(8);
 
-        // For now, just get random 5 products
-        const randomProducts = [...data.products]
-          .sort(() => 0.5 - Math.random())
-          .slice(0, 5);
-        setProducts(randomProducts);
-      });
+        if (!featuredProducts || featuredProducts.length === 0) {
+          console.log(
+            'No featured products returned from API, using fallback data'
+          );
+          return;
+        }
+
+        // Transform API data to match what ProductCardFeatured expects
+        const transformedProducts = featuredProducts.map(
+          (product: ApiProduct) => ({
+            id: product.id,
+            title: product.name,
+            description: product.description,
+            thumbnail: product.images?.[0]?.src || '/placeholder.svg',
+            price: Number.parseFloat(product.price || '0'),
+            discountPercentage: product.on_sale
+              ? ((Number.parseFloat(product.regular_price || '0') -
+                  Number.parseFloat(product.sale_price || '0')) /
+                  Number.parseFloat(product.regular_price || '1')) *
+                100
+              : 0,
+            rating: Number.parseFloat(product.average_rating || '0'),
+            stock: product.stock_status === 'instock' ? 100 : 0,
+          })
+        );
+
+        if (transformedProducts.length === 0) {
+          console.log('No products after transformation, using fallback data');
+        } else {
+          setProducts(transformedProducts);
+        }
+      } catch (error) {
+        console.error('Error fetching featured products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getProducts();
   }, []);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -47,7 +95,7 @@ export function FeaturedProducts() {
   };
 
   return (
-    <div className='bg-[#E9F7FF] py-8 px-12'>
+    <div className='bg-[#f8fbff] py-8'>
       <div className='container mx-auto px-4'>
         <div className='mb-2'>
           <h2 className='text-2xl font-semibold text-[#1a2030]'>
@@ -59,34 +107,51 @@ export function FeaturedProducts() {
         </div>
 
         <div className='relative'>
-          <div
-            ref={setScrollContainer}
-            className='flex gap-6 overflow-x-auto scrollbar-hide grid-cols-1 md:grid-cols-3 lg:grid-cols-5 scroll-smooth py-4'
-          >
-            {products.map((product) => (
-              <div key={product.id} className='flex-none w-[18vw]'>
-                {/* <ProductCardFeature product={product} /> */}
-                <ProductCardFeatured product={product} />
-              </div>
-            ))}
-          </div>
+          {loading ? (
+            <div className='flex justify-center py-8'>
+              <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#4280ef]'></div>
+            </div>
+          ) : (
+            <div
+              ref={setScrollContainer}
+              className='flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth py-4'
+            >
+              {products.length > 0 ? (
+                products.map((product) => (
+                  <div key={product.id} className='flex-none w-[280px]'>
+                    <ProductCardFeatured product={product} />
+                  </div>
+                ))
+              ) : (
+                <div className='w-full text-center py-8'>
+                  <p className='text-gray-500'>
+                    No featured products available
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
-          <Button
-            variant='ghost'
-            size='icon'
-            className='absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full'
-            onClick={() => scroll('left')}
-          >
-            <ChevronLeft className='h-6 w-6' />
-          </Button>
-          <Button
-            variant='ghost'
-            size='icon'
-            className='absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full'
-            onClick={() => scroll('right')}
-          >
-            <ChevronRight className='h-6 w-6' />
-          </Button>
+          {products.length > 0 && (
+            <>
+              <Button
+                variant='ghost'
+                size='icon'
+                className='absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full'
+                onClick={() => scroll('left')}
+              >
+                <ChevronLeft className='h-6 w-6' />
+              </Button>
+              <Button
+                variant='ghost'
+                size='icon'
+                className='absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full'
+                onClick={() => scroll('right')}
+              >
+                <ChevronRight className='h-6 w-6' />
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>

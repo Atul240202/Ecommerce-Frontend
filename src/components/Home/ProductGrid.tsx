@@ -1,11 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ProductCardFeatured } from './ProductCardFeatured';
+import { fetchFeaturedProducts, fetchBestSellerProducts } from '@/services/api';
 import { Button } from '@/components/ui/button';
+
+interface ApiProduct {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  regular_price: string;
+  sale_price: string;
+  on_sale: boolean;
+  average_rating: string;
+  stock_status: string;
+  images: Array<{ src: string }>;
+  categories: Array<{ name: string }>;
+}
 
 interface Product {
   id: number;
   title: string;
-  brand: string;
   thumbnail: string;
   price: number;
   discountPercentage: number;
@@ -14,40 +28,84 @@ interface Product {
   stock: number;
 }
 
-interface ProductGridProps {
-  featuredProducts: Product[];
-  bestSellerProducts: Product[];
-}
-
-export function ProductGrid({
-  featuredProducts,
-  bestSellerProducts,
-}: ProductGridProps) {
+export function ProductGrid() {
   const [activeTab, setActiveTab] = useState<'featured' | 'bestseller'>(
     'featured'
   );
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [bestSellerProducts, setBestSellerProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const [featured, bestSellers] = await Promise.all([
+          fetchFeaturedProducts(5),
+          fetchBestSellerProducts(5),
+        ]);
+
+        // Transform API data
+        const transformProducts = (products: ApiProduct[]): Product[] =>
+          products.map((product) => ({
+            id: product.id,
+            title: product.name,
+            description: product.description,
+            thumbnail: product.images?.[0]?.src || '/placeholder.svg',
+            price: Number.parseFloat(product.price || '0'),
+            discountPercentage: product.on_sale
+              ? ((Number.parseFloat(product.regular_price || '0') -
+                  Number.parseFloat(product.sale_price || '0')) /
+                  Number.parseFloat(product.regular_price || '1')) *
+                100
+              : 0,
+            rating: Number.parseFloat(product.average_rating || '0'),
+            stock: product.stock_status === 'instock' ? 100 : 0,
+          }));
+
+        setFeaturedProducts(transformProducts(featured || []));
+        setBestSellerProducts(transformProducts(bestSellers || []));
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   return (
-    <div className='py-12 px-12'>
-      <div className='flex gap-4 mb-8'>
-        <Button
-          variant={activeTab === 'featured' ? 'default' : 'outline'}
-          onClick={() => setActiveTab('featured')}
-        >
-          Featured
-        </Button>
-        <Button
-          variant={activeTab === 'bestseller' ? 'default' : 'outline'}
-          onClick={() => setActiveTab('bestseller')}
-        >
-          Best Seller
-        </Button>
-      </div>
-      <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6'>
-        {(activeTab === 'featured' ? featuredProducts : bestSellerProducts).map(
-          (product) => (
-            <ProductCardFeatured key={product.id} product={product} />
-          )
+    <div className='py-12'>
+      <div className='container mx-auto px-4'>
+        <div className='flex gap-4 mb-8'>
+          <Button
+            variant={activeTab === 'featured' ? 'default' : 'outline'}
+            onClick={() => setActiveTab('featured')}
+          >
+            Featured
+          </Button>
+          <Button
+            variant={activeTab === 'bestseller' ? 'default' : 'outline'}
+            onClick={() => setActiveTab('bestseller')}
+          >
+            Best Seller
+          </Button>
+        </div>
+
+        {loading ? (
+          <div className='flex justify-center py-8 px-8'>
+            <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#4280ef]'></div>
+          </div>
+        ) : (
+          <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 px-8'>
+            {(activeTab === 'featured'
+              ? featuredProducts
+              : bestSellerProducts
+            ).map((product) => (
+              <ProductCardFeatured key={product.id} product={product} />
+            ))}
+          </div>
         )}
       </div>
     </div>

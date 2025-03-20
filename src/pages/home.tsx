@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { MainLayout } from '@/layouts/MainLayout';
 import { HeroSlider } from '@/components/Home/HeroSlider';
@@ -8,6 +7,10 @@ import { ProductGrid } from '@/components/Home/ProductGrid';
 import { FeaturedProducts } from '@/components/Home/FeaturedProducts';
 import { FeaturedSection } from '@/components/Home/FeaturedSection';
 import { BlogCard } from '../components/Blogs/BlogCard';
+import {
+  fetchFeaturedProducts,
+  fetchBestSellerProducts,
+} from '../services/api';
 
 interface Product {
   id: number;
@@ -49,14 +52,28 @@ export default function HomePage() {
       .then((res) => res.json())
       .then((data) => setCategories(data.categories));
     // Fetch products
-    fetch('https://dummyjson.com/products?limit=20')
-      .then((res) => res.json())
-      .then((data) => {
-        // Randomly assign products to featured and bestseller for now
-        const shuffled = [...data.products].sort(() => 0.5 - Math.random());
-        setFeaturedProducts(shuffled.slice(0, 10));
-        setBestSellerProducts(shuffled.slice(10, 20));
-      });
+    // fetch('https://dummyjson.com/products?limit=20')
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     // Randomly assign products to featured and bestseller for now
+    //     const shuffled = [...data.products].sort(() => 0.5 - Math.random());
+    //     setFeaturedProducts(shuffled.slice(0, 10));
+    //     setBestSellerProducts(shuffled.slice(10, 20));
+    //   });
+
+    const fetchProducts = async () => {
+      try {
+        const featured = await fetchFeaturedProducts(10);
+        setFeaturedProducts(featured);
+
+        const bestsellers = await fetchBestSellerProducts(10);
+        setBestSellerProducts(bestsellers);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
     // Fetch blogs
     fetch('/tempData/blog.json')
       .then((res) => res.json())
@@ -137,7 +154,7 @@ export default function HomePage() {
         )}
 
         {/* Latest Blogs Section */}
-        <section className='my-12 mx-16'>
+        <section className='container my-12 mx-auto'>
           <h2 className='text-2xl font-bold mb-6'>Latest from Our Blog</h2>
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6'>
             {latestBlogs.map((blog) => (

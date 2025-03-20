@@ -1,13 +1,23 @@
-import { useState, useEffect } from 'react';
+import type React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Cookies from 'js-cookie';
+import { useState, useEffect, useRef } from 'react';
+import { SearchResults } from './SearchResults';
+import { searchProducts } from '@/services/api';
 import logo from '../assets/logo.webp';
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const [searchRedirect, setSearchRedirect] = useState<string | null>(null);
+  const searchTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -17,15 +27,86 @@ export function Header() {
     };
 
     checkLoginStatus();
+    // Listen for login status changes
     window.addEventListener('storage', checkLoginStatus);
+
     return () => {
       window.removeEventListener('storage', checkLoginStatus);
     };
   }, []);
 
+  useEffect(() => {
+    // Handle clicks outside of search results to close the dropdown
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setShowResults(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Clear any existing timeout
+    if (searchTimeout.current) {
+      clearTimeout(searchTimeout.current);
+    }
+
+    if (searchTerm.trim() === '') {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+
+    // Set a new timeout for debouncing
+    searchTimeout.current = setTimeout(async () => {
+      try {
+        const data = await searchProducts(searchTerm);
+        setSearchResults(data.products || []);
+      } catch (error) {
+        console.error('Error searching products:', error);
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300); // 300ms debounce
+
+    return () => {
+      if (searchTimeout.current) {
+        clearTimeout(searchTimeout.current);
+      }
+    };
+  }, [searchTerm]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setShowResults(true);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      setSearchRedirect(`/search?q=${encodeURIComponent(searchTerm)}`);
+      setShowResults(false);
+    }
+  };
+
+  const handleResultClick = () => {
+    setShowResults(false);
+    setSearchTerm('');
+  };
+
   return (
     <header className='border-b'>
-      <div className='container mx-auto px-12 py-4'>
+      <div className='container mx-auto px-4 py-4'>
         <div className='flex items-center justify-between'>
           <Link href='/' className='flex-shrink-0'>
             <img
@@ -37,27 +118,46 @@ export function Header() {
             />
           </Link>
           <div className='flex-1 max-w-xl mx-4 hidden md:block'>
-            <div className='relative'>
-              <Input
-                type='search'
-                placeholder='Search for items'
-                className='w-full pl-4 pr-10'
-              />
-              <button className='absolute right-3 top-1/2 -translate-y-1/2'>
-                <svg
-                  className='h-5 w-5 text-gray-400'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+            <div className='relative' ref={searchRef}>
+              <form onSubmit={handleSearchSubmit}>
+                <div className='relative'>
+                  <Input
+                    type='search'
+                    placeholder='Search for products'
+                    className='w-full pl-4 pr-10'
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    onFocus={() => setShowResults(true)}
                   />
-                </svg>
-              </button>
+                  <button
+                    type='submit'
+                    className='absolute right-3 top-1/2 -translate-y-1/2'
+                    aria-label='Search'
+                  >
+                    <svg
+                      className='h-5 w-5 text-gray-400'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </form>
+              {showResults && (
+                <SearchResults
+                  results={searchResults}
+                  isLoading={isSearching}
+                  searchTerm={searchTerm}
+                  onResultClick={handleResultClick}
+                />
+              )}
             </div>
           </div>
           <div className='flex items-center gap-4'>
@@ -130,6 +230,7 @@ export function Header() {
           </div>
         </div>
       </div>
+      {searchRedirect && <Link href={searchRedirect} />}
     </header>
   );
 }

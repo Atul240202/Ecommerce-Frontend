@@ -40,12 +40,23 @@ interface BreadcrumbProps {
 }
 
 export function Breadcrumb({ items }: BreadcrumbProps) {
+  // Update any /category routes to /categories
+  const updatedItems = items.map((item) => {
+    if (item.href.startsWith('/category/')) {
+      return {
+        ...item,
+        href: item.href.replace('/category/', '/categories/'),
+      };
+    }
+    return item;
+  });
+
   return (
-    <nav className='flex items-center space-x-2 text-sm mx-8 text-gray-600 mb-6'>
-      {items.map((item, index) => (
+    <nav className='flex items-center space-x-2 text-sm text-gray-600 mb-6'>
+      {updatedItems.map((item, index) => (
         <div key={index} className='flex items-center'>
           {index > 0 && <ChevronRight className='h-4 w-4 mx-2' />}
-          {index === items.length - 1 ? (
+          {index === updatedItems.length - 1 ? (
             <span className='text-gray-900 font-medium'>{item.label}</span>
           ) : (
             <Link to={item.href} className='hover:text-primary'>

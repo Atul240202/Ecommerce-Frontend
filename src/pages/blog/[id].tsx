@@ -2,7 +2,6 @@ import type React from 'react';
 
 import { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import Image from 'next/image';
 import {
   Loader2,
   Facebook,

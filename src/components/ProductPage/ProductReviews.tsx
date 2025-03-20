@@ -12,6 +12,16 @@ interface ProductReviewsProps {
 }
 
 export function ProductReviews({ reviews }: ProductReviewsProps) {
+  if (reviews.length === 0) {
+    return (
+      <div className='text-center py-8'>
+        <p className='text-gray-500'>
+          Be the first one to share your review & rating.
+        </p>
+      </div>
+    );
+  }
+
   const averageRating =
     reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
 

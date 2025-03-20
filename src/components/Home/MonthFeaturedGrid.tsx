@@ -2,6 +2,21 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProductCardFeatured } from './ProductCardFeatured';
+import { fetchFeaturedProducts, fetchBestSellerProducts } from '@/services/api';
+
+interface ApiProduct {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  regular_price: string;
+  sale_price: string;
+  on_sale: boolean;
+  average_rating: string;
+  stock_status: string;
+  images: Array<{ src: string }>;
+  categories: Array<{ name: string }>;
+}
 
 interface Product {
   id: number;
@@ -12,7 +27,6 @@ interface Product {
   price: number;
   discountPercentage: number;
   rating: number;
-  tags: string[];
   stock: number;
 }
 
@@ -22,20 +36,43 @@ export function MonthFeaturedGrid() {
   const productsPerPage = 8;
 
   useEffect(() => {
-    fetch('https://dummyjson.com/products?limit=30')
-      .then((res) => res.json())
-      .then((data) => {
-        // TODO: Uncomment when API includes month tag
-        // const monthProducts = data.products
-        //   .filter(product => product.tags.includes('month'))
-        //   .slice(0, 16);
+    const fetchProducts = async () => {
+      try {
+        const monthFeatured = await fetchBestSellerProducts(15); // Fetch 16 featured products for the month
 
-        // For now, get random 16 products
-        const randomProducts = [...data.products]
-          .sort(() => 0.5 - Math.random())
-          .slice(0, 16);
-        setProducts(randomProducts);
-      });
+        if (!monthFeatured || monthFeatured.length === 0) {
+          console.log('No month-featured products returned from API.');
+          return;
+        }
+
+        const transformedProducts: Product[] = monthFeatured.map(
+          (product: ApiProduct) => ({
+            id: product.id,
+            title: product.name,
+            description: product.description,
+            brand:
+              product.categories?.find((cat) => cat.name === 'Brand')?.name ||
+              'Unknown',
+            thumbnail: product.images?.[0]?.src || '/placeholder.svg',
+            price: Number.parseFloat(product.price || '0'),
+            discountPercentage: product.on_sale
+              ? ((Number.parseFloat(product.regular_price || '0') -
+                  Number.parseFloat(product.sale_price || '0')) /
+                  Number.parseFloat(product.regular_price || '1')) *
+                100
+              : 0,
+            rating: Number.parseFloat(product.average_rating || '0'),
+            stock: product.stock_status === 'instock' ? 100 : 0,
+          })
+        );
+
+        setProducts(transformedProducts);
+      } catch (error) {
+        console.error('Error fetching month-featured products:', error);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   const totalPages = Math.ceil(products.length / productsPerPage);
@@ -44,13 +81,9 @@ export function MonthFeaturedGrid() {
     (currentPage + 1) * productsPerPage
   );
 
-  const nextPage = () => {
-    setCurrentPage((prev) => (prev + 1) % totalPages);
-  };
-
-  const prevPage = () => {
+  const nextPage = () => setCurrentPage((prev) => (prev + 1) % totalPages);
+  const prevPage = () =>
     setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages);
-  };
 
   return (
     <div className='flex-1'>
@@ -79,9 +112,15 @@ export function MonthFeaturedGrid() {
       </div>
 
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
-        {currentProducts.map((product) => (
-          <ProductCardFeatured key={product.id} product={product} />
-        ))}
+        {currentProducts.length > 0 ? (
+          currentProducts.map((product) => (
+            <ProductCardFeatured key={product.id} product={product} />
+          ))
+        ) : (
+          <p className='text-gray-500 text-center'>
+            No featured products available this month
+          </p>
+        )}
       </div>
     </div>
   );
