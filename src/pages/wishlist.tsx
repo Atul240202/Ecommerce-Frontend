@@ -218,13 +218,6 @@ export default function WishlistPage() {
                     >
                       Add To Cart
                     </Button>
-
-                    {/* Product specs */}
-                    <div className='mt-4 text-xs text-gray-500 space-y-1'>
-                      <div>• {item.category} display</div>
-                      <div>• 3.5GHz 6-core 9th-generation Intel Core i5</div>
-                      <div>• AMD Radeon Pro 5300 graphics</div>
-                    </div>
                   </div>
                 </div>
               );
@@ -326,13 +319,6 @@ export default function WishlistPage() {
                       >
                         Add To Cart
                       </Button>
-
-                      {/* Product specs */}
-                      <div className='mt-4 text-xs text-gray-500 space-y-1'>
-                        <div>• {item.category} display</div>
-                        <div>• 3.5GHz 6-core 9th-generation Intel Core i5</div>
-                        <div>• AMD Radeon Pro 5300 graphics</div>
-                      </div>
                     </div>
                   </div>
                 );
@@ -340,89 +326,6 @@ export default function WishlistPage() {
             </div>
           </div>
         )}
-
-        {/* Trust badges */}
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-4 mb-16'>
-          <div className='border rounded-lg p-6 flex items-center justify-center flex-col text-center'>
-            <div className='mb-2 text-[#4280ef]'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                width='24'
-                height='24'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              >
-                <path d='M2 20h.01M7 20v-4m0 0v-4m0 4h.01M20 20h.01M20 16v-4m0 0V8m0 4h.01M12 20v-4m0 0V8m0 8h.01M7 12V8m0 0V4m0 4h.01M12 8V4m0 0V2m0 2h.01M17 8V4m0 0V2m0 2h.01'></path>
-              </svg>
-            </div>
-            <h3 className='font-semibold text-sm'>Quality Assured</h3>
-            <p className='text-gray-500 text-xs'>Always</p>
-          </div>
-          <div className='border rounded-lg p-6 flex items-center justify-center flex-col text-center'>
-            <div className='mb-2 text-[#4280ef]'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                width='24'
-                height='24'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              >
-                <rect width='20' height='14' x='2' y='7' rx='2' ry='2'></rect>
-                <path d='M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16'></path>
-              </svg>
-            </div>
-            <h3 className='font-semibold text-sm'>100% Original</h3>
-            <p className='text-gray-500 text-xs'>Products</p>
-          </div>
-          <div className='border rounded-lg p-6 flex items-center justify-center flex-col text-center'>
-            <div className='mb-2 text-[#4280ef]'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                width='24'
-                height='24'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              >
-                <rect width='18' height='11' x='3' y='11' rx='2' ry='2'></rect>
-                <path d='M7 11V7a5 5 0 0 1 10 0v4'></path>
-              </svg>
-            </div>
-            <h3 className='font-semibold text-sm'>Secure</h3>
-            <p className='text-gray-500 text-xs'>Payments</p>
-          </div>
-          <div className='border rounded-lg p-6 flex items-center justify-center flex-col text-center'>
-            <div className='mb-2 text-[#4280ef]'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                width='24'
-                height='24'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              >
-                <path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10'></path>
-                <path d='m9 12 2 2 4-4'></path>
-              </svg>
-            </div>
-            <h3 className='font-semibold text-sm'>100% buyer</h3>
-            <p className='text-gray-500 text-xs'>Protection</p>
-          </div>
-        </div>
       </div>
     </MainLayout>
   );

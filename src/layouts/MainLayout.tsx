@@ -1,4 +1,5 @@
 import type React from 'react';
+import { useLocation } from 'react-router-dom';
 import { ToastProvider } from '@/components/ui/toast';
 import { Header } from '@/components/Header';
 import { SubHeader } from '@/components/Home/SubHeader';
@@ -9,11 +10,14 @@ interface MainLayoutProps {
 }
 
 export function MainLayout({ children }: MainLayoutProps) {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
   return (
     <ToastProvider>
       <div className='min-h-screen flex flex-col'>
         <Header />
-        <SubHeader />
+        {isHomePage && <SubHeader />}
         <main className='flex-1'>{children}</main>
         <Footer />
       </div>

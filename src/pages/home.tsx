@@ -18,6 +18,8 @@ interface Product {
   brand: string;
   thumbnail: string;
   price: number;
+  regularPrice: number;
+  salePrice: number;
   discountPercentage: number;
   rating: number;
 }

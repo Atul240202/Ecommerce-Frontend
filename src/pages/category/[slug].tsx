@@ -256,16 +256,23 @@ export default function CategoryPage() {
                       id: product.id,
                       title: product.name,
                       description: product.description,
-                      brand:
-                        product.categories.find((cat) => cat.name === 'Brand')
-                          ?.name || 'Unknown',
                       thumbnail: product.images[0]?.src || '/placeholder.svg',
-                      price: Number.parseFloat(product.price),
+                      price: Number.parseFloat(
+                        product.regular_price || product.price
+                      ),
+                      regularPrice: Number.parseFloat(
+                        product.regular_price || product.price
+                      ),
+                      salePrice: product.on_sale
+                        ? Number.parseFloat(product.sale_price)
+                        : null,
                       discountPercentage: product.on_sale
-                        ? ((Number.parseFloat(product.regular_price) -
-                            Number.parseFloat(product.sale_price)) /
-                            Number.parseFloat(product.regular_price)) *
-                          100
+                        ? Math.round(
+                            ((Number.parseFloat(product.regular_price) -
+                              Number.parseFloat(product.sale_price)) /
+                              Number.parseFloat(product.regular_price)) *
+                              100
+                          )
                         : 0,
                       rating: Number.parseFloat(product.average_rating),
                       stock: product.stock_status === 'instock' ? 100 : 0,

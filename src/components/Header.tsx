@@ -1,12 +1,12 @@
 import type React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Cookies from 'js-cookie';
 import { useState, useEffect, useRef } from 'react';
 import { SearchResults } from './SearchResults';
 import { searchProducts } from '@/services/api';
+import { useShop } from '@/contexts/ShopContext';
 import logo from '../assets/logo.webp';
 
 export function Header() {
@@ -18,6 +18,10 @@ export function Header() {
   const searchRef = useRef<HTMLDivElement>(null);
   const [searchRedirect, setSearchRedirect] = useState<string | null>(null);
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [wishlistCount, setWishlistCount] = useState(0);
+  const { cart } = useShop();
+  const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -25,6 +29,8 @@ export function Header() {
       const loggedIn = Cookies.get('isLoggedIn') === 'true';
       setIsLoggedIn(authToken != null && loggedIn);
     };
+
+    setWishlistCount(5);
 
     checkLoginStatus();
     // Listen for login status changes
@@ -104,11 +110,18 @@ export function Header() {
     setSearchTerm('');
   };
 
+  const handleAccountClick = (e: React.MouseEvent) => {
+    if (!isLoggedIn) {
+      e.preventDefault();
+      navigate('/login');
+    }
+  };
+
   return (
     <header className='border-b'>
       <div className='container mx-auto px-4 py-4'>
         <div className='flex items-center justify-between'>
-          <Link href='/' className='flex-shrink-0'>
+          <Link to='/' className='flex-shrink-0'>
             <img
               src={logo}
               alt='Industrywaala Logo'
@@ -161,7 +174,7 @@ export function Header() {
             </div>
           </div>
           <div className='flex items-center gap-4'>
-            <Link href='/wishlist' className='flex items-center gap-1'>
+            <Link to='/wishlist' className='flex items-center gap-1'>
               <span className='relative'>
                 <svg
                   className='h-6 w-6'
@@ -177,12 +190,12 @@ export function Header() {
                   />
                 </svg>
                 <span className='absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#4280ef] text-[10px] font-medium text-white flex items-center justify-center'>
-                  0
+                  {wishlistCount}
                 </span>
               </span>
               <span className='hidden md:inline'>Wishlist</span>
             </Link>
-            <Link href='/cart' className='flex items-center gap-1'>
+            <Link to='/cart' className='flex items-center gap-1'>
               <span className='relative'>
                 <svg
                   className='h-6 w-6'
@@ -198,13 +211,13 @@ export function Header() {
                   />
                 </svg>
                 <span className='absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#4280ef] text-[10px] font-medium text-white flex items-center justify-center'>
-                  0
+                  {cartCount}
                 </span>
               </span>
               <span className='hidden md:inline'>Cart</span>
             </Link>
             {isLoggedIn ? (
-              <Link href='/account' className='flex items-center gap-1'>
+              <Link to='/account' className='flex items-center gap-1'>
                 <svg
                   className='h-6 w-6'
                   fill='none'
@@ -221,7 +234,7 @@ export function Header() {
                 <span className='hidden md:inline'>Account</span>
               </Link>
             ) : (
-              <Link href='/login'>
+              <Link to='/login'>
                 <Button className='bg-[#4280ef] hover:bg-[#3a72d4] text-white'>
                   Login
                 </Button>
@@ -230,7 +243,7 @@ export function Header() {
           </div>
         </div>
       </div>
-      {searchRedirect && <Link href={searchRedirect} />}
+      {searchRedirect && <Link to={searchRedirect} />}
     </header>
   );
 }

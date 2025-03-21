@@ -28,6 +28,8 @@ interface TransformedProduct {
   description: string;
   thumbnail: string;
   price: number;
+  regularPrice: number;
+  salePrice: number;
   discountPercentage: number;
   rating: number;
   stock: number;
@@ -61,6 +63,8 @@ export function FeaturedProducts() {
             description: product.description,
             thumbnail: product.images?.[0]?.src || '/placeholder.svg',
             price: Number.parseFloat(product.price || '0'),
+            regularPrice: Number.parseFloat(product.regular_price || '0'),
+            salePrice: Number.parseFloat(product.sale_price || '0'),
             discountPercentage: product.on_sale
               ? ((Number.parseFloat(product.regular_price || '0') -
                   Number.parseFloat(product.sale_price || '0')) /

@@ -20,6 +20,8 @@ interface Product {
   title: string;
   thumbnail: string;
   price: number;
+  regularPrice: number;
+  salePrice: number;
   rating: number;
 }
 
@@ -43,9 +45,9 @@ export function BestSellerSidebar() {
             id: product.id,
             title: product.name,
             thumbnail: product.images?.[0]?.src || '/placeholder.svg',
-            price: Number.parseFloat(
-              product.sale_price || product.price || '0'
-            ),
+            price: Number.parseFloat(product.price || '0'),
+            regularPrice: Number.parseFloat(product.regular_price || '0'),
+            salePrice: Number.parseFloat(product.sale_price || '0'),
             rating: Number.parseFloat(product.average_rating || '0'),
           })
         );
@@ -124,9 +126,14 @@ export function BestSellerSidebar() {
                     <span className='font-semibold text-gray-900'>
                       Rs. {product.price.toFixed(2)}
                     </span>
-                    <span className='ml-2 text-sm text-gray-500 line-through'>
-                      Rs. {(product.price * 1.2).toFixed(2)}
-                    </span>
+                    {(product.salePrice &&
+                      product.regularPrice >= product.salePrice && (
+                        <span className='text-sm text-gray-500 line-through'>
+                          Rs. {product.regularPrice.toFixed(2)}
+                        </span>
+                      )) || (
+                      <span className='text-sm text-gray-500 line-through'></span>
+                    )}
                   </div>
                 </div>
               </div>

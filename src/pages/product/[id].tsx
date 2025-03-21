@@ -17,6 +17,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/use-toast';
+import LoginPopup from '@/components/utils/LoginPopup';
+import { isLoggedIn } from '@/services/auth';
 
 interface ProductImage {
   id: number;
@@ -80,7 +82,6 @@ interface Product {
   shippingInformation: string;
   availabilityStatus: string;
   returnPolicy: string;
-  brand: string;
 }
 
 export default function ProductPage() {
@@ -94,7 +95,8 @@ export default function ProductPage() {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
   // Review form state
   const [reviewName, setReviewName] = useState('');
   const [reviewComment, setReviewComment] = useState('');
@@ -156,7 +158,14 @@ export default function ProductPage() {
 
   const handleAddToCart = async () => {
     if (!product) return;
-    await addToCart(product.id, quantity);
+    if (!isLoggedIn()) {
+      setIsLoginPopupOpen(true);
+      return;
+    }
+
+    setIsAddingToCart(true);
+    await addToCart(product.id, quantity, product.name);
+    setIsAddingToCart(false);
   };
 
   const handleWishlistClick = () => {
@@ -261,6 +270,13 @@ export default function ProductPage() {
     } finally {
       setIsSubmittingReview(false);
     }
+  };
+
+  const handleLoginSuccess = async () => {
+    setIsLoginPopupOpen(false);
+    setIsAddingToCart(true);
+    await addToCart(product.id, quantity, product.name);
+    setIsAddingToCart(false);
   };
 
   if (isLoading) {
@@ -416,10 +432,12 @@ export default function ProductPage() {
                 className='w-full'
                 size='lg'
                 onClick={handleAddToCart}
-                disabled={product.stock_status !== 'instock'}
+                disabled={product.stock_status !== 'instock' || isAddingToCart}
               >
                 {product.stock_status === 'instock'
-                  ? 'Add to Cart'
+                  ? isAddingToCart
+                    ? 'Adding to Cart...'
+                    : 'Add to Cart'
                   : 'Out of Stock'}
               </Button>
               <Button
@@ -593,6 +611,12 @@ export default function ProductPage() {
         <RelatedProducts
           category={product.categories[0]?.slug || ''}
           currentProductId={product.id}
+        />
+        <LoginPopup
+          isOpen={isLoginPopupOpen}
+          onClose={() => setIsLoginPopupOpen(false)}
+          onLoginSuccess={handleLoginSuccess}
+          productName={product.name}
         />
       </div>
     </MainLayout>

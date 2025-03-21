@@ -1,174 +1,317 @@
+'use client';
+
 import type React from 'react';
+
 import { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-
-interface CartProduct {
-  id: number;
-  quantity: number;
-}
+import { toast } from '@/components/ui/use-toast';
 
 interface CartItem {
-  id: number;
-  title: string;
-  price: number;
+  productId: number;
   quantity: number;
-  total: number;
-  discountPercentage: number;
-  discountedTotal: number;
-  thumbnail: string;
+  name: string;
+  price: number;
+  image: string;
 }
 
-interface Cart {
+interface WishlistItem {
   id: number;
-  products: CartItem[];
-  total: number;
-  discountedTotal: number;
-  userId: number;
-  totalProducts: number;
-  totalQuantity: number;
 }
 
 interface ShopContextType {
-  cart: Cart | null;
-  wishlist: number[];
-  addToCart: (productId: number, quantity: number) => Promise<void>;
-  updateCartItem: (productId: number, quantity: number) => Promise<void>;
-  removeFromCart: (cartId: number) => Promise<void>;
+  cart: CartItem[];
+  wishlist: WishlistItem[];
+  isCartLoading: boolean;
+  addToCart: (
+    productId: number,
+    quantity: number,
+    productName?: string
+  ) => Promise<boolean>;
+  removeFromCart: (productId: number) => Promise<void>;
+  updateCartQuantity: (productId: number, quantity: number) => Promise<void>;
+  clearCart: () => Promise<void>;
+  fetchCart: () => Promise<void>;
   addToWishlist: (productId: number) => void;
   removeFromWishlist: (productId: number) => void;
   isInWishlist: (productId: number) => boolean;
-  fetchCart: () => Promise<void>;
+  isLoggedIn: () => boolean;
 }
 
 const ShopContext = createContext<ShopContextType | undefined>(undefined);
 
 export function ShopProvider({ children }: { children: React.ReactNode }) {
-  const [cart, setCart] = useState<Cart | null>(null);
-  const [wishlist, setWishlist] = useState<number[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
+  const [isCartLoading, setIsCartLoading] = useState(false);
 
-  // Fetch cart on mount and when auth token changes
+  // Load wishlist from localStorage on component mount
   useEffect(() => {
-    fetchCart();
+    const savedWishlist = localStorage.getItem('wishlist');
+
+    if (savedWishlist) {
+      try {
+        setWishlist(JSON.parse(savedWishlist));
+      } catch (error) {
+        console.error('Error parsing wishlist from localStorage:', error);
+      }
+    }
+
+    // Fetch cart if user is logged in
+    if (isLoggedIn()) {
+      fetchCart();
+    }
   }, []);
 
-  const fetchCart = async () => {
-    const authToken = Cookies.get('authToken');
+  // Save wishlist to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+  }, [wishlist]);
 
-    if (!authToken) {
-      setCart(null);
+  const isLoggedIn = () => {
+    const authToken = Cookies.get('authToken');
+    const loggedIn = Cookies.get('isLoggedIn') === 'true';
+    return authToken != null && loggedIn;
+  };
+
+  const fetchCart = async () => {
+    if (!isLoggedIn()) {
+      setCart([]);
       return;
     }
 
+    setIsCartLoading(true);
     try {
-      const res = await fetch(`https://dummyjson.com/carts/user/1`);
-      const data = await res.json();
+      const authToken = Cookies.get('authToken');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/cart`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
 
-      // Check if the response has carts and at least one cart with products
-      if (
-        data.carts &&
-        data.carts.length > 0 &&
-        data.carts[0].products.length > 0
-      ) {
-        setCart(data.carts[0]);
-      } else {
-        // If no carts or empty cart, set cart to null
-        setCart(null);
+      if (!response.ok) {
+        throw new Error('Failed to fetch cart');
       }
+
+      const data = await response.json();
+      setCart(data.cart.items || []);
     } catch (error) {
       console.error('Error fetching cart:', error);
-      // On error, set cart to null
-      setCart(null);
+      toast({
+        title: 'Error',
+        description: 'Failed to load your cart. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsCartLoading(false);
     }
   };
 
-  const addToCart = async (productId: number, quantity: number) => {
-    const authToken = Cookies.get('authToken');
-    if (!authToken) return;
+  const addToCart = async (
+    productId: number,
+    quantity: number,
+    productName?: string
+  ): Promise<boolean> => {
+    if (!isLoggedIn()) {
+      return false;
+    }
 
+    setIsCartLoading(true);
     try {
-      const res = await fetch('https://dummyjson.com/carts/add', {
+      const authToken = Cookies.get('authToken');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/cart`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: authToken,
-          products: [{ id: productId, quantity }],
-        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({ productId, quantity }),
       });
-      const data = await res.json();
-      if (data) {
-        console.log('Data has been added');
-        await fetchCart();
+
+      if (!response.ok) {
+        throw new Error('Failed to add item to cart');
       }
+
+      const data = await response.json();
+      setCart(data.cart.items || []);
+
+      toast({
+        title: 'Added to Cart',
+        description: `${productName || 'Product'} has been added to your cart.`,
+      });
+
+      return true;
     } catch (error) {
       console.error('Error adding to cart:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to add item to cart. Please try again.',
+        variant: 'destructive',
+      });
+      return false;
+    } finally {
+      setIsCartLoading(false);
     }
   };
 
-  const updateCartItem = async (productId: number, quantity: number) => {
-    const authToken = Cookies.get('authToken');
-    if (!authToken || !cart) return;
+  const removeFromCart = async (productId: number) => {
+    if (!isLoggedIn()) return;
 
+    setIsCartLoading(true);
     try {
-      const res = await fetch(`https://dummyjson.com/carts/${cart.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          merge: true,
-          products: [{ id: productId, quantity }],
-        }),
-      });
-      const data = await res.json();
-      await fetchCart(); // Refresh cart after updating
-    } catch (error) {
-      console.error('Error updating cart:', error);
-    }
-  };
+      const authToken = Cookies.get('authToken');
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/cart/${productId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
 
-  const removeFromCart = async (cartId: number) => {
-    try {
-      const res = await fetch(`https://dummyjson.com/carts/${cartId}`, {
-        method: 'DELETE',
-      });
-      const data = await res.json();
-      if (data.isDeleted) {
-        await fetchCart(); // Refresh cart after deletion
+      if (!response.ok) {
+        throw new Error('Failed to remove item from cart');
       }
+
+      const data = await response.json();
+      setCart(data.cart.items || []);
+
+      toast({
+        title: 'Removed from Cart',
+        description: 'Item has been removed from your cart.',
+      });
     } catch (error) {
       console.error('Error removing from cart:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to remove item from cart. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsCartLoading(false);
     }
   };
 
-  // Wishlist functions (stored locally)
-  const addToWishlist = (productId: number) => {
-    setWishlist((prev) => {
-      if (!prev.includes(productId)) {
-        return [...prev, productId];
+  const updateCartQuantity = async (productId: number, quantity: number) => {
+    if (!isLoggedIn()) return;
+
+    if (quantity <= 0) {
+      await removeFromCart(productId);
+      return;
+    }
+
+    setIsCartLoading(true);
+    try {
+      const authToken = Cookies.get('authToken');
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/cart/${productId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({ quantity }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to update cart');
       }
-      return prev;
-    });
+
+      const data = await response.json();
+      setCart(data.cart.items || []);
+    } catch (error) {
+      console.error('Error updating cart:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update cart. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsCartLoading(false);
+    }
+  };
+
+  const clearCart = async () => {
+    if (!isLoggedIn()) return;
+
+    setIsCartLoading(true);
+    try {
+      const authToken = Cookies.get('authToken');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/cart`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to clear cart');
+      }
+
+      setCart([]);
+
+      toast({
+        title: 'Cart Cleared',
+        description: 'Your cart has been cleared.',
+      });
+    } catch (error) {
+      console.error('Error clearing cart:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to clear your cart. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsCartLoading(false);
+    }
+  };
+
+  const addToWishlist = (productId: number) => {
+    if (!isInWishlist(productId)) {
+      setWishlist((prevWishlist) => [...prevWishlist, { id: productId }]);
+      toast({
+        title: 'Added to Wishlist',
+        description: 'Product has been added to your wishlist.',
+      });
+    }
   };
 
   const removeFromWishlist = (productId: number) => {
-    setWishlist((prev) => prev.filter((id) => id !== productId));
+    setWishlist((prevWishlist) =>
+      prevWishlist.filter((item) => item.id !== productId)
+    );
+    toast({
+      title: 'Removed from Wishlist',
+      description: 'Product has been removed from your wishlist.',
+    });
   };
 
   const isInWishlist = (productId: number) => {
-    return wishlist.includes(productId);
+    return wishlist.some((item) => item.id === productId);
   };
 
-  const value = {
-    cart,
-    wishlist,
-    addToCart,
-    updateCartItem,
-    removeFromCart,
-    addToWishlist,
-    removeFromWishlist,
-    isInWishlist,
-    fetchCart,
-  };
-
-  return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;
+  return (
+    <ShopContext.Provider
+      value={{
+        cart,
+        wishlist,
+        isCartLoading,
+        addToCart,
+        removeFromCart,
+        updateCartQuantity,
+        clearCart,
+        fetchCart,
+        addToWishlist,
+        removeFromWishlist,
+        isInWishlist,
+        isLoggedIn,
+      }}
+    >
+      {children}
+    </ShopContext.Provider>
+  );
 }
 
 export function useShop() {

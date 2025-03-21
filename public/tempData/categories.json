@@ -1,8 +1,8 @@
 {
   "categories": [
     {
-      "name": "Furniture",
-      "href": "/categories/furniture",
+      "name": "Power Tools",
+      "href": "/categories/power-tools",
       "icon": "https://dummyimage.com/60x60/ff5733/fff.png"
     },
     {
@@ -22,7 +22,7 @@
     },
     {
       "name": "Beltings",
-      "href": "/categories/beltings",
+      "href": "/categories/belting",
       "icon": "https://dummyimage.com/60x60/a833ff/fff.png"
     },
     {
@@ -32,12 +32,12 @@
     },
     {
       "name": "Electricals",
-      "href": "/categories/electricals",
+      "href": "/categories/electrical",
       "icon": "https://dummyimage.com/60x60/ff8c33/fff.png"
     },
     {
       "name": "Adhesives",
-      "href": "/categories/adhesives",
+      "href": "/categories/adhesive",
       "icon": "https://dummyimage.com/60x60/ff3333/fff.png"
     },
     {
@@ -47,12 +47,12 @@
     },
     {
       "name": "Abrasives",
-      "href": "/categories/abrasives",
+      "href": "/categories/abrasive-sheets-rolls",
       "icon": "https://dummyimage.com/60x60/ffcc33/fff.png"
     },
     {
       "name": "Industrial Sprays",
-      "href": "/categories/industrial-sprays",
+      "href": "/categories/adhesives-sealants-and-tape/industrial-tape/",
       "icon": "https://dummyimage.com/60x60/cc33ff/fff.png"
     },
     {

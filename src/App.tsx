@@ -20,6 +20,10 @@ import { CheckoutProvider } from './contexts/CheckoutContext';
 import CheckoutPage from './pages/checkout';
 import AccountPage from './pages/account';
 import WishlistPage from './pages/wishlist';
+import VerifyOtpPage from './pages/verify-otp';
+import ForgotPasswordPage from './pages/forgot-password';
+import VerifyResetOtpPage from './pages/verify-reset-otp';
+import ResetPasswordPage from './pages/reset-password';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -44,6 +48,7 @@ function App() {
           <Routes>
             <Route path='/login' element={<LoginPage />} />
             <Route path='/register' element={<RegisterPage />} />
+            <Route path='/verify-otp' element={<VerifyOtpPage />} />
             <Route path='/' element={<HomePage />} />
             <Route path='/categories/:slug' element={<CategoryPage />} />
             <Route path='/categories' element={<MainCategoryPage />} />
@@ -63,6 +68,9 @@ function App() {
             />
             <Route path='/checkout' element={<CheckoutPage />} />
             <Route path='/account' element={<AccountPage />} />
+            <Route path='/forgot-password' element={<ForgotPasswordPage />} />
+            <Route path='/verify-reset-otp' element={<VerifyResetOtpPage />} />
+            <Route path='/reset-password' element={<ResetPasswordPage />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
         </Router>

@@ -21,12 +21,12 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
         <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4'>
           {categories.map((category) => {
             // Convert category name to URL-friendly slug
-            const slug = category.name.toLowerCase().replace(/\s+/g, '-');
+            const slug = category.href;
 
             return (
               <Link
                 key={category.name}
-                to={`/categories/${slug}`}
+                to={`${slug}`}
                 className='flex flex-col items-center p-4 rounded-lg border hover:border-primary transition-colors'
               >
                 <img
