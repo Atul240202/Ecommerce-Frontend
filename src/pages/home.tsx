@@ -91,10 +91,6 @@ export default function HomePage() {
       });
   }, []);
 
-  useEffect(() => {
-    console.log('Categories', categories);
-  }, []);
-
   if (!promotions || !categories.length || !featuredProducts.length) {
     return <div></div>;
   }

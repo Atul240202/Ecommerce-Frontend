@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MainLayout } from '@/layouts/MainLayout';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,13 @@ import { Breadcrumb } from '@/components/Breadcrumb';
 import { useShop } from '@/contexts/ShopContext';
 import { useCheckout } from '@/contexts/CheckoutContext';
 import { Trash2, Minus, Plus, ShoppingBag, Loader2 } from 'lucide-react';
+import { v4 as uuidv4 } from 'uuid';
+import {
+  storeUnprocessedOrder,
+  deleteAllUserUnprocessedOrders,
+} from '@/services/unprocessedOrderService';
+import { getCurrentUser } from '@/services/auth';
+import { toast } from '@/components/ui/use-toast';
 
 export default function CartPage() {
   const {
@@ -21,14 +28,26 @@ export default function CartPage() {
   } = useShop();
   const { addProducts } = useCheckout();
   const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     if (isLoggedIn()) {
       fetchCart();
+      fetchCurrentUser();
     } else {
       navigate('/login');
     }
   }, []);
+
+  const fetchCurrentUser = async () => {
+    try {
+      const user = await getCurrentUser();
+      setCurrentUser(user);
+    } catch (error) {
+      console.error('Error fetching current user:', error);
+    }
+  };
 
   const handleQuantityChange = async (
     productId: number,
@@ -47,17 +66,82 @@ export default function CartPage() {
     await clearCart();
   };
 
-  const handleProceedToCheckout = () => {
-    const checkoutProducts = cart.map((item) => ({
-      id: item.productId,
-      title: item.name,
-      thumbnail: item.image,
-      price: item.price,
-      quantity: item.quantity,
-    }));
+  const handleProceedToCheckout = async () => {
+    if (!isLoggedIn() || !currentUser) {
+      navigate('/login');
+      return;
+    }
 
-    addProducts(checkoutProducts);
-    navigate('/checkout');
+    setIsProcessing(true);
+
+    try {
+      // Store as unprocessed order first (in case user abandons checkout)
+      await deleteAllUserUnprocessedOrders();
+      const tempId = uuidv4();
+
+      // Create unprocessed order data
+      const unprocessedOrderData = {
+        tempId,
+        products: cart.map((item) => ({
+          id: item.productId,
+          title: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          thumbnail: item.image,
+        })),
+        // We don't have shipping/billing addresses yet, but we'll add them in checkout
+        // Just adding placeholder data for now
+        shippingAddress: {
+          id: 'pending',
+          firstName: 'Pending',
+          lastName: 'Checkout',
+          address1: 'Pending',
+          city: 'Pending',
+          state: 'Pending',
+          postcode: '000000',
+          country: 'India',
+          phone: '0000000000',
+        },
+        subtotal: cart.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        ),
+        shipping: cart.length > 0 ? 200 : 0,
+        total:
+          cart.reduce((sum, item) => sum + item.price * item.quantity, 0) +
+          (cart.length > 0 ? 200 : 0),
+        reason: 'Process was not completed by the user.',
+      };
+
+      // Store the unprocessed order
+      const result = await storeUnprocessedOrder(unprocessedOrderData);
+
+      // Prepare checkout products
+      const checkoutProducts = cart.map((item) => ({
+        id: item.productId,
+        title: item.name,
+        thumbnail: item.image,
+        price: item.price,
+        quantity: item.quantity,
+      }));
+
+      // Add to checkout context
+      addProducts(checkoutProducts);
+      sessionStorage.setItem('unprocessed_order_tempid', tempId);
+
+      // Navigate to checkout
+      navigate('/checkout');
+    } catch (error) {
+      console.error('Error proceeding to checkout:', error);
+      toast({
+        title: 'Error',
+        description:
+          'There was a problem proceeding to checkout. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   // Calculate cart totals
@@ -68,13 +152,15 @@ export default function CartPage() {
   const shipping = cart.length > 0 ? 200 : 0; // ₹200 flat rate shipping
   const total = subtotal + shipping;
 
-  if (isCartLoading) {
+  if (isCartLoading || isProcessing) {
     return (
       <MainLayout>
         <div className='container mx-auto px-4 py-16 flex justify-center items-center'>
           <div className='flex flex-col items-center'>
             <Loader2 className='h-12 w-12 animate-spin text-blue-500 mb-4' />
-            <p className='text-gray-600'>Loading your cart...</p>
+            <p className='text-gray-600'>
+              {isProcessing ? 'Preparing checkout...' : 'Loading your cart...'}
+            </p>
           </div>
         </div>
       </MainLayout>

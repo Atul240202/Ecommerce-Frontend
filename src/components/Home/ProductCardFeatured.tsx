@@ -36,18 +36,6 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
   // Use the actual sale price if available, otherwise use the regular price
   const discountedPrice = product.salePrice || product.price;
   const regularPrice = product.regularPrice || product.price;
-  console.log(
-    'Discounted price',
-    discountedPrice,
-    'Regular1:',
-    regularPrice,
-    'Price: ',
-    product.price,
-    'Regular2',
-    product.regularPrice,
-    'saleprice',
-    product.salePrice
-  );
   const discountPercentage =
     product.discountPercentage ||
     (regularPrice > discountedPrice

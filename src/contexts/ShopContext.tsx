@@ -15,13 +15,19 @@ interface CartItem {
 }
 
 interface WishlistItem {
-  id: number;
+  productId: number;
+  name: string;
+  price: number;
+  image: string;
+  stock_status: string;
+  addedAt: string;
 }
 
 interface ShopContextType {
   cart: CartItem[];
   wishlist: WishlistItem[];
   isCartLoading: boolean;
+  isWishlistLoading: boolean;
   addToCart: (
     productId: number,
     quantity: number,
@@ -31,8 +37,10 @@ interface ShopContextType {
   updateCartQuantity: (productId: number, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
   fetchCart: () => Promise<void>;
-  addToWishlist: (productId: number) => void;
-  removeFromWishlist: (productId: number) => void;
+  addToWishlist: (productId: number, productName?: string) => Promise<boolean>;
+  removeFromWishlist: (productId: number, showToast?: boolean) => Promise<void>;
+  clearWishlist: () => Promise<void>;
+  fetchWishlist: () => Promise<void>;
   isInWishlist: (productId: number) => boolean;
   isLoggedIn: () => boolean;
 }
@@ -43,29 +51,16 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [isCartLoading, setIsCartLoading] = useState(false);
+  const [isWishlistLoading, setIsWishlistLoading] = useState(false);
 
-  // Load wishlist from localStorage on component mount
+  // Load wishlist and cart on component mount
   useEffect(() => {
-    const savedWishlist = localStorage.getItem('wishlist');
-
-    if (savedWishlist) {
-      try {
-        setWishlist(JSON.parse(savedWishlist));
-      } catch (error) {
-        console.error('Error parsing wishlist from localStorage:', error);
-      }
-    }
-
-    // Fetch cart if user is logged in
+    // Fetch cart and wishlist if user is logged in
     if (isLoggedIn()) {
       fetchCart();
+      fetchWishlist();
     }
   }, []);
-
-  // Save wishlist to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('wishlist', JSON.stringify(wishlist));
-  }, [wishlist]);
 
   const isLoggedIn = () => {
     const authToken = Cookies.get('authToken');
@@ -106,6 +101,39 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const fetchWishlist = async () => {
+    if (!isLoggedIn()) {
+      setWishlist([]);
+      return;
+    }
+
+    setIsWishlistLoading(true);
+    try {
+      const authToken = Cookies.get('authToken');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/wishlist`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch wishlist');
+      }
+
+      const data = await response.json();
+      setWishlist(data.wishlist.items || []);
+    } catch (error) {
+      console.error('Error fetching wishlist:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load your wishlist. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsWishlistLoading(false);
+    }
+  };
+
   const addToCart = async (
     productId: number,
     quantity: number,
@@ -134,11 +162,40 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
       const data = await response.json();
       setCart(data.cart.items || []);
 
-      toast({
-        title: 'Added to Cart',
-        description: `${productName || 'Product'} has been added to your cart.`,
-      });
+      // Check if the product is in the wishlist
+      const productInWishlist = wishlist.some(
+        (item) => item.productId === productId
+      );
 
+      // If it's in the wishlist, remove it
+      if (productInWishlist) {
+        await removeFromWishlist(productId, false); // Pass false to not show the removal toast
+
+        // Show a "moved to cart" toast instead
+        toast({
+          title: 'Moved to Cart',
+          description: (
+            <div>
+              {productName || 'Product'} has been moved from wishlist to cart.{' '}
+              <a href='/cart' className='text-blue-500 hover:underline'>
+                View Cart
+              </a>
+            </div>
+          ),
+        });
+      } else {
+        toast({
+          title: 'Added to Cart',
+          description: (
+            <div>
+              {productName || 'Product'} has been added to your cart.{' '}
+              <a href='/cart' className='text-blue-500 hover:underline'>
+                View Cart
+              </a>
+            </div>
+          ),
+        });
+      }
       return true;
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -268,28 +325,131 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const addToWishlist = (productId: number) => {
-    if (!isInWishlist(productId)) {
-      setWishlist((prevWishlist) => [...prevWishlist, { id: productId }]);
+  const addToWishlist = async (
+    productId: number,
+    productName?: string
+  ): Promise<boolean> => {
+    if (!isLoggedIn()) {
+      return false;
+    }
+
+    setIsWishlistLoading(true);
+    try {
+      const authToken = Cookies.get('authToken');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/wishlist`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({ productId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add item to wishlist');
+      }
+
+      const data = await response.json();
+      setWishlist(data.wishlist.items || []);
+
       toast({
         title: 'Added to Wishlist',
-        description: 'Product has been added to your wishlist.',
+        description: `${
+          productName || 'Product'
+        } has been added to your wishlist.`,
       });
+
+      return true;
+    } catch (error) {
+      console.error('Error adding to wishlist:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to add item to wishlist. Please try again.',
+        variant: 'destructive',
+      });
+      return false;
+    } finally {
+      setIsWishlistLoading(false);
     }
   };
 
-  const removeFromWishlist = (productId: number) => {
-    setWishlist((prevWishlist) =>
-      prevWishlist.filter((item) => item.id !== productId)
-    );
-    toast({
-      title: 'Removed from Wishlist',
-      description: 'Product has been removed from your wishlist.',
-    });
+  const removeFromWishlist = async (productId: number, showToast = true) => {
+    if (!isLoggedIn()) return;
+
+    setIsWishlistLoading(true);
+    try {
+      const authToken = Cookies.get('authToken');
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/wishlist/${productId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to remove item from wishlist');
+      }
+
+      const data = await response.json();
+      setWishlist(data.wishlist.items || []);
+      if (showToast) {
+        toast({
+          title: 'Removed from Wishlist',
+          description: 'Item has been removed from your wishlist.',
+        });
+      }
+    } catch (error) {
+      console.error('Error removing from wishlist:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to remove item from wishlist. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsWishlistLoading(false);
+    }
+  };
+
+  const clearWishlist = async () => {
+    if (!isLoggedIn()) return;
+
+    setIsWishlistLoading(true);
+    try {
+      const authToken = Cookies.get('authToken');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/wishlist`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to clear wishlist');
+      }
+
+      setWishlist([]);
+
+      toast({
+        title: 'Wishlist Cleared',
+        description: 'Your wishlist has been cleared.',
+      });
+    } catch (error) {
+      console.error('Error clearing wishlist:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to clear your wishlist. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsWishlistLoading(false);
+    }
   };
 
   const isInWishlist = (productId: number) => {
-    return wishlist.some((item) => item.id === productId);
+    return wishlist.some((item) => item.productId === productId);
   };
 
   return (
@@ -298,6 +458,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
         cart,
         wishlist,
         isCartLoading,
+        isWishlistLoading,
         addToCart,
         removeFromCart,
         updateCartQuantity,
@@ -305,6 +466,8 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
         fetchCart,
         addToWishlist,
         removeFromWishlist,
+        clearWishlist,
+        fetchWishlist,
         isInWishlist,
         isLoggedIn,
       }}

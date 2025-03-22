@@ -1,52 +1,30 @@
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Trash2 } from 'lucide-react';
+import { Trash2, ShoppingCart, Loader2 } from 'lucide-react';
 import { useShop } from '@/contexts/ShopContext';
-import { useNavigate } from 'react-router-dom';
-
-interface WishlistItem {
-  id: number;
-  title: string;
-  thumbnail: string;
-  price: number;
-  discountPercentage: number;
-  rating: number;
-  stock: number;
-  brand: string;
-  category: string;
-}
+import { toast } from '@/components/ui/use-toast';
 
 export function AccountWishlist() {
-  const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const { addToCart, removeFromWishlist } = useShop();
+  const {
+    wishlist,
+    isWishlistLoading,
+    fetchWishlist,
+    removeFromWishlist,
+    addToCart,
+  } = useShop();
   const navigate = useNavigate();
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [isAddingToCart, setIsAddingToCart] = useState<Record<number, boolean>>(
+    {}
+  );
+  const [isRemovingItem, setIsRemovingItem] = useState<Record<number, boolean>>(
+    {}
+  );
 
   useEffect(() => {
-    const fetchWishlistItems = async () => {
-      try {
-        // For demo purposes, we'll fetch 5 random products
-        const productIds = [1, 2, 3, 4, 5];
-        const items = await Promise.all(
-          productIds.map(async (id) => {
-            const response = await fetch(
-              `https://dummyjson.com/products/${id}`
-            );
-            return response.json();
-          })
-        );
-        setWishlistItems(items);
-      } catch (error) {
-        console.error('Error fetching wishlist items:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchWishlistItems();
+    fetchWishlist();
   }, []);
 
   const handleSelectItem = (id: number) => {
@@ -56,39 +34,64 @@ export function AccountWishlist() {
   };
 
   const handleSelectAll = () => {
-    if (selectedItems.length === wishlistItems.length) {
+    if (selectedItems.length === wishlist.length) {
       setSelectedItems([]);
     } else {
-      setSelectedItems(wishlistItems.map((item) => item.id));
+      setSelectedItems(wishlist.map((item) => item.productId));
     }
   };
 
-  const handleAddToCart = async (id: number) => {
-    await addToCart(id, 1);
+  const handleAddToCart = async (productId: number, productName: string) => {
+    setIsAddingToCart((prev) => ({ ...prev, [productId]: true }));
+    try {
+      await addToCart(productId, 1, productName);
+      // Note: We don't need to manually remove from wishlist here anymore
+      // as the updated ShopContext will handle this automatically
+    } finally {
+      setIsAddingToCart((prev) => ({ ...prev, [productId]: false }));
+    }
   };
 
-  const handleRemoveFromWishlist = (id: number) => {
-    removeFromWishlist(id);
-    setWishlistItems((prev) => prev.filter((item) => item.id !== id));
+  const handleRemoveFromWishlist = async (productId: number) => {
+    setIsRemovingItem((prev) => ({ ...prev, [productId]: true }));
+    try {
+      await removeFromWishlist(productId);
+    } finally {
+      setIsRemovingItem((prev) => ({ ...prev, [productId]: false }));
+    }
   };
 
-  const handleBuySelected = () => {
-    // Add selected items to cart and navigate to checkout
-    selectedItems.forEach((id) => {
-      addToCart(id, 1);
-    });
-    navigate('/checkout');
+  const handleBuySelected = async () => {
+    if (selectedItems.length === 0) {
+      toast({
+        title: 'No items selected',
+        description: 'Please select items to add to cart',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Add selected items to cart one by one
+    for (const id of selectedItems) {
+      const item = wishlist.find((item) => item.productId === id);
+      if (item) {
+        await handleAddToCart(id, item.name);
+      }
+    }
+
+    // Clear selection after adding to cart
+    setSelectedItems([]);
   };
 
-  if (loading) {
+  if (isWishlistLoading) {
     return (
       <div className='flex justify-center items-center h-64'>
-        <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#4280ef]'></div>
+        <Loader2 className='h-12 w-12 animate-spin text-blue-500' />
       </div>
     );
   }
 
-  if (wishlistItems.length === 0) {
+  if (wishlist.length === 0) {
     return (
       <div className='text-center py-16'>
         <h2 className='text-xl font-semibold mb-4'>Your wishlist is empty</h2>
@@ -104,10 +107,13 @@ export function AccountWishlist() {
     <div>
       <div className='flex justify-between items-center mb-6'>
         <h2 className='text-xl font-semibold'>
-          My Wishlist ({wishlistItems.length} items)
+          My Wishlist ({wishlist.length} items)
         </h2>
         {selectedItems.length > 0 && (
-          <Button onClick={handleBuySelected}>Buy Selected Items</Button>
+          <Button onClick={handleBuySelected}>
+            <ShoppingCart className='mr-2 h-4 w-4' />
+            Add Selected to Cart
+          </Button>
         )}
       </div>
 
@@ -118,8 +124,8 @@ export function AccountWishlist() {
               <th className='p-4 text-left'>
                 <Checkbox
                   checked={
-                    selectedItems.length === wishlistItems.length &&
-                    wishlistItems.length > 0
+                    selectedItems.length === wishlist.length &&
+                    wishlist.length > 0
                   }
                   onCheckedChange={handleSelectAll}
                 />
@@ -132,67 +138,61 @@ export function AccountWishlist() {
             </tr>
           </thead>
           <tbody>
-            {wishlistItems.map((item) => (
-              <tr key={item.id} className='border-b'>
+            {wishlist.map((item) => (
+              <tr key={item.productId} className='border-b'>
                 <td className='p-4'>
                   <Checkbox
-                    checked={selectedItems.includes(item.id)}
-                    onCheckedChange={() => handleSelectItem(item.id)}
+                    checked={selectedItems.includes(item.productId)}
+                    onCheckedChange={() => handleSelectItem(item.productId)}
                   />
                 </td>
                 <td className='p-4'>
                   <div className='flex items-center gap-4'>
                     <div className='relative w-16 h-16 flex-shrink-0'>
                       <img
-                        src={item.thumbnail || '/placeholder.svg'}
-                        alt={item.title}
-                        className='h-full w-full object-cover rounded-md'
+                        src={item.image || '/placeholder.svg'}
+                        alt={item.name}
+                        className='w-full h-full object-cover rounded-md'
                       />
                     </div>
                     <div>
-                      <h3 className='font-medium'>{item.title}</h3>
-                      <div className='flex items-center mt-1'>
-                        {[...Array(5)].map((_, i) => (
-                          <svg
-                            key={i}
-                            className={`w-4 h-4 ${
-                              i < Math.round(item.rating)
-                                ? 'text-yellow-400 fill-current'
-                                : 'text-gray-300'
-                            }`}
-                            xmlns='http://www.w3.org/2000/svg'
-                            viewBox='0 0 20 20'
-                            fill='currentColor'
-                          >
-                            <path d='M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z' />
-                          </svg>
-                        ))}
-                        <span className='text-xs text-gray-500 ml-1'>
-                          ({item.rating})
-                        </span>
+                      <h3 className='font-medium'>{item.name}</h3>
+                      <div className='text-xs text-gray-500 mt-1'>
+                        Added on {new Date(item.addedAt).toLocaleDateString()}
                       </div>
                     </div>
                   </div>
                 </td>
                 <td className='p-4'>
-                  <div className='font-semibold'>${item.price.toFixed(2)}</div>
-                  {item.discountPercentage > 0 && (
-                    <div className='text-sm text-green-600'>
-                      Save {item.discountPercentage.toFixed(0)}%
-                    </div>
-                  )}
+                  <div className='font-semibold'>₹{item.price.toFixed(2)}</div>
                 </td>
                 <td className='p-4'>
-                  <span className='px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium'>
-                    {item.stock > 0 ? 'In Stock' : 'Out of Stock'}
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      item.stock_status === 'instock'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {item.stock_status === 'instock'
+                      ? 'In Stock'
+                      : 'Out of Stock'}
                   </span>
                 </td>
                 <td className='p-4'>
                   <Button
                     size='sm'
-                    onClick={() => handleAddToCart(item.id)}
-                    disabled={item.stock <= 0}
+                    onClick={() => handleAddToCart(item.productId, item.name)}
+                    disabled={
+                      item.stock_status !== 'instock' ||
+                      isAddingToCart[item.productId]
+                    }
                   >
+                    {isAddingToCart[item.productId] ? (
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    ) : (
+                      <ShoppingCart className='mr-2 h-4 w-4' />
+                    )}
                     Add to Cart
                   </Button>
                 </td>
@@ -200,9 +200,14 @@ export function AccountWishlist() {
                   <Button
                     variant='ghost'
                     size='icon'
-                    onClick={() => handleRemoveFromWishlist(item.id)}
+                    onClick={() => handleRemoveFromWishlist(item.productId)}
+                    disabled={isRemovingItem[item.productId]}
                   >
-                    <Trash2 className='h-5 w-5 text-gray-500' />
+                    {isRemovingItem[item.productId] ? (
+                      <Loader2 className='h-5 w-5 animate-spin text-red-500' />
+                    ) : (
+                      <Trash2 className='h-5 w-5 text-red-500' />
+                    )}
                   </Button>
                 </td>
               </tr>

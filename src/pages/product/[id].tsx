@@ -165,18 +165,28 @@ export default function ProductPage() {
 
     setIsAddingToCart(true);
     await addToCart(product.id, quantity, product.name);
+    if (isWishlisted) {
+      setIsWishlisted(false);
+    }
     setIsAddingToCart(false);
   };
 
-  const handleWishlistClick = () => {
+  const handleWishlistClick = async () => {
     if (!product) return;
 
+    if (!isLoggedIn()) {
+      setIsLoginPopupOpen(true);
+      return;
+    }
+
     if (isWishlisted) {
-      removeFromWishlist(product.id);
+      await removeFromWishlist(product.id);
       setIsWishlisted(false);
     } else {
-      addToWishlist(product.id);
-      setIsWishlisted(true);
+      const success = await addToWishlist(product.id, product.name);
+      if (success) {
+        setIsWishlisted(true);
+      }
     }
   };
 
@@ -428,18 +438,37 @@ export default function ProductPage() {
             </div>
 
             <div className='space-y-4'>
-              <Button
-                className='w-full'
-                size='lg'
-                onClick={handleAddToCart}
-                disabled={product.stock_status !== 'instock' || isAddingToCart}
-              >
-                {product.stock_status === 'instock'
-                  ? isAddingToCart
-                    ? 'Adding to Cart...'
-                    : 'Add to Cart'
-                  : 'Out of Stock'}
-              </Button>
+              <div className='flex gap-2'>
+                <Button
+                  className='flex-grow-[7]'
+                  size='lg'
+                  onClick={handleAddToCart}
+                  disabled={
+                    product.stock_status !== 'instock' || isAddingToCart
+                  }
+                >
+                  {product.stock_status === 'instock'
+                    ? isAddingToCart
+                      ? 'Adding to Cart...'
+                      : 'Add to Cart'
+                    : 'Out of Stock'}
+                </Button>
+                <Button
+                  variant={isWishlisted ? 'default' : 'outline'}
+                  className={`flex-grow-[3] ${
+                    isWishlisted ? 'bg-red-500 hover:bg-red-600' : ''
+                  }`}
+                  size='lg'
+                  onClick={handleWishlistClick}
+                >
+                  <Heart
+                    className={`h-5 w-5 ${isWishlisted ? 'fill-white' : ''}`}
+                  />
+                  <span className='ml-2'>
+                    {isWishlisted ? 'Wishlisted' : 'Add to Wishlist'}
+                  </span>
+                </Button>
+              </div>
               <Button
                 variant='secondary'
                 className='w-full'

@@ -104,7 +104,7 @@ export default function ResetPasswordOtpVerification() {
       const token = localStorage.getItem('resetToken');
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/resend-reset-otp`,
+        `${import.meta.env.VITE_API_URL}/auth/resend-reset-otp`,
         {
           method: 'POST',
           headers: {

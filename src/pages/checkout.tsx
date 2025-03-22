@@ -1,4 +1,7 @@
+'use client';
+
 import type React from 'react';
+
 import { useState, useEffect } from 'react';
 import { MainLayout } from '@/layouts/MainLayout';
 import { Input } from '@/components/ui/input';
@@ -13,157 +16,155 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { LoginModal } from '@/components/LoginModal';
-import { OrderConfirmation } from '../components/OrderConfirmation';
+import { LoginModal } from '@/components/utils/LoginModal';
+import { OrderConfirmation } from '@/components/OrderConfirmation';
 import { useCheckout } from '@/contexts/CheckoutContext';
+import { Loader2, Plus } from 'lucide-react';
 import Cookies from 'js-cookie';
-import { Link } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { indianStates } from '@/lib/constants';
+import {
+  getUserAddresses,
+  getDefaultAddresses,
+  addUserAddress,
+  setDefaultAddress,
+} from '@/services/userService';
+import { toast } from '@/components/ui/use-toast';
+import {
+  storeUnprocessedOrder,
+  deleteUnprocessedOrder,
+} from '@/services/unprocessedOrderService';
+import { getCurrentUser } from '@/services/auth';
+import { v4 as uuidv4 } from 'uuid';
 
 interface UserAddress {
   id: string;
   firstName: string;
   lastName: string;
   company?: string;
-  street: string;
+  address1: string;
   apartment?: string;
   country: string;
   state: string;
   postcode: string;
   city: string;
   phone: string;
+  type: 'shipping' | 'billing';
+  isDefault: boolean;
 }
 
 interface FormErrors {
   [key: string]: boolean;
 }
 
-const indianStates = [
-  'Andhra Pradesh',
-  'Arunachal Pradesh',
-  'Assam',
-  'Bihar',
-  'Chhattisgarh',
-  'Goa',
-  'Gujarat',
-  'Haryana',
-  'Himachal Pradesh',
-  'Jharkhand',
-  'Karnataka',
-  'Kerala',
-  'Madhya Pradesh',
-  'Maharashtra',
-  'Manipur',
-  'Meghalaya',
-  'Mizoram',
-  'Nagaland',
-  'Odisha',
-  'Punjab',
-  'Rajasthan',
-  'Sikkim',
-  'Tamil Nadu',
-  'Telangana',
-  'Tripura',
-  'Uttar Pradesh',
-  'Uttarakhand',
-  'West Bengal',
-  // Union Territories
-  'Andaman and Nicobar Islands',
-  'Chandigarh',
-  'Dadra and Nagar Haveli and Daman and Diu',
-  'Delhi',
-  'Jammu and Kashmir',
-  'Ladakh',
-  'Lakshadweep',
-  'Puducherry',
-];
-
 export default function CheckoutPage() {
-  const { products, updateQuantity, subtotal, shipping, total } = useCheckout();
+  const { products, updateQuantity, subtotal, shipping, total, clearCart } =
+    useCheckout();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [address, setAddress] = useState<UserAddress>({
-    id: '',
-    firstName: '',
-    lastName: '',
-    street: '',
-    country: 'India',
-    state: '',
-    postcode: '',
-    city: '',
-    phone: '',
-  });
+  const navigate = useNavigate();
+
+  // Address states
   const [savedAddresses, setSavedAddresses] = useState<UserAddress[]>([]);
-  const [selectedAddressId, setSelectedAddressId] = useState('');
+  const [defaultShippingAddress, setDefaultShippingAddress] =
+    useState<UserAddress | null>(null);
+  const [defaultBillingAddress, setDefaultBillingAddress] =
+    useState<UserAddress | null>(null);
+  const [selectedShippingAddressId, setSelectedShippingAddressId] =
+    useState<string>('');
+  const [selectedBillingAddressId, setSelectedBillingAddressId] =
+    useState<string>('');
+  const [showNewShippingForm, setShowNewShippingForm] = useState(false);
+  const [showNewBillingForm, setShowNewBillingForm] = useState(false);
+  const [saveNewShippingAddress, setSaveNewShippingAddress] = useState(true);
+  const [saveNewBillingAddress, setSaveNewBillingAddress] = useState(true);
+  const [showAddressSelection, setShowAddressSelection] = useState(false);
+  const [showBillingAddressSelection, setShowBillingAddressSelection] =
+    useState(false);
+
+  // New address form states
+  const [newShippingAddress, setNewShippingAddress] = useState<
+    Partial<UserAddress>
+  >({
+    type: 'shipping',
+    country: 'India',
+  });
+  const [newBillingAddress, setNewBillingAddress] = useState<
+    Partial<UserAddress>
+  >({
+    type: 'billing',
+    country: 'India',
+  });
+
+  // Payment and checkout flow states
   const [paymentMethod, setPaymentMethod] = useState<'phonepe' | 'cod'>(
     'phonepe'
   );
   const [useSameAddress, setUseSameAddress] = useState(true);
-  const [billingAddress, setBillingAddress] = useState<UserAddress>({
-    id: '',
-    firstName: '',
-    lastName: '',
-    street: '',
-    country: 'India',
-    state: '',
-    postcode: '',
-    city: '',
-    phone: '',
-  });
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [saveAddress, setSaveAddress] = useState(false);
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
-  const [checkoutStep, setCheckoutStep] = useState<
-    'shipping' | 'payment' | 'billing'
-  >('shipping');
-  const [validationError, setValidationError] = useState<string | null>(null);
+
+  // Unprocessed order tracking
+  const [tempOrderId, setTempOrderId] = useState<string>('');
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
     checkLoginStatus();
+    // Get tempId from sessionStorage if available
+    const storedTempId = sessionStorage.getItem('unprocessed_order_tempid');
+    if (storedTempId) {
+      setTempOrderId(storedTempId);
+    }
   }, []);
 
-  const checkLoginStatus = () => {
+  const checkLoginStatus = async () => {
     const authToken = Cookies.get('authToken');
     const loggedIn = Cookies.get('isLoggedIn') === 'true';
     setIsLoggedIn(authToken != null && loggedIn);
 
     if (authToken && loggedIn) {
       fetchUserAddresses();
+
+      // Get current user for unprocessed order tracking
+      try {
+        const user = await getCurrentUser();
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Error fetching current user:', error);
+      }
     }
   };
 
   const fetchUserAddresses = async () => {
-    // TODO: Fetch user addresses from API
-    // For now, we'll use dummy data
-    const dummyAddresses: UserAddress[] = [
-      {
-        id: '1',
-        firstName: 'John',
-        lastName: 'Doe',
-        street: '123 Main St',
-        country: 'India',
-        state: 'Uttar Pradesh',
-        postcode: '201301',
-        city: 'Noida',
-        phone: '+91 1234567890',
-      },
-      {
-        id: '2',
-        firstName: 'Jane',
-        lastName: 'Doe',
-        street: '456 Elm St',
-        country: 'India',
-        state: 'Delhi',
-        postcode: '110001',
-        city: 'New Delhi',
-        phone: '+91 9876543210',
-      },
-    ];
-    setSavedAddresses(dummyAddresses);
+    try {
+      // Fetch all user addresses
+      const addresses = await getUserAddresses();
+      setSavedAddresses(addresses);
+
+      // Fetch default addresses
+      const { shipping, billing } = await getDefaultAddresses();
+
+      if (shipping) {
+        setDefaultShippingAddress(shipping);
+        setSelectedShippingAddressId(shipping.id);
+      }
+
+      if (billing) {
+        setDefaultBillingAddress(billing);
+        setSelectedBillingAddressId(billing.id);
+      }
+    } catch (error) {
+      console.error('Error fetching addresses:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load your saved addresses',
+        variant: 'destructive',
+      });
+    }
   };
 
   const handleQuantityChange = (productId: number, change: number) => {
@@ -174,68 +175,166 @@ export default function CheckoutPage() {
     }
   };
 
-  const handleAddressSelect = (addressId: string) => {
-    setSelectedAddressId(addressId);
+  const handleShippingAddressSelect = async (addressId: string) => {
+    setSelectedShippingAddressId(addressId);
+
+    // If this is not already the default address, set it as default
     const selectedAddress = savedAddresses.find(
       (addr) => addr.id === addressId
     );
-    if (selectedAddress) {
-      setAddress(selectedAddress);
+    if (selectedAddress && !selectedAddress.isDefault) {
+      try {
+        await setDefaultAddress(addressId);
+
+        // Update the addresses list to reflect the new default
+        setSavedAddresses((prev) =>
+          prev.map((addr) => ({
+            ...addr,
+            isDefault:
+              addr.id === addressId && addr.type === 'shipping'
+                ? true
+                : addr.type === 'shipping'
+                ? false
+                : addr.isDefault,
+          }))
+        );
+
+        // Update default shipping address
+        setDefaultShippingAddress(selectedAddress);
+      } catch (error) {
+        console.error('Error setting default address:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to set default address. Please try again.',
+          variant: 'destructive',
+        });
+      }
     }
+
+    setShowNewShippingForm(false);
+    setShowAddressSelection(false);
   };
 
-  const validateForm = (formType: 'shipping' | 'billing') => {
-    const errors: FormErrors = {};
-    const requiredFields = [
-      'firstName',
-      'lastName',
-      'street',
-      'country',
-      'state',
-      'city',
-      'postcode',
-      'phone',
-    ];
+  const handleBillingAddressSelect = async (addressId: string) => {
+    setSelectedBillingAddressId(addressId);
 
-    if (formType === 'shipping') {
+    // If this is not already the default address, set it as default
+    const selectedAddress = savedAddresses.find(
+      (addr) => addr.id === addressId
+    );
+    if (selectedAddress && !selectedAddress.isDefault) {
+      try {
+        await setDefaultAddress(addressId);
+
+        // Update the addresses list to reflect the new default
+        setSavedAddresses((prev) =>
+          prev.map((addr) => ({
+            ...addr,
+            isDefault:
+              addr.id === addressId && addr.type === 'billing'
+                ? true
+                : addr.type === 'billing'
+                ? false
+                : addr.isDefault,
+          }))
+        );
+
+        // Update default billing address
+        setDefaultBillingAddress(selectedAddress);
+      } catch (error) {
+        console.error('Error setting default address:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to set default address. Please try again.',
+          variant: 'destructive',
+        });
+      }
+    }
+
+    setShowNewBillingForm(false);
+    setShowBillingAddressSelection(false);
+  };
+
+  const handleNewShippingAddressChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setNewShippingAddress((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleNewBillingAddressChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setNewBillingAddress((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleShippingStateChange = (value: string) => {
+    setNewShippingAddress((prev) => ({ ...prev, state: value }));
+  };
+
+  const handleBillingStateChange = (value: string) => {
+    setNewBillingAddress((prev) => ({ ...prev, state: value }));
+  };
+
+  const validateForm = () => {
+    const errors: FormErrors = {};
+
+    // Validate shipping address
+    if (!selectedShippingAddressId && !showNewShippingForm) {
+      errors.shippingAddress = true;
+    }
+
+    // Validate new shipping address if shown
+    if (showNewShippingForm) {
+      const requiredFields = [
+        'firstName',
+        'lastName',
+        'address1',
+        'city',
+        'state',
+        'postcode',
+        'phone',
+      ];
       requiredFields.forEach((field) => {
-        if (!address[field as keyof UserAddress]) {
-          errors[field] = true;
+        if (!newShippingAddress[field]) {
+          errors[`shipping_${field}`] = true;
         }
       });
-    } else if (formType === 'billing' && !useSameAddress && billingAddress) {
-      requiredFields.forEach((field) => {
-        if (!billingAddress[field as keyof UserAddress]) {
-          errors[`billing_${field}`] = true;
-        }
-      });
+    }
+
+    // Validate billing address if different from shipping
+    if (showPaymentOptions && !useSameAddress) {
+      if (!selectedBillingAddressId && !showNewBillingForm) {
+        errors.billingAddress = true;
+      }
+
+      // Validate new billing address if shown
+      if (showNewBillingForm) {
+        const requiredFields = [
+          'firstName',
+          'lastName',
+          'address1',
+          'city',
+          'state',
+          'postcode',
+          'phone',
+        ];
+        requiredFields.forEach((field) => {
+          if (!newBillingAddress[field]) {
+            errors[`billing_${field}`] = true;
+          }
+        });
+      }
+    }
+
+    // Validate terms acceptance
+    if (!acceptTerms) {
+      errors.terms = true;
     }
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
-  };
-
-  const handleProceedToPayment = () => {
-    if (validateForm('shipping')) {
-      setCheckoutStep('payment');
-      setShowPaymentOptions(true);
-      setValidationError(null);
-    } else {
-      setValidationError(
-        'Please fill all the mandatory fields in shipping address.'
-      );
-    }
-  };
-
-  const handleSaveBillingAddress = () => {
-    if (useSameAddress || validateForm('billing')) {
-      setCheckoutStep('billing');
-      setValidationError(null);
-    } else {
-      setValidationError(
-        'Please fill all the mandatory fields in billing address.'
-      );
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -245,15 +344,7 @@ export default function CheckoutPage() {
       return;
     }
 
-    if (checkoutStep !== 'billing') {
-      setValidationError(
-        'Please complete all steps before placing your order.'
-      );
-      return;
-    }
-
-    if (!acceptTerms) {
-      setValidationError('Please accept the terms and conditions.');
+    if (!validateForm()) {
       return;
     }
 
@@ -261,13 +352,25 @@ export default function CheckoutPage() {
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
-
+      // If we have a tempOrderId, delete the unprocessed order since it's now completed
+      if (tempOrderId) {
+        await deleteUnprocessedOrder(tempOrderId);
+        // Clear from sessionStorage
+        sessionStorage.removeItem('unprocessed_order_tempid');
+      }
       // TODO: Replace with actual API call
       setOrderNumber('ORD' + Math.floor(Math.random() * 1000000));
       setOrderConfirmed(true);
+      clearCart();
     } catch (error) {
       console.error('Error submitting order:', error);
       // Show error message to user
+      toast({
+        title: 'Error',
+        description:
+          'There was a problem processing your order. Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -276,6 +379,150 @@ export default function CheckoutPage() {
   const handleLoginSuccess = () => {
     setIsLoginModalOpen(false);
     checkLoginStatus();
+  };
+
+  const getSelectedShippingAddress = () => {
+    if (selectedShippingAddressId) {
+      return (
+        savedAddresses.find((addr) => addr.id === selectedShippingAddressId) ||
+        null
+      );
+    }
+    return null;
+  };
+
+  const getSelectedBillingAddress = () => {
+    if (useSameAddress) {
+      return getSelectedShippingAddress();
+    }
+
+    if (selectedBillingAddressId) {
+      return (
+        savedAddresses.find((addr) => addr.id === selectedBillingAddressId) ||
+        null
+      );
+    }
+    return null;
+  };
+
+  const storeOrderAsUnprocessed = async () => {
+    if (!currentUser) return false;
+
+    const selectedShippingAddress = getSelectedShippingAddress();
+    if (!selectedShippingAddress) return false;
+
+    const selectedBillingAddress = getSelectedBillingAddress();
+
+    // Generate a unique tempId if we don't have one yet
+    const orderTempId = tempOrderId || uuidv4();
+
+    try {
+      const unprocessedOrderData = {
+        tempId: orderTempId,
+        products: products.map((p) => ({
+          id: p.id,
+          title: p.title,
+          price: p.price,
+          quantity: p.quantity,
+          thumbnail: p.thumbnail,
+        })),
+        shippingAddress: {
+          id: selectedShippingAddress.id,
+          firstName: selectedShippingAddress.firstName,
+          lastName: selectedShippingAddress.lastName,
+          address1: selectedShippingAddress.address1,
+          apartment: selectedShippingAddress.apartment,
+          city: selectedShippingAddress.city,
+          state: selectedShippingAddress.state,
+          postcode: selectedShippingAddress.postcode,
+          country: selectedShippingAddress.country,
+          phone: selectedShippingAddress.phone,
+        },
+        billingAddress: selectedBillingAddress
+          ? {
+              id: selectedBillingAddress.id,
+              firstName: selectedBillingAddress.firstName,
+              lastName: selectedBillingAddress.lastName,
+              address1: selectedBillingAddress.address1,
+              apartment: selectedBillingAddress.apartment,
+              city: selectedBillingAddress.city,
+              state: selectedBillingAddress.state,
+              postcode: selectedBillingAddress.postcode,
+              country: selectedBillingAddress.country,
+              phone: selectedBillingAddress.phone,
+            }
+          : undefined,
+        subtotal,
+        shipping,
+        total,
+        reason: 'Process was not completed by the user.',
+      };
+
+      const result = await storeUnprocessedOrder(unprocessedOrderData);
+
+      if (result.success) {
+        // Only update tempOrderId if it's a new one
+        if (!tempOrderId) {
+          setTempOrderId(orderTempId);
+          // Store in sessionStorage for persistence
+          sessionStorage.setItem('unprocessed_order_tempid', orderTempId);
+        }
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error('Error storing unprocessed order:', error);
+      return false;
+    }
+  };
+
+  const handleProceedToPayment = async () => {
+    // Validate shipping address selection
+    if (!selectedShippingAddressId && !showNewShippingForm) {
+      toast({
+        title: 'Error',
+        description: 'Please select a shipping address',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validate new shipping address if shown
+    if (showNewShippingForm) {
+      const requiredFields = [
+        'firstName',
+        'lastName',
+        'address1',
+        'city',
+        'state',
+        'postcode',
+        'phone',
+      ];
+      const missingFields = requiredFields.filter(
+        (field) => !newShippingAddress[field]
+      );
+
+      if (missingFields.length > 0) {
+        toast({
+          title: 'Error',
+          description:
+            'Please fill all required fields in the shipping address form',
+          variant: 'destructive',
+        });
+        return;
+      }
+    }
+
+    // Store the order as unprocessed before proceeding to payment
+    const stored = await storeOrderAsUnprocessed();
+    if (!stored) {
+      console.warn(
+        'Failed to store unprocessed order, but continuing with checkout'
+      );
+    }
+
+    setShowPaymentOptions(true);
   };
 
   if (orderConfirmed) {
@@ -314,14 +561,8 @@ export default function CheckoutPage() {
     );
   }
 
-  const handleBillingAddressSelect = (addressId: string) => {
-    const selectedAddress = savedAddresses.find(
-      (addr) => addr.id === addressId
-    );
-    if (selectedAddress) {
-      setBillingAddress(selectedAddress);
-    }
-  };
+  const selectedShippingAddress = getSelectedShippingAddress();
+  const selectedBillingAddress = getSelectedBillingAddress();
 
   return (
     <MainLayout>
@@ -334,179 +575,497 @@ export default function CheckoutPage() {
             </div>
           </div>
         )}
-        {validationError && (
-          <div
-            className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 relative'
-            role='alert'
-          >
-            <span className='block sm:inline'>{validationError}</span>
-          </div>
-        )}
+
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
           {/* Checkout Form */}
           <div className='lg:col-span-2 space-y-8'>
             {isLoggedIn ? (
               <>
-                <div>
-                  <h2 className='text-xl font-semibold mb-4'>
-                    Shipping address
-                  </h2>
-                  {savedAddresses.length > 0 && (
-                    <Select
-                      value={selectedAddressId}
-                      onValueChange={handleAddressSelect}
-                    >
-                      <SelectTrigger className='w-full'>
-                        <SelectValue placeholder='Select a saved address' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {savedAddresses.map((addr) => (
-                          <SelectItem key={addr.id} value={addr.id}>
-                            {addr.street}, {addr.city}, {addr.state}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-4'>
-                    <Input
-                      placeholder='First name *'
-                      value={address.firstName}
-                      onChange={(e) =>
-                        setAddress((prev) => ({
-                          ...prev,
-                          firstName: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                    <Input
-                      placeholder='Last name *'
-                      value={address.lastName}
-                      onChange={(e) =>
-                        setAddress((prev) => ({
-                          ...prev,
-                          lastName: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                    <Input
-                      className='md:col-span-2'
-                      placeholder='Company name (optional)'
-                      value={address.company}
-                      onChange={(e) =>
-                        setAddress((prev) => ({
-                          ...prev,
-                          company: e.target.value,
-                        }))
-                      }
-                    />
-                    <Input
-                      className='md:col-span-2'
-                      placeholder='Street address *'
-                      value={address.street}
-                      onChange={(e) =>
-                        setAddress((prev) => ({
-                          ...prev,
-                          street: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                    <Input
-                      className='md:col-span-2'
-                      placeholder='Apartment, suite, unit, etc. (optional)'
-                      value={address.apartment}
-                      onChange={(e) =>
-                        setAddress((prev) => ({
-                          ...prev,
-                          apartment: e.target.value,
-                        }))
-                      }
-                    />
-                    <Select
-                      value={address.country}
-                      onValueChange={(value) =>
-                        setAddress((prev) => ({ ...prev, country: value }))
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder='Country *' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value='India'>India</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Select
-                      value={address.state}
-                      onValueChange={(value) =>
-                        setAddress((prev) => ({ ...prev, state: value }))
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder='State *' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {indianStates.map((state) => (
-                          <SelectItem key={state} value={state}>
-                            {state}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      placeholder='Town / City *'
-                      value={address.city}
-                      onChange={(e) =>
-                        setAddress((prev) => ({
-                          ...prev,
-                          city: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                    <Input
-                      placeholder='Postcode / ZIP *'
-                      value={address.postcode}
-                      onChange={(e) =>
-                        setAddress((prev) => ({
-                          ...prev,
-                          postcode: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                    <Input
-                      className='md:col-span-2'
-                      placeholder='Phone *'
-                      value={address.phone}
-                      onChange={(e) =>
-                        setAddress((prev) => ({
-                          ...prev,
-                          phone: e.target.value,
-                        }))
-                      }
-                      required
-                    />
+                {/* Shipping Address Section */}
+                <div className='border rounded-lg overflow-hidden'>
+                  <div className='bg-gray-50 p-4 border-b'>
+                    <h2 className='text-xl font-semibold'>Delivery address</h2>
                   </div>
-                  <div className='mt-4'>
-                    <Label className='flex items-center space-x-3'>
-                      <Checkbox
-                        checked={saveAddress}
-                        onCheckedChange={(checked) =>
-                          setSaveAddress(checked as boolean)
-                        }
-                      />
-                      <span>Save this address for future orders</span>
-                    </Label>
+
+                  <div className='p-4'>
+                    {!showAddressSelection && !showNewShippingForm && (
+                      <>
+                        {selectedShippingAddress ? (
+                          <div className='border rounded-lg p-4 mb-4'>
+                            <div className='flex justify-between items-start mb-2'>
+                              <div>
+                                <p className='font-medium'>
+                                  {selectedShippingAddress.firstName}{' '}
+                                  {selectedShippingAddress.lastName}
+                                </p>
+                                <p>{selectedShippingAddress.address1}</p>
+                                {selectedShippingAddress.apartment && (
+                                  <p>{selectedShippingAddress.apartment}</p>
+                                )}
+                                <p>
+                                  {selectedShippingAddress.city},{' '}
+                                  {selectedShippingAddress.state}{' '}
+                                  {selectedShippingAddress.postcode}
+                                </p>
+                                <p>{selectedShippingAddress.country}</p>
+                                <p>Phone: {selectedShippingAddress.phone}</p>
+                              </div>
+                              <Button
+                                variant='ghost'
+                                size='sm'
+                                className='text-blue-600'
+                                onClick={() => setShowAddressSelection(true)}
+                              >
+                                Change
+                              </Button>
+                            </div>
+                          </div>
+                        ) : defaultShippingAddress ? (
+                          <div className='border rounded-lg p-4 mb-4'>
+                            <div className='flex justify-between items-start mb-2'>
+                              <div>
+                                <p className='font-medium'>
+                                  {defaultShippingAddress.firstName}{' '}
+                                  {defaultShippingAddress.lastName}
+                                </p>
+                                <p>{defaultShippingAddress.address1}</p>
+                                {defaultShippingAddress.apartment && (
+                                  <p>{defaultShippingAddress.apartment}</p>
+                                )}
+                                <p>
+                                  {defaultShippingAddress.city},{' '}
+                                  {defaultShippingAddress.state}{' '}
+                                  {defaultShippingAddress.postcode}
+                                </p>
+                                <p>{defaultShippingAddress.country}</p>
+                                <p>Phone: {defaultShippingAddress.phone}</p>
+                              </div>
+                              <Button
+                                variant='ghost'
+                                size='sm'
+                                className='text-blue-600'
+                                onClick={() => setShowAddressSelection(true)}
+                              >
+                                Change
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className='text-center py-4'>
+                            <p className='text-gray-500 mb-4'>
+                              You don't have any saved shipping addresses.
+                            </p>
+                            <Button
+                              onClick={() => setShowNewShippingForm(true)}
+                            >
+                              Add New Address
+                            </Button>
+                          </div>
+                        )}
+
+                        {(selectedShippingAddress ||
+                          defaultShippingAddress) && (
+                          <Button
+                            variant='outline'
+                            className='w-full flex items-center justify-center gap-2'
+                            onClick={() => setShowNewShippingForm(true)}
+                          >
+                            <Plus className='h-4 w-4' />
+                            Use New Address
+                          </Button>
+                        )}
+                      </>
+                    )}
+
+                    {/* Address Selection List */}
+                    {showAddressSelection && (
+                      <div className='space-y-4'>
+                        <h3 className='font-medium mb-4'>Your addresses</h3>
+                        <RadioGroup
+                          value={selectedShippingAddressId}
+                          onValueChange={handleShippingAddressSelect}
+                        >
+                          <div className='space-y-4'>
+                            {savedAddresses
+                              .filter((addr) => addr.type === 'shipping')
+                              .map((address) => (
+                                <div
+                                  key={address.id}
+                                  className={`border rounded-lg p-4 ${
+                                    selectedShippingAddressId === address.id
+                                      ? 'bg-amber-50'
+                                      : ''
+                                  }`}
+                                >
+                                  <div className='flex items-start gap-3'>
+                                    <RadioGroupItem
+                                      value={address.id}
+                                      id={`address-${address.id}`}
+                                      className='mt-1'
+                                    />
+                                    <div className='flex-1'>
+                                      <Label
+                                        htmlFor={`address-${address.id}`}
+                                        className='font-medium'
+                                      >
+                                        {address.firstName} {address.lastName}
+                                      </Label>
+                                      <p className='text-sm text-gray-600'>
+                                        {address.address1}
+                                      </p>
+                                      {address.apartment && (
+                                        <p className='text-sm text-gray-600'>
+                                          {address.apartment}
+                                        </p>
+                                      )}
+                                      <p className='text-sm text-gray-600'>
+                                        {address.city}, {address.state}{' '}
+                                        {address.postcode}, {address.country}
+                                      </p>
+                                      <p className='text-sm text-gray-600'>
+                                        Phone: {address.phone}
+                                      </p>
+                                      <div className='mt-2 text-sm'>
+                                        <Link
+                                          to={`/account?tab=addresses&edit=${address.id}`}
+                                          className='text-blue-600 hover:underline'
+                                        >
+                                          Edit address
+                                        </Link>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+
+                            <Button
+                              variant='outline'
+                              className='w-full flex items-center justify-center gap-2'
+                              onClick={() => {
+                                setShowAddressSelection(false);
+                                setShowNewShippingForm(true);
+                              }}
+                            >
+                              <Plus className='h-4 w-4' />
+                              Add New Address
+                            </Button>
+                          </div>
+                        </RadioGroup>
+
+                        <div className='flex justify-between mt-4'>
+                          <Button
+                            variant='outline'
+                            onClick={() => setShowAddressSelection(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            onClick={() => setShowAddressSelection(false)}
+                            disabled={!selectedShippingAddressId}
+                          >
+                            Use This Address
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* New Shipping Address Form */}
+                    {showNewShippingForm && (
+                      <div className='space-y-4'>
+                        <h3 className='font-medium mb-4'>Add a new address</h3>
+                        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                          <div>
+                            <Label htmlFor='shipping_firstName'>
+                              First name *
+                            </Label>
+                            <Input
+                              id='shipping_firstName'
+                              name='firstName'
+                              value={newShippingAddress.firstName || ''}
+                              onChange={handleNewShippingAddressChange}
+                              className={
+                                formErrors.shipping_firstName
+                                  ? 'border-red-500'
+                                  : ''
+                              }
+                              required
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor='shipping_lastName'>
+                              Last name *
+                            </Label>
+                            <Input
+                              id='shipping_lastName'
+                              name='lastName'
+                              value={newShippingAddress.lastName || ''}
+                              onChange={handleNewShippingAddressChange}
+                              className={
+                                formErrors.shipping_lastName
+                                  ? 'border-red-500'
+                                  : ''
+                              }
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <Label htmlFor='shipping_company'>
+                            Company name (optional)
+                          </Label>
+                          <Input
+                            id='shipping_company'
+                            name='company'
+                            value={newShippingAddress.company || ''}
+                            onChange={handleNewShippingAddressChange}
+                          />
+                        </div>
+
+                        <div>
+                          <Label htmlFor='shipping_address1'>
+                            Address line 1 *
+                          </Label>
+                          <Input
+                            id='shipping_address1'
+                            name='address1'
+                            value={newShippingAddress.address1 || ''}
+                            onChange={handleNewShippingAddressChange}
+                            className={
+                              formErrors.shipping_address1
+                                ? 'border-red-500'
+                                : ''
+                            }
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <Label htmlFor='shipping_apartment'>
+                            Apartment, suite, etc. (optional)
+                          </Label>
+                          <Input
+                            id='shipping_apartment'
+                            name='apartment'
+                            value={newShippingAddress.apartment || ''}
+                            onChange={handleNewShippingAddressChange}
+                          />
+                        </div>
+
+                        <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                          <div>
+                            <Label htmlFor='shipping_city'>City *</Label>
+                            <Input
+                              id='shipping_city'
+                              name='city'
+                              value={newShippingAddress.city || ''}
+                              onChange={handleNewShippingAddressChange}
+                              className={
+                                formErrors.shipping_city ? 'border-red-500' : ''
+                              }
+                              required
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor='shipping_state'>State *</Label>
+                            <Select
+                              value={newShippingAddress.state || ''}
+                              onValueChange={handleShippingStateChange}
+                            >
+                              <SelectTrigger
+                                id='shipping_state'
+                                className={
+                                  formErrors.shipping_state
+                                    ? 'border-red-500'
+                                    : ''
+                                }
+                              >
+                                <SelectValue placeholder='Select state' />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {indianStates.map((state) => (
+                                  <SelectItem key={state} value={state}>
+                                    {state}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <Label htmlFor='shipping_postcode'>
+                              PIN code *
+                            </Label>
+                            <Input
+                              id='shipping_postcode'
+                              name='postcode'
+                              value={newShippingAddress.postcode || ''}
+                              onChange={handleNewShippingAddressChange}
+                              className={
+                                formErrors.shipping_postcode
+                                  ? 'border-red-500'
+                                  : ''
+                              }
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <Label htmlFor='shipping_phone'>Phone *</Label>
+                          <Input
+                            id='shipping_phone'
+                            name='phone'
+                            value={newShippingAddress.phone || ''}
+                            onChange={handleNewShippingAddressChange}
+                            className={
+                              formErrors.shipping_phone ? 'border-red-500' : ''
+                            }
+                            required
+                          />
+                        </div>
+
+                        <div className='flex items-center space-x-2'>
+                          <Checkbox
+                            id='saveShippingAddress'
+                            checked={saveNewShippingAddress}
+                            onCheckedChange={(checked) =>
+                              setSaveNewShippingAddress(!!checked)
+                            }
+                          />
+                          <Label
+                            htmlFor='saveShippingAddress'
+                            className='text-sm font-normal'
+                          >
+                            Save this address for future orders
+                          </Label>
+                        </div>
+
+                        <div className='flex justify-between mt-4'>
+                          <Button
+                            variant='outline'
+                            onClick={() => {
+                              setShowNewShippingForm(false);
+                              if (
+                                savedAddresses.filter(
+                                  (a) => a.type === 'shipping'
+                                ).length > 0
+                              ) {
+                                setShowAddressSelection(true);
+                              }
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            onClick={async () => {
+                              // Validate form
+                              const requiredFields = [
+                                'firstName',
+                                'lastName',
+                                'address1',
+                                'city',
+                                'state',
+                                'postcode',
+                                'phone',
+                              ];
+                              const missingFields = requiredFields.filter(
+                                (field) => !newShippingAddress[field]
+                              );
+
+                              if (missingFields.length > 0) {
+                                const errors: FormErrors = {};
+                                missingFields.forEach((field) => {
+                                  errors[`shipping_${field}`] = true;
+                                });
+                                setFormErrors(errors);
+                                return;
+                              }
+
+                              try {
+                                setIsSubmitting(true);
+
+                                // If user wants to save the address, add it to their account
+                                if (saveNewShippingAddress) {
+                                  // Prepare address object for API
+                                  const addressData = {
+                                    ...newShippingAddress,
+                                    type: 'shipping' as const,
+                                    isDefault: true, // Make this the default shipping address
+                                  };
+
+                                  // Add the address to user's account
+                                  const savedAddress = await addUserAddress(
+                                    addressData
+                                  );
+
+                                  // Update the addresses list
+                                  setSavedAddresses((prev) => [
+                                    ...prev,
+                                    savedAddress,
+                                  ]);
+
+                                  // Set as selected address
+                                  setSelectedShippingAddressId(savedAddress.id);
+
+                                  // Update default shipping address
+                                  setDefaultShippingAddress(savedAddress);
+
+                                  toast({
+                                    title: 'Address Saved',
+                                    description:
+                                      'Your new shipping address has been saved.',
+                                  });
+                                } else {
+                                  // Just use this address for current checkout without saving
+                                  // Generate a temporary ID for the address
+                                  const tempAddress = {
+                                    ...newShippingAddress,
+                                    id: `temp-${Date.now()}`,
+                                    type: 'shipping' as const,
+                                    isDefault: false,
+                                  };
+
+                                  // Set as selected address
+                                  setSelectedShippingAddressId(tempAddress.id);
+
+                                  // Add to temporary list
+                                  setSavedAddresses((prev) => [
+                                    ...prev,
+                                    tempAddress,
+                                  ]);
+                                }
+
+                                // Close the form
+                                setShowNewShippingForm(false);
+                              } catch (error) {
+                                console.error('Error saving address:', error);
+                                toast({
+                                  title: 'Error',
+                                  description:
+                                    'Failed to save your address. Please try again.',
+                                  variant: 'destructive',
+                                });
+                              } finally {
+                                setIsSubmitting(false);
+                              }
+                            }}
+                          >
+                            Use This Address
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <Button onClick={handleProceedToPayment} className='w-full'>
-                  Proceed to Payment
-                </Button>
+                {/* Proceed to Payment Button */}
+                {!showPaymentOptions && (
+                  <Button onClick={handleProceedToPayment} className='w-full'>
+                    Proceed to Payment
+                  </Button>
+                )}
 
+                {/* Payment Section */}
                 {showPaymentOptions && (
                   <div>
                     <h2 className='text-xl font-semibold mb-4'>Payment</h2>
@@ -540,7 +1099,8 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                {checkoutStep === 'payment' && (
+                {/* Billing Address Section */}
+                {showPaymentOptions && (
                   <div>
                     <h2 className='text-xl font-semibold mb-2'>
                       Billing address
@@ -551,9 +1111,13 @@ export default function CheckoutPage() {
                     </p>
                     <RadioGroup
                       value={useSameAddress ? 'same' : 'different'}
-                      onValueChange={(value) =>
-                        setUseSameAddress(value === 'same')
-                      }
+                      onValueChange={(value) => {
+                        setUseSameAddress(value === 'same');
+                        if (value === 'same') {
+                          setShowBillingAddressSelection(false);
+                          setShowNewBillingForm(false);
+                        }
+                      }}
                     >
                       <div className='space-y-4'>
                         <Label className='flex items-center space-x-3 border rounded-lg p-4'>
@@ -565,231 +1129,587 @@ export default function CheckoutPage() {
                             <RadioGroupItem value='different' />
                             <span>Use a different billing address</span>
                           </Label>
+
                           {!useSameAddress && (
                             <div className='border-t p-4'>
-                              <div className='mb-4'>
-                                <Select
-                                  onValueChange={handleBillingAddressSelect}
-                                >
-                                  <SelectTrigger className='w-full'>
-                                    <SelectValue placeholder='Select a saved address' />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {savedAddresses.map((addr) => (
-                                      <SelectItem key={addr.id} value={addr.id}>
-                                        {addr.street}, {addr.city}, {addr.state}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                                <Input
-                                  placeholder='First name *'
-                                  value={billingAddress?.firstName || ''}
-                                  onChange={(e) =>
-                                    setBillingAddress((prev) => ({
-                                      ...prev,
-                                      firstName: e.target.value,
-                                    }))
-                                  }
-                                  className={
-                                    formErrors.billing_firstName
-                                      ? 'border-red-500'
-                                      : ''
-                                  }
-                                />
-                                <Input
-                                  placeholder='Last name *'
-                                  value={billingAddress?.lastName || ''}
-                                  onChange={(e) =>
-                                    setBillingAddress((prev) => ({
-                                      ...prev,
-                                      lastName: e.target.value,
-                                    }))
-                                  }
-                                  className={
-                                    formErrors.billing_lastName
-                                      ? 'border-red-500'
-                                      : ''
-                                  }
-                                />
-                                <Input
-                                  className='md:col-span-2'
-                                  placeholder='Company name (optional)'
-                                  value={billingAddress?.company || ''}
-                                  onChange={(e) =>
-                                    setBillingAddress((prev) => ({
-                                      ...prev,
-                                      company: e.target.value,
-                                    }))
-                                  }
-                                />
-                                <Input
-                                  className={`md:col-span-2 ${
-                                    formErrors.billing_phone
-                                      ? 'border-red-500'
-                                      : ''
-                                  }`}
-                                  placeholder='Street address *'
-                                  value={billingAddress?.street || ''}
-                                  onChange={(e) =>
-                                    setBillingAddress((prev) => ({
-                                      ...prev,
-                                      street: e.target.value,
-                                    }))
-                                  }
-                                />
-                                <Input
-                                  className='md:col-span-2'
-                                  placeholder='Apartment, suite, unit, etc. (optional)'
-                                  value={billingAddress?.apartment || ''}
-                                  onChange={(e) =>
-                                    setBillingAddress((prev) => ({
-                                      ...prev,
-                                      apartment: e.target.value,
-                                    }))
-                                  }
-                                />
-                                <Select
-                                  value={billingAddress?.country || 'India'}
-                                  onValueChange={(value) =>
-                                    setBillingAddress((prev) => ({
-                                      ...prev,
-                                      country: value,
-                                    }))
-                                  }
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder='Country *' />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value='India'>India</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <Select
-                                  value={billingAddress?.state || ''}
-                                  onValueChange={(value) =>
-                                    setBillingAddress((prev) => ({
-                                      ...prev,
-                                      state: value,
-                                    }))
-                                  }
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder='State *' />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {indianStates.map((state) => (
-                                      <SelectItem key={state} value={state}>
-                                        {state}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                                <Input
-                                  placeholder='Town / City *'
-                                  value={billingAddress?.city || ''}
-                                  onChange={(e) =>
-                                    setBillingAddress((prev) => ({
-                                      ...prev,
-                                      city: e.target.value,
-                                    }))
-                                  }
-                                  className={
-                                    formErrors.billing_city
-                                      ? 'border-red-500'
-                                      : ''
-                                  }
-                                />
-                                <Input
-                                  placeholder='Postcode / ZIP *'
-                                  value={billingAddress?.postcode || ''}
-                                  onChange={(e) =>
-                                    setBillingAddress((prev) => ({
-                                      ...prev,
-                                      postcode: e.target.value,
-                                    }))
-                                  }
-                                  className={
-                                    formErrors.billing_postcode
-                                      ? 'border-red-500'
-                                      : ''
-                                  }
-                                />
-                                <Input
-                                  className={`md:col-span-2 ${
-                                    formErrors.billing_phone
-                                      ? 'border-red-500'
-                                      : ''
-                                  }`}
-                                  placeholder='Phone *'
-                                  value={billingAddress?.phone || ''}
-                                  onChange={(e) =>
-                                    setBillingAddress((prev) => ({
-                                      ...prev,
-                                      phone: e.target.value,
-                                    }))
-                                  }
-                                />
-                              </div>
-                              <div className='mt-4'>
-                                <Button
-                                  onClick={handleSaveBillingAddress}
-                                  className='w-full'
-                                >
-                                  Save Billing Address
-                                </Button>
-                              </div>
+                              {!showBillingAddressSelection &&
+                                !showNewBillingForm && (
+                                  <>
+                                    {selectedBillingAddress ? (
+                                      <div className='border rounded-lg p-4 mb-4'>
+                                        <div className='flex justify-between items-start mb-2'>
+                                          <div>
+                                            <p className='font-medium'>
+                                              {selectedBillingAddress.firstName}{' '}
+                                              {selectedBillingAddress.lastName}
+                                            </p>
+                                            <p>
+                                              {selectedBillingAddress.address1}
+                                            </p>
+                                            {selectedBillingAddress.apartment && (
+                                              <p>
+                                                {
+                                                  selectedBillingAddress.apartment
+                                                }
+                                              </p>
+                                            )}
+                                            <p>
+                                              {selectedBillingAddress.city},{' '}
+                                              {selectedBillingAddress.state}{' '}
+                                              {selectedBillingAddress.postcode}
+                                            </p>
+                                            <p>
+                                              {selectedBillingAddress.country}
+                                            </p>
+                                            <p>
+                                              Phone:{' '}
+                                              {selectedBillingAddress.phone}
+                                            </p>
+                                          </div>
+                                          <Button
+                                            variant='ghost'
+                                            size='sm'
+                                            className='text-blue-600'
+                                            onClick={() =>
+                                              setShowBillingAddressSelection(
+                                                true
+                                              )
+                                            }
+                                          >
+                                            Change
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    ) : defaultBillingAddress ? (
+                                      <div className='border rounded-lg p-4 mb-4'>
+                                        <div className='flex justify-between items-start mb-2'>
+                                          <div>
+                                            <p className='font-medium'>
+                                              {defaultBillingAddress.firstName}{' '}
+                                              {defaultBillingAddress.lastName}
+                                            </p>
+                                            <p>
+                                              {defaultBillingAddress.address1}
+                                            </p>
+                                            {defaultBillingAddress.apartment && (
+                                              <p>
+                                                {
+                                                  defaultBillingAddress.apartment
+                                                }
+                                              </p>
+                                            )}
+                                            <p>
+                                              {defaultBillingAddress.city},{' '}
+                                              {defaultBillingAddress.state}{' '}
+                                              {defaultBillingAddress.postcode}
+                                            </p>
+                                            <p>
+                                              {defaultBillingAddress.country}
+                                            </p>
+                                            <p>
+                                              Phone:{' '}
+                                              {defaultBillingAddress.phone}
+                                            </p>
+                                          </div>
+                                          <Button
+                                            variant='ghost'
+                                            size='sm'
+                                            className='text-blue-600'
+                                            onClick={() =>
+                                              setShowBillingAddressSelection(
+                                                true
+                                              )
+                                            }
+                                          >
+                                            Change
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <div className='text-center py-4'>
+                                        <p className='text-gray-500 mb-4'>
+                                          You don't have any saved billing
+                                          addresses.
+                                        </p>
+                                        <Button
+                                          onClick={() =>
+                                            setShowNewBillingForm(true)
+                                          }
+                                        >
+                                          Add New Address
+                                        </Button>
+                                      </div>
+                                    )}
+
+                                    {(selectedBillingAddress ||
+                                      defaultBillingAddress) && (
+                                      <Button
+                                        variant='outline'
+                                        className='w-full flex items-center justify-center gap-2'
+                                        onClick={() =>
+                                          setShowNewBillingForm(true)
+                                        }
+                                      >
+                                        <Plus className='h-4 w-4' />
+                                        Use New Address
+                                      </Button>
+                                    )}
+                                  </>
+                                )}
+
+                              {/* Billing Address Selection List */}
+                              {showBillingAddressSelection && (
+                                <div className='space-y-4'>
+                                  <h3 className='font-medium mb-4'>
+                                    Your billing addresses
+                                  </h3>
+                                  <RadioGroup
+                                    value={selectedBillingAddressId}
+                                    onValueChange={handleBillingAddressSelect}
+                                  >
+                                    <div className='space-y-4'>
+                                      {savedAddresses
+                                        .filter(
+                                          (addr) => addr.type === 'billing'
+                                        )
+                                        .map((address) => (
+                                          <div
+                                            key={address.id}
+                                            className={`border rounded-lg p-4 ${
+                                              selectedBillingAddressId ===
+                                              address.id
+                                                ? 'bg-amber-50'
+                                                : ''
+                                            }`}
+                                          >
+                                            <div className='flex items-start gap-3'>
+                                              <RadioGroupItem
+                                                value={address.id}
+                                                id={`billing-address-${address.id}`}
+                                                className='mt-1'
+                                              />
+                                              <div className='flex-1'>
+                                                <Label
+                                                  htmlFor={`billing-address-${address.id}`}
+                                                  className='font-medium'
+                                                >
+                                                  {address.firstName}{' '}
+                                                  {address.lastName}
+                                                </Label>
+                                                <p className='text-sm text-gray-600'>
+                                                  {address.address1}
+                                                </p>
+                                                {address.apartment && (
+                                                  <p className='text-sm text-gray-600'>
+                                                    {address.apartment}
+                                                  </p>
+                                                )}
+                                                <p className='text-sm text-gray-600'>
+                                                  {address.city},{' '}
+                                                  {address.state}{' '}
+                                                  {address.postcode},{' '}
+                                                  {address.country}
+                                                </p>
+                                                <p className='text-sm text-gray-600'>
+                                                  Phone: {address.phone}
+                                                </p>
+                                                <div className='mt-2 text-sm'>
+                                                  <Link
+                                                    to={`/account?tab=addresses&edit=${address.id}`}
+                                                    className='text-blue-600 hover:underline'
+                                                  >
+                                                    Edit address
+                                                  </Link>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        ))}
+
+                                      <Button
+                                        variant='outline'
+                                        className='w-full flex items-center justify-center gap-2'
+                                        onClick={() => {
+                                          setShowBillingAddressSelection(false);
+                                          setShowNewBillingForm(true);
+                                        }}
+                                      >
+                                        <Plus className='h-4 w-4' />
+                                        Add New Address
+                                      </Button>
+                                    </div>
+                                  </RadioGroup>
+
+                                  <div className='flex justify-between mt-4'>
+                                    <Button
+                                      variant='outline'
+                                      onClick={() =>
+                                        setShowBillingAddressSelection(false)
+                                      }
+                                    >
+                                      Cancel
+                                    </Button>
+                                    <Button
+                                      onClick={() =>
+                                        setShowBillingAddressSelection(false)
+                                      }
+                                      disabled={!selectedBillingAddressId}
+                                    >
+                                      Use This Address
+                                    </Button>
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* New Billing Address Form */}
+                              {showNewBillingForm && (
+                                <div className='space-y-4'>
+                                  <h3 className='font-medium mb-4'>
+                                    Add a new billing address
+                                  </h3>
+                                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                                    <div>
+                                      <Label htmlFor='billing_firstName'>
+                                        First name *
+                                      </Label>
+                                      <Input
+                                        id='billing_firstName'
+                                        name='firstName'
+                                        value={
+                                          newBillingAddress.firstName || ''
+                                        }
+                                        onChange={handleNewBillingAddressChange}
+                                        className={
+                                          formErrors.billing_firstName
+                                            ? 'border-red-500'
+                                            : ''
+                                        }
+                                        required
+                                      />
+                                    </div>
+                                    <div>
+                                      <Label htmlFor='billing_lastName'>
+                                        Last name *
+                                      </Label>
+                                      <Input
+                                        id='billing_lastName'
+                                        name='lastName'
+                                        value={newBillingAddress.lastName || ''}
+                                        onChange={handleNewBillingAddressChange}
+                                        className={
+                                          formErrors.billing_lastName
+                                            ? 'border-red-500'
+                                            : ''
+                                        }
+                                        required
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div>
+                                    <Label htmlFor='billing_company'>
+                                      Company name (optional)
+                                    </Label>
+                                    <Input
+                                      id='billing_company'
+                                      name='company'
+                                      value={newBillingAddress.company || ''}
+                                      onChange={handleNewBillingAddressChange}
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <Label htmlFor='billing_address1'>
+                                      Address line 1 *
+                                    </Label>
+                                    <Input
+                                      id='billing_address1'
+                                      name='address1'
+                                      value={newBillingAddress.address1 || ''}
+                                      onChange={handleNewBillingAddressChange}
+                                      className={
+                                        formErrors.billing_address1
+                                          ? 'border-red-500'
+                                          : ''
+                                      }
+                                      required
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <Label htmlFor='billing_apartment'>
+                                      Apartment, suite, etc. (optional)
+                                    </Label>
+                                    <Input
+                                      id='billing_apartment'
+                                      name='apartment'
+                                      value={newBillingAddress.apartment || ''}
+                                      onChange={handleNewBillingAddressChange}
+                                    />
+                                  </div>
+
+                                  <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                                    <div>
+                                      <Label htmlFor='billing_city'>
+                                        City *
+                                      </Label>
+                                      <Input
+                                        id='billing_city'
+                                        name='city'
+                                        value={newBillingAddress.city || ''}
+                                        onChange={handleNewBillingAddressChange}
+                                        className={
+                                          formErrors.billing_city
+                                            ? 'border-red-500'
+                                            : ''
+                                        }
+                                        required
+                                      />
+                                    </div>
+                                    <div>
+                                      <Label htmlFor='billing_state'>
+                                        State *
+                                      </Label>
+                                      <Select
+                                        value={newBillingAddress.state || ''}
+                                        onValueChange={handleBillingStateChange}
+                                      >
+                                        <SelectTrigger
+                                          id='billing_state'
+                                          className={
+                                            formErrors.billing_state
+                                              ? 'border-red-500'
+                                              : ''
+                                          }
+                                        >
+                                          <SelectValue placeholder='Select state' />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          {indianStates.map((state) => (
+                                            <SelectItem
+                                              key={state}
+                                              value={state}
+                                            >
+                                              {state}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
+                                    <div>
+                                      <Label htmlFor='billing_postcode'>
+                                        PIN code *
+                                      </Label>
+                                      <Input
+                                        id='billing_postcode'
+                                        name='postcode'
+                                        value={newBillingAddress.postcode || ''}
+                                        onChange={handleNewBillingAddressChange}
+                                        className={
+                                          formErrors.billing_postcode
+                                            ? 'border-red-500'
+                                            : ''
+                                        }
+                                        required
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div>
+                                    <Label htmlFor='billing_phone'>
+                                      Phone *
+                                    </Label>
+                                    <Input
+                                      id='billing_phone'
+                                      name='phone'
+                                      value={newBillingAddress.phone || ''}
+                                      onChange={handleNewBillingAddressChange}
+                                      className={
+                                        formErrors.billing_phone
+                                          ? 'border-red-500'
+                                          : ''
+                                      }
+                                      required
+                                    />
+                                  </div>
+
+                                  <div className='flex items-center space-x-2'>
+                                    <Checkbox
+                                      id='saveBillingAddress'
+                                      checked={saveNewBillingAddress}
+                                      onCheckedChange={(checked) =>
+                                        setSaveNewBillingAddress(!!checked)
+                                      }
+                                    />
+                                    <Label
+                                      htmlFor='saveBillingAddress'
+                                      className='text-sm font-normal'
+                                    >
+                                      Save this address for future orders
+                                    </Label>
+                                  </div>
+
+                                  <div className='flex justify-between mt-4'>
+                                    <Button
+                                      variant='outline'
+                                      onClick={() => {
+                                        setShowNewBillingForm(false);
+                                        if (
+                                          savedAddresses.filter(
+                                            (a) => a.type === 'billing'
+                                          ).length > 0
+                                        ) {
+                                          setShowBillingAddressSelection(true);
+                                        }
+                                      }}
+                                    >
+                                      Cancel
+                                    </Button>
+                                    <Button
+                                      onClick={async () => {
+                                        // Validate form
+                                        const requiredFields = [
+                                          'firstName',
+                                          'lastName',
+                                          'address1',
+                                          'city',
+                                          'state',
+                                          'postcode',
+                                          'phone',
+                                        ];
+                                        const missingFields =
+                                          requiredFields.filter(
+                                            (field) => !newBillingAddress[field]
+                                          );
+
+                                        if (missingFields.length > 0) {
+                                          const errors: FormErrors = {};
+                                          missingFields.forEach((field) => {
+                                            errors[`billing_${field}`] = true;
+                                          });
+                                          setFormErrors(errors);
+                                          return;
+                                        }
+
+                                        try {
+                                          setIsSubmitting(true);
+
+                                          // If user wants to save the address, add it to their account
+                                          if (saveNewBillingAddress) {
+                                            // Prepare address object for API
+                                            const addressData = {
+                                              ...newBillingAddress,
+                                              type: 'billing' as const,
+                                              isDefault: true, // Make this the default billing address
+                                            };
+
+                                            // Add the address to user's account
+                                            const savedAddress =
+                                              await addUserAddress(addressData);
+
+                                            // Update the addresses list
+                                            setSavedAddresses((prev) => [
+                                              ...prev,
+                                              savedAddress,
+                                            ]);
+
+                                            // Set as selected address
+                                            setSelectedBillingAddressId(
+                                              savedAddress.id
+                                            );
+
+                                            // Update default billing address
+                                            setDefaultBillingAddress(
+                                              savedAddress
+                                            );
+
+                                            toast({
+                                              title: 'Address Saved',
+                                              description:
+                                                'Your new billing address has been saved.',
+                                            });
+                                          } else {
+                                            // Just use this address for current checkout without saving
+                                            // Generate a temporary ID for the address
+                                            const tempAddress = {
+                                              ...newBillingAddress,
+                                              id: `temp-${Date.now()}`,
+                                              type: 'billing' as const,
+                                              isDefault: false,
+                                            };
+
+                                            // Set as selected address
+                                            setSelectedBillingAddressId(
+                                              tempAddress.id
+                                            );
+
+                                            // Add to temporary list
+                                            setSavedAddresses((prev) => [
+                                              ...prev,
+                                              tempAddress,
+                                            ]);
+                                          }
+
+                                          // Close the form
+                                          setShowNewBillingForm(false);
+                                        } catch (error) {
+                                          console.error(
+                                            'Error saving address:',
+                                            error
+                                          );
+                                          toast({
+                                            title: 'Error',
+                                            description:
+                                              'Failed to save your address. Please try again.',
+                                            variant: 'destructive',
+                                          });
+                                        } finally {
+                                          setIsSubmitting(false);
+                                        }
+                                      }}
+                                    >
+                                      Use This Address
+                                    </Button>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
                       </div>
                     </RadioGroup>
-                    {useSameAddress && (
-                      <div className='mt-4'>
-                        <Button
-                          onClick={handleSaveBillingAddress}
-                          className='w-full'
-                        >
-                          Confirm Billing Address
-                        </Button>
-                      </div>
-                    )}
                   </div>
                 )}
 
-                {checkoutStep === 'billing' && (
-                  <div className='space-y-4'>
-                    <Label className='flex items-center space-x-3'>
-                      <Checkbox
-                        checked={acceptTerms}
-                        onCheckedChange={(checked) =>
-                          setAcceptTerms(checked as boolean)
-                        }
-                        required
-                      />
-                      <span className='text-sm'>
-                        I have read and agree to the website{' '}
-                        <Link
-                          to='/terms-and-conditions'
-                          className='text-blue-600 hover:underline'
-                        >
-                          terms and conditions
-                        </Link>
-                      </span>
-                    </Label>
+                <div className='space-y-4'>
+                  <Label className='flex items-center space-x-3'>
+                    <Checkbox
+                      checked={acceptTerms}
+                      onCheckedChange={(checked) =>
+                        setAcceptTerms(checked as boolean)
+                      }
+                      required
+                    />
+                    <span className='text-sm'>
+                      I have read and agree to the website{' '}
+                      <Link
+                        to='/terms-and-conditions'
+                        className='text-blue-600 hover:underline'
+                      >
+                        terms and conditions
+                      </Link>
+                    </span>
+                  </Label>
 
-                    <Button
-                      type='submit'
-                      className='w-full'
-                      disabled={!acceptTerms}
-                      onClick={handleSubmit}
-                    >
-                      Complete Order
-                    </Button>
-                  </div>
-                )}
+                  <Button
+                    type='submit'
+                    className='w-full'
+                    disabled={!acceptTerms}
+                    onClick={handleSubmit}
+                  >
+                    Complete Order
+                  </Button>
+                </div>
               </>
             ) : (
               <div className='text-center'>
@@ -813,9 +1733,9 @@ export default function CheckoutPage() {
                     <img
                       src={product.thumbnail || '/placeholder.svg'}
                       alt={product.title}
-                      // layout='fill'
-                      // objectFit='cover'
-                      className='w-full h-full object-contain rounded-lg'
+                      width={80}
+                      height={80}
+                      className='rounded-lg object-cover'
                     />
                   </div>
                   <div className='flex-1'>

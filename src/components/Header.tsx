@@ -18,10 +18,10 @@ export function Header() {
   const searchRef = useRef<HTMLDivElement>(null);
   const [searchRedirect, setSearchRedirect] = useState<string | null>(null);
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
-  const [wishlistCount, setWishlistCount] = useState(0);
-  const { cart } = useShop();
+  const { cart, wishlist } = useShop();
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
   const navigate = useNavigate();
+  const wishlistCount = wishlist.length;
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -29,8 +29,6 @@ export function Header() {
       const loggedIn = Cookies.get('isLoggedIn') === 'true';
       setIsLoggedIn(authToken != null && loggedIn);
     };
-
-    setWishlistCount(5);
 
     checkLoginStatus();
     // Listen for login status changes

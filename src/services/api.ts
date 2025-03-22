@@ -1,5 +1,5 @@
 // Base API URL - will use the environment variable
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL;
 
 // Product interfaces
 export interface ProductResponse {
@@ -60,7 +60,6 @@ export const fetchProductCategories = async () => {
     const data = await response.json();
 
     // Add debug logging
-    console.log('Fetched categories:', data);
 
     return data;
   } catch (error) {

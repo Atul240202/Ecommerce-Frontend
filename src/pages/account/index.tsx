@@ -55,7 +55,7 @@ export default function AccountPage() {
 
   useEffect(() => {
     if (user) {
-      console.log('loggedin user details', user);
+      console.log('loggedin user');
     }
   }, [user]);
 
