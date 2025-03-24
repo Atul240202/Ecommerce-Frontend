@@ -18,6 +18,7 @@ interface Product {
   discountPercentage: number;
   rating: number;
   stock: number;
+  slug?: string;
 }
 
 interface ProductCardFeaturedProps {
@@ -64,7 +65,12 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
 
   return (
     <>
-      <Link to={`/product/${product.id}`} className='block'>
+      <Link
+        to={`/product/${
+          product.slug || product.title.toLowerCase().replace(/\s+/g, '-')
+        }-${product.id}`}
+        className='block'
+      >
         <div className='bg-white rounded-lg p-4 border border-gray-200 hover:border-blue-500 transition-colors h-[450px] flex flex-col'>
           {/* Product Image and Badge */}
           <div className='relative h-48 mb-4'>

@@ -88,7 +88,9 @@ export const fetchProducts = async (
   }
 };
 
-export const fetchProductById = async (id: number): Promise<Product> => {
+export const fetchProductById = async (
+  id: number | string
+): Promise<Product> => {
   try {
     const response = await fetch(`${API_URL}/products/${id}`);
     if (!response.ok) {

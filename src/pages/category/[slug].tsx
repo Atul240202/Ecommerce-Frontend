@@ -276,6 +276,7 @@ export default function CategoryPage() {
                         : 0,
                       rating: Number.parseFloat(product.average_rating),
                       stock: product.stock_status === 'instock' ? 100 : 0,
+                      slug: product.slug,
                     }}
                   />
                 ))}

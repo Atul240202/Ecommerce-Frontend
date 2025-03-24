@@ -15,6 +15,7 @@ interface ApiProduct {
   stock_status: string;
   images: Array<{ src: string }>;
   categories: Array<{ name: string }>;
+  slug: string;
 }
 
 interface Product {
@@ -28,6 +29,7 @@ interface Product {
   rating: number;
   description: string;
   stock: number;
+  slug: string;
 }
 
 export function ProductGrid() {
@@ -65,6 +67,8 @@ export function ProductGrid() {
               : 0,
             rating: Number.parseFloat(product.average_rating || '0'),
             stock: product.stock_status === 'instock' ? 100 : 0,
+            slug:
+              product.slug || product.name.toLowerCase().replace(/\s+/g, '-'),
           }));
 
         setFeaturedProducts(transformProducts(featured || []));

@@ -113,8 +113,10 @@ export default function ProductPage() {
       setIsLoading(true);
       setError(null);
       try {
-        const productData = await fetchProductById(Number.parseInt(id));
+        // const productData = await fetchProductById(Number.parseInt(id));
+        const productId = id.split('-').pop() || id;
 
+        const productData = await fetchProductById(productId);
         // Transform the API data to match our UI needs
         const transformedProduct: Product = {
           ...productData,
@@ -136,7 +138,8 @@ export default function ProductPage() {
 
         // Check if product is in wishlist
         if (isInWishlist) {
-          setIsWishlisted(isInWishlist(Number.parseInt(id)));
+          // setIsWishlisted(isInWishlist(Number.parseInt(id)));
+          setIsWishlisted(isInWishlist(Number.parseInt(productId)));
         }
       } catch (err) {
         console.error('Error fetching product:', err);

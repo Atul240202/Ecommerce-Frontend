@@ -19,6 +19,7 @@ interface Product {
     name: string;
     slug: string;
   }>;
+  slug: string;
 }
 
 interface RelatedProductsProps {
@@ -118,6 +119,7 @@ export function RelatedProducts({
                   100
                 : 0,
               rating: Number.parseFloat(product.average_rating),
+              slug: product.slug,
             }}
             onAddToWishlist={() => {}}
             isInWishlist={false}
