@@ -1,84 +1,146 @@
 {
   "categories": [
     {
-      "name": "Power Tools",
-      "href": "/categories/power-tools",
-      "icon": "https://dummyimage.com/60x60/ff5733/fff.png"
-    },
-    {
-      "name": "Hand Tools",
-      "href": "/categories/hand-tools",
-      "icon": "https://dummyimage.com/60x60/33ff57/fff.png"
+      "name": "Adhesives Sealants",
+      "href": "/categories/adhesive",
+      "icon": "https://dummyimage.com/60x60/ff5733/fff.png",
+      "subcategories": [
+        {
+          "name": "Rubber and Contact Adhesive",
+          "href": "/categories/rubber-contact-adhesive"
+        },
+        {
+          "name": "Synthetic Adhesive",
+          "href": "/categories/synthetic-adhesive"
+        },
+        {
+          "name": "Sprayable Adhesive",
+          "href": "/categories/sprayable-adhesive"
+        }
+      ]
     },
     {
       "name": "Bearing",
       "href": "/categories/bearing",
-      "icon": "https://dummyimage.com/60x60/3357ff/fff.png"
+      "icon": "https://dummyimage.com/60x60/33ff57/fff.png",
+      "subcategories": [
+        {
+          "name": "Deep Groove Ball Bearing",
+          "href": "/categories/deep-groove-ball-bearing"
+        }
+      ]
     },
     {
-      "name": "Lubricants",
-      "href": "/categories/lubricants",
-      "icon": "https://dummyimage.com/60x60/ff33a8/fff.png"
+      "name": "Cutting Tools",
+      "href": "/categories/cutting-tools",
+      "icon": "https://dummyimage.com/60x60/3357ff/fff.png",
+      "subcategories": [
+        {
+          "name": "Dead Centre",
+          "href": "/categories/dead-centre"
+        },
+        {
+          "name": "Revolving Centre",
+          "href": "/categories/revolving-centre"
+        }
+      ]
     },
     {
-      "name": "Beltings",
-      "href": "/categories/belting",
-      "icon": "https://dummyimage.com/60x60/a833ff/fff.png"
-    },
-    {
-      "name": "Insulations",
-      "href": "/categories/insulations",
-      "icon": "https://dummyimage.com/60x60/33fff5/fff.png"
-    },
-    {
-      "name": "Electricals",
+      "name": "Electrical",
       "href": "/categories/electrical",
-      "icon": "https://dummyimage.com/60x60/ff8c33/fff.png"
+      "icon": "https://dummyimage.com/60x60/ff33a8/fff.png",
+      "subcategories": [
+        {
+          "name": "Inverter Generators",
+          "href": "/categories/inverter-generators"
+        },
+        {
+          "name": "Generators and Transformers",
+          "href": "/categories/generators-and-transformers"
+        }
+      ]
     },
     {
-      "name": "Adhesives",
-      "href": "/categories/adhesive",
-      "icon": "https://dummyimage.com/60x60/ff3333/fff.png"
+      "name": "Fastners",
+      "href": "/categories/fastners",
+      "icon": "https://dummyimage.com/60x60/a833ff/fff.png",
+      "subcategories": [
+        {
+          "name": "Alum / Steel Blind Rivets",
+          "href": "/categories/alum-steel-blind-rivets-alum-steel-blind-rivets"
+        },
+        { "name": "Bolts", "href": "/categories/bolts" },
+        {
+          "name": "Button Head Socket Screws",
+          "href": "/categories/button-head-socket-screws-allen-bolt"
+        },
+        {
+          "name": "Countersunk Socket Head Cap Screws",
+          "href": "/categories/sleev-anchor"
+        },
+        { "name": "Dowel Pin", "href": "/categories/dowel-pin" },
+        { "name": "Hex Bolts", "href": "/categories/hex-bolts" },
+        {
+          "name": "Internal Threaded Dowel Pin",
+          "href": "/categories/internal-threaded-dowel-pin"
+        },
+        { "name": "Lock Nut", "href": "/categories/lock-nut" },
+        { "name": "Nuts", "href": "/categories/nuts" },
+        {
+          "name": "Quick Release Coupler",
+          "href": "/categories/quick-release-coupler"
+        }
+      ]
     },
     {
-      "name": "HVAC",
-      "href": "/categories/hvac",
-      "icon": "https://dummyimage.com/60x60/33a8ff/fff.png"
+      "name": "Hand Tools",
+      "href": "/categories/hand-tools",
+      "icon": "https://dummyimage.com/60x60/33fff5/fff.png",
+      "subcategories": [
+        {
+          "name": "Hacksaw Frame with Plastic Handle",
+          "href": "/categories/hacksaw-frame-with-plastic-handle"
+        },
+        {
+          "name": "Hacksaw Blade",
+          "href": "/categories/hacksaw-blade"
+        },
+        {
+          "name": "Grease Gun",
+          "href": "/categories/grease-gun"
+        }
+      ]
     },
     {
-      "name": "Abrasives",
-      "href": "/categories/abrasive-sheets-rolls",
-      "icon": "https://dummyimage.com/60x60/ffcc33/fff.png"
+      "name": "Power Tools",
+      "href": "/categories/power-tools",
+      "icon": "https://dummyimage.com/60x60/ff8c33/fff.png",
+      "subcategories": [
+        {
+          "name": "Miter Saw",
+          "href": "/categories/miter-saw-saws-chasers"
+        },
+        {
+          "name": "Sanders & Polishers",
+          "href": "/categories/sanders-polishers"
+        },
+        {
+          "name": "Saws & Chasers",
+          "href": "/categories/saws-chasers"
+        }
+      ]
     },
     {
-      "name": "Industrial Sprays",
-      "href": "/categories/adhesives-sealants-and-tape/industrial-tape/",
-      "icon": "https://dummyimage.com/60x60/cc33ff/fff.png"
+      "name": "Pump",
+      "href": "/categories/pump",
+      "icon": "https://dummyimage.com/60x60/ff3333/fff.png",
+      "subcategories": []
     },
     {
-      "name": "Measuring Tools",
-      "href": "/categories/measuring-tools",
-      "icon": "https://dummyimage.com/60x60/33ffcc/fff.png"
-    },
-    {
-      "name": "Painting Tools",
-      "href": "/categories/painting-tools",
-      "icon": "https://dummyimage.com/60x60/ff6633/fff.png"
-    },
-    {
-      "name": "Welding Equipments",
-      "href": "/categories/welding-equipments",
-      "icon": "https://dummyimage.com/60x60/3366ff/fff.png"
-    },
-    {
-      "name": "Copper Fitting",
-      "href": "/categories/copper-fitting",
-      "icon": "https://dummyimage.com/60x60/66ff33/fff.png"
-    },
-    {
-      "name": "Safety Equipments",
-      "href": "/categories/safety-equipments",
-      "icon": "https://dummyimage.com/60x60/ff3366/fff.png"
+      "name": "Shop by Categories",
+      "href": "/categories",
+      "icon": "https://dummyimage.com/60x60/33a8ff/fff.png",
+      "subcategories": []
     }
   ]
 }

@@ -22,6 +22,7 @@ export function Header() {
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
   const navigate = useNavigate();
   const wishlistCount = wishlist.length;
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -115,38 +116,33 @@ export function Header() {
     }
   };
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <header className='border-b'>
       <div className='container mx-auto px-4 py-4'>
-        <div className='flex items-center justify-between'>
-          <Link to='/' className='flex-shrink-0'>
-            <img
-              src={logo}
-              alt='Industrywaala Logo'
-              width={180}
-              height={40}
-              className='h-10 w-auto'
-            />
-          </Link>
-          <div className='flex-1 max-w-xl mx-4 hidden md:block'>
-            <div className='relative' ref={searchRef}>
-              <form onSubmit={handleSearchSubmit}>
-                <div className='relative'>
-                  <Input
-                    type='search'
-                    placeholder='Search for products'
-                    className='w-full pl-4 pr-10'
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    onFocus={() => setShowResults(true)}
-                  />
-                  <button
-                    type='submit'
-                    className='absolute right-3 top-1/2 -translate-y-1/2'
-                    aria-label='Search'
-                  >
+        {isMobile ? (
+          <div>
+            <div className='flex items-center justify-between'>
+              <Link to='/' className='flex-shrink-0'>
+                <img
+                  src={logo}
+                  alt='Industrywaala Logo'
+                  width={150}
+                  className='h-8 w-auto'
+                />
+              </Link>
+
+              <div className='flex items-center gap-4'>
+                <Link to='/wishlist' className='flex items-center gap-1'>
+                  <span className='relative'>
                     <svg
-                      className='h-5 w-5 text-gray-400'
+                      className='h-6 w-6'
                       fill='none'
                       stroke='currentColor'
                       viewBox='0 0 24 24'
@@ -155,91 +151,208 @@ export function Header() {
                         strokeLinecap='round'
                         strokeLinejoin='round'
                         strokeWidth={2}
-                        d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+                        d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
                       />
                     </svg>
-                  </button>
-                </div>
-              </form>
-              {showResults && (
-                <SearchResults
-                  results={searchResults}
-                  isLoading={isSearching}
-                  searchTerm={searchTerm}
-                  onResultClick={handleResultClick}
-                />
+                    <span className='absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#4280ef] text-[10px] font-medium text-white flex items-center justify-center'>
+                      {wishlistCount}
+                    </span>
+                  </span>
+                  <span className='hidden md:inline'>Wishlist</span>
+                </Link>
+                <Link to='/cart' className='flex items-center gap-1'>
+                  <span className='relative'>
+                    <svg
+                      className='h-6 w-6'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'
+                      />
+                    </svg>
+                    <span className='absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#4280ef] text-[10px] font-medium text-white flex items-center justify-center'>
+                      {cartCount}
+                    </span>
+                  </span>
+                  <span className='hidden md:inline'>Cart</span>
+                </Link>
+                {isLoggedIn ? (
+                  <Link to='/account' className='flex items-center gap-1'>
+                    <svg
+                      className='h-6 w-6'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
+                      />
+                    </svg>
+                    <span className='hidden md:inline'>Account</span>
+                  </Link>
+                ) : (
+                  <Link to='/login'>
+                    <Button className='bg-[#4280ef] hover:bg-[#3a72d4] text-white'>
+                      Login
+                    </Button>
+                  </Link>
+                )}
+              </div>
+            </div>
+            <div className='mt-4'>
+              <div className='relative' ref={searchRef}>
+                <form>
+                  <Input
+                    type='search'
+                    placeholder='Search for products'
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onFocus={() => setShowResults(true)}
+                  />
+                </form>
+                {showResults && (
+                  <SearchResults
+                    results={searchResults}
+                    isLoading={isSearching}
+                    searchTerm={searchTerm}
+                    onResultClick={() => setShowResults(false)}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className='flex items-center justify-between'>
+            <Link to='/' className='flex-shrink-0'>
+              <img
+                src={logo}
+                alt='Industrywaala Logo'
+                width={180}
+                height={40}
+                className='h-10 w-auto'
+              />
+            </Link>
+            <div className='flex-1 max-w-xl mx-4 hidden md:block'>
+              <div className='relative' ref={searchRef}>
+                <form onSubmit={handleSearchSubmit}>
+                  <div className='relative'>
+                    <Input
+                      type='search'
+                      placeholder='Search for products'
+                      className='w-full pl-4 pr-10'
+                      value={searchTerm}
+                      onChange={handleSearchChange}
+                      onFocus={() => setShowResults(true)}
+                    />
+                    <button
+                      type='submit'
+                      className='absolute right-3 top-1/2 -translate-y-1/2'
+                      aria-label='Search'
+                    >
+                      <svg
+                        className='h-5 w-5 text-gray-400'
+                        fill='none'
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </form>
+                {showResults && (
+                  <SearchResults
+                    results={searchResults}
+                    isLoading={isSearching}
+                    searchTerm={searchTerm}
+                    onResultClick={handleResultClick}
+                  />
+                )}
+              </div>
+            </div>
+            <div className='flex items-center gap-4'>
+              <Link to='/wishlist' className='flex items-center gap-1'>
+                <span className='relative'>
+                  <svg
+                    className='h-6 w-6'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth={2}
+                      d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
+                    />
+                  </svg>
+                  <span className='absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#4280ef] text-[10px] font-medium text-white flex items-center justify-center'>
+                    {wishlistCount}
+                  </span>
+                </span>
+                <span className='hidden md:inline'>Wishlist</span>
+              </Link>
+              <Link to='/cart' className='flex items-center gap-1'>
+                <span className='relative'>
+                  <svg
+                    className='h-6 w-6'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth={2}
+                      d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'
+                    />
+                  </svg>
+                  <span className='absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#4280ef] text-[10px] font-medium text-white flex items-center justify-center'>
+                    {cartCount}
+                  </span>
+                </span>
+                <span className='hidden md:inline'>Cart</span>
+              </Link>
+              {isLoggedIn ? (
+                <Link to='/account' className='flex items-center gap-1'>
+                  <svg
+                    className='h-6 w-6'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth={2}
+                      d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
+                    />
+                  </svg>
+                  <span className='hidden md:inline'>Account</span>
+                </Link>
+              ) : (
+                <Link to='/login'>
+                  <Button className='bg-[#4280ef] hover:bg-[#3a72d4] text-white'>
+                    Login
+                  </Button>
+                </Link>
               )}
             </div>
           </div>
-          <div className='flex items-center gap-4'>
-            <Link to='/wishlist' className='flex items-center gap-1'>
-              <span className='relative'>
-                <svg
-                  className='h-6 w-6'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
-                  />
-                </svg>
-                <span className='absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#4280ef] text-[10px] font-medium text-white flex items-center justify-center'>
-                  {wishlistCount}
-                </span>
-              </span>
-              <span className='hidden md:inline'>Wishlist</span>
-            </Link>
-            <Link to='/cart' className='flex items-center gap-1'>
-              <span className='relative'>
-                <svg
-                  className='h-6 w-6'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'
-                  />
-                </svg>
-                <span className='absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#4280ef] text-[10px] font-medium text-white flex items-center justify-center'>
-                  {cartCount}
-                </span>
-              </span>
-              <span className='hidden md:inline'>Cart</span>
-            </Link>
-            {isLoggedIn ? (
-              <Link to='/account' className='flex items-center gap-1'>
-                <svg
-                  className='h-6 w-6'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
-                  />
-                </svg>
-                <span className='hidden md:inline'>Account</span>
-              </Link>
-            ) : (
-              <Link to='/login'>
-                <Button className='bg-[#4280ef] hover:bg-[#3a72d4] text-white'>
-                  Login
-                </Button>
-              </Link>
-            )}
-          </div>
-        </div>
+        )}
       </div>
       {searchRedirect && <Link to={searchRedirect} />}
     </header>

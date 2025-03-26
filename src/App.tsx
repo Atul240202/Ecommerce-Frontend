@@ -24,6 +24,8 @@ import VerifyOtpPage from './pages/verify-otp';
 import ForgotPasswordPage from './pages/forgot-password';
 import VerifyResetOtpPage from './pages/verify-reset-otp';
 import ResetPasswordPage from './pages/reset-password';
+import BestSellersPage from './pages/bestsellers';
+import AboutUs from './pages/about-us';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -50,6 +52,7 @@ function App() {
             <Route path='/register' element={<RegisterPage />} />
             <Route path='/verify-otp' element={<VerifyOtpPage />} />
             <Route path='/' element={<HomePage />} />
+            <Route path='/bestseller' element={<BestSellersPage />} />
             <Route path='/categories/:slug' element={<CategoryPage />} />
             <Route path='/categories' element={<MainCategoryPage />} />
             <Route path='/product/:id' element={<ProductPage />} />
@@ -58,6 +61,7 @@ function App() {
             <Route path='/blog/:id' element={<BlogPostPage />} />
             <Route path='/contact' element={<ContactPage />} />
             <Route path='/wishlist' element={<WishlistPage />} />
+            <Route path='/about-us' element={<AboutUs />} />
             <Route
               path='/terms-and-conditions'
               element={<TermsAndConditionsPage />}

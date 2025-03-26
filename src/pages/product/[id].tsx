@@ -167,7 +167,7 @@ export default function ProductPage() {
     }
 
     setIsAddingToCart(true);
-    await addToCart(product.id, quantity, product.name);
+    await addToCart(product.id, quantity, product.name, product.sku);
     if (isWishlisted) {
       setIsWishlisted(false);
     }
@@ -186,7 +186,11 @@ export default function ProductPage() {
       await removeFromWishlist(product.id);
       setIsWishlisted(false);
     } else {
-      const success = await addToWishlist(product.id, product.name);
+      const success = await addToWishlist(
+        product.id,
+        product.name,
+        product.sku
+      );
       if (success) {
         setIsWishlisted(true);
       }
@@ -206,6 +210,7 @@ export default function ProductPage() {
       thumbnail: product.images[0]?.src || '/placeholder.svg',
       price: discountedPrice,
       quantity: quantity,
+      sku: product.sku || '',
     });
 
     navigate('/checkout');

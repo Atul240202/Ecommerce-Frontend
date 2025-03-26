@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { LoginModal } from '@/components/utils/LoginModal';
-import { OrderConfirmation } from '@/components/OrderConfirmation';
+import { OrderConfirmation } from '@/components/orders/OrderConfirmation';
 import { useCheckout } from '@/contexts/CheckoutContext';
 import { Loader2, Plus } from 'lucide-react';
 import Cookies from 'js-cookie';
@@ -34,8 +34,10 @@ import {
   storeUnprocessedOrder,
   deleteUnprocessedOrder,
 } from '@/services/unprocessedOrderService';
+import { createFinalOrder } from '@/services/finalOrderService';
 import { getCurrentUser } from '@/services/auth';
 import { v4 as uuidv4 } from 'uuid';
+import { format } from 'date-fns';
 
 interface UserAddress {
   id: string;
@@ -107,6 +109,7 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
+  const [finalOrderData, setFinalOrderData] = useState<any>(null);
 
   // Unprocessed order tracking
   const [tempOrderId, setTempOrderId] = useState<string>('');
@@ -337,6 +340,113 @@ export default function CheckoutPage() {
     return Object.keys(errors).length === 0;
   };
 
+  const prepareFinalOrderData = () => {
+    const selectedShippingAddress = getSelectedShippingAddress();
+    const selectedBillingAddress = getSelectedBillingAddress();
+
+    if (!selectedShippingAddress) {
+      throw new Error('Shipping address is required');
+    }
+
+    // Generate a unique order ID
+    const generatedOrderId = `ORD${Date.now().toString().slice(-6)}${Math.floor(
+      Math.random() * 1000
+    )}`;
+
+    // Format the current date as YYYY-MM-DD
+    const currentDate = format(new Date(), 'yyyy-MM-dd');
+    console.log('Product', products);
+    // Prepare order items
+    const orderItems = products.map((product) => ({
+      id: product.id,
+      name: product.title,
+      sku: product.sku || '', // Replace with actual SKU if available
+      units: product.quantity.toString(),
+      selling_price: product.price.toString(),
+      discount: '0', // Replace with actual discount if available
+      tax: '0', // Replace with actual tax if available
+      hsn: '', // Replace with actual HSN code if available
+    }));
+
+    // Create the final order data object
+    const finalOrderData = {
+      order_id: generatedOrderId,
+      order_date: currentDate,
+      pickup_location:
+        'B - 80, B Block, Sector 5, , Gautam Buddha Nagar, Uttar Pradesh, 201301', // Replace with actual pickup location
+      channel_id: '2970164',
+      comment: '',
+      reseller_name: '',
+      company_name: '',
+
+      // Billing information
+      billing_customer_name:
+        selectedBillingAddress?.firstName || selectedShippingAddress.firstName,
+      billing_last_name:
+        selectedBillingAddress?.lastName || selectedShippingAddress.lastName,
+      billing_address:
+        selectedBillingAddress?.address1 || selectedShippingAddress.address1,
+      billing_address_2:
+        selectedBillingAddress?.apartment ||
+        selectedShippingAddress.apartment ||
+        '',
+      billing_isd_code: '+91', // Default ISD code for India
+      billing_city:
+        selectedBillingAddress?.city || selectedShippingAddress.city,
+      billing_pincode:
+        selectedBillingAddress?.postcode || selectedShippingAddress.postcode,
+      billing_state:
+        selectedBillingAddress?.state || selectedShippingAddress.state,
+      billing_country:
+        selectedBillingAddress?.country || selectedShippingAddress.country,
+      billing_email: currentUser?.email || '',
+      billing_phone:
+        selectedBillingAddress?.phone || selectedShippingAddress.phone,
+      billing_alternate_phone: '',
+
+      // Shipping information
+      shipping_is_billing: useSameAddress ? 'true' : 'false',
+      shipping_customer_name: selectedShippingAddress.firstName,
+      shipping_last_name: selectedShippingAddress.lastName,
+      shipping_address: selectedShippingAddress.address1,
+      shipping_address_2: selectedShippingAddress.apartment || '',
+      shipping_city: selectedShippingAddress.city,
+      shipping_pincode: selectedShippingAddress.postcode,
+      shipping_country: selectedShippingAddress.country,
+      shipping_state: selectedShippingAddress.state,
+      shipping_email: currentUser?.email || '',
+      shipping_phone: selectedShippingAddress.phone,
+
+      // Order items
+      order_items: orderItems,
+
+      // Payment and pricing information
+      payment_method: paymentMethod === 'cod' ? 'COD' : 'Prepaid',
+      shipping_charges: shipping.toString(),
+      giftwrap_charges: '0',
+      transaction_charges: '0',
+      total_discount: '0',
+      sub_total: subtotal.toString(),
+
+      // Package information
+      length: '',
+      breadth: '',
+      height: '',
+      weight: '',
+
+      // Additional information
+      ewaybill_no: '',
+      customer_gstin: '',
+      invoice_number: '',
+      order_type: 'Retail',
+
+      // Reference to unprocessed order if exists
+      unprocessed_order_id: tempOrderId || null,
+    };
+
+    return finalOrderData;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isLoggedIn) {
@@ -350,18 +460,40 @@ export default function CheckoutPage() {
 
     setIsSubmitting(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      // If we have a tempOrderId, delete the unprocessed order since it's now completed
+      // Prepare the final order data
+      const orderData = prepareFinalOrderData();
+
+      // Store the final order data for display in the confirmation page
+      setFinalOrderData(orderData);
+
+      // Create the final order in the database
+      const response = await createFinalOrder(orderData);
+
+      // Set the order number from the response
+      setOrderNumber(orderData.order_id);
+      setOrderConfirmed(true);
       if (tempOrderId) {
-        await deleteUnprocessedOrder(tempOrderId);
+        // await deleteUnprocessedOrder(tempOrderId);
         // Clear from sessionStorage
         sessionStorage.removeItem('unprocessed_order_tempid');
       }
-      // TODO: Replace with actual API call
-      setOrderNumber('ORD' + Math.floor(Math.random() * 1000000));
-      setOrderConfirmed(true);
-      clearCart();
+
+      if (typeof clearCart === 'function') {
+        clearCart();
+      } else {
+        // Fallback if clearCart is not available
+        console.warn(
+          'clearCart function not available, using alternative method'
+        );
+        // localClearCart();
+      }
+
+      // Show success message
+      toast({
+        title: 'Order Placed Successfully',
+        description: `Your order #${orderData.order_id} has been placed successfully.`,
+        variant: 'default',
+      });
     } catch (error) {
       console.error('Error submitting order:', error);
       // Show error message to user
@@ -425,6 +557,7 @@ export default function CheckoutPage() {
           price: p.price,
           quantity: p.quantity,
           thumbnail: p.thumbnail,
+          sku: p.sku || '',
         })),
         shippingAddress: {
           id: selectedShippingAddress.id,
@@ -535,6 +668,7 @@ export default function CheckoutPage() {
             subtotal,
             shipping,
             total,
+            finalOrderData: finalOrderData,
           }}
         />
       </MainLayout>
@@ -1740,6 +1874,11 @@ export default function CheckoutPage() {
                   </div>
                   <div className='flex-1'>
                     <h3 className='font-medium'>{product.title}</h3>
+                    {product.sku && (
+                      <p className='text-xs text-gray-500'>
+                        SKU: {product.sku}
+                      </p>
+                    )}
                     <div className='flex items-center gap-2 mt-2'>
                       <Button
                         variant='outline'

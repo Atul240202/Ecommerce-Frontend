@@ -12,6 +12,7 @@ interface CartItem {
   name: string;
   price: number;
   image: string;
+  sku: string;
 }
 
 interface WishlistItem {
@@ -21,6 +22,7 @@ interface WishlistItem {
   image: string;
   stock_status: string;
   addedAt: string;
+  sku: string;
 }
 
 interface ShopContextType {
@@ -31,13 +33,18 @@ interface ShopContextType {
   addToCart: (
     productId: number,
     quantity: number,
-    productName?: string
+    productName?: string,
+    sku?: string
   ) => Promise<boolean>;
   removeFromCart: (productId: number) => Promise<void>;
   updateCartQuantity: (productId: number, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
   fetchCart: () => Promise<void>;
-  addToWishlist: (productId: number, productName?: string) => Promise<boolean>;
+  addToWishlist: (
+    productId: number,
+    productName?: string,
+    sku?: string
+  ) => Promise<boolean>;
   removeFromWishlist: (productId: number, showToast?: boolean) => Promise<void>;
   clearWishlist: () => Promise<void>;
   fetchWishlist: () => Promise<void>;

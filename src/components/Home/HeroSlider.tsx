@@ -31,7 +31,7 @@ export function HeroSlider({ slides }: HeroSliderProps) {
   };
 
   return (
-    <div className='relative w-full h-[600px] overflow-hidden'>
+    <div className='relative w-full h-[600px]'>
       {slides.map((slide, index) => (
         <div
           key={index}

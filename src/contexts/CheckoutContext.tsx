@@ -8,6 +8,7 @@ interface CheckoutProduct {
   thumbnail: string;
   price: number;
   quantity: number;
+  sku: string;
 }
 
 interface CheckoutContextType {

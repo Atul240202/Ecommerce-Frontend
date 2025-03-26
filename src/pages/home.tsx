@@ -11,6 +11,8 @@ import {
   fetchFeaturedProducts,
   fetchBestSellerProducts,
 } from '../services/api';
+import { fetchProductCategories, type ProductCategory } from '/services/api';
+import CategorySubheader from '../components/Home/CategorySubheader';
 
 interface Product {
   id: number;
@@ -98,23 +100,9 @@ export default function HomePage() {
   return (
     <MainLayout>
       <div className='mx-auto'>
+        {/* <CategorySubheader /> */}
+
         <HeroSlider slides={promotions.slider} />
-
-        <CategoryGrid categories={categories} />
-
-        {promotions.mini_banner && (
-          <Link
-            href={promotions.mini_banner.href}
-            className='flex justify-center my-8'
-          >
-            <img
-              src={promotions.mini_banner.image || '/placeholder.svg'}
-              alt='Promotional banner'
-              className='w-full max-w-[70vw] max-h-[20vh]'
-            />
-          </Link>
-        )}
-
         <ProductGrid
           featuredProducts={featuredProducts}
           bestSellerProducts={bestSellerProducts}
@@ -135,6 +123,20 @@ export default function HomePage() {
         )}
 
         <FeaturedProducts />
+
+        {promotions.mini_banner && (
+          <Link
+            href={promotions.mini_banner.href}
+            className='flex justify-center my-8'
+          >
+            <img
+              src={promotions.mini_banner.image || '/placeholder.svg'}
+              alt='Promotional banner'
+              className='w-full max-w-[70vw] max-h-[20vh]'
+            />
+          </Link>
+        )}
+
         <FeaturedSection />
 
         {promotions.footer_banner && promotions.footer_banner.length > 0 && (

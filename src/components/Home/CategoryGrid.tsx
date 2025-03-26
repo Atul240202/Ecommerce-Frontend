@@ -21,7 +21,7 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
         <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4'>
           {categories.map((category) => {
             // Convert category name to URL-friendly slug
-            const slug = category.href;
+            const slug = category.slug;
 
             return (
               <Link
@@ -29,13 +29,6 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
                 to={`${slug}`}
                 className='flex flex-col items-center p-4 rounded-lg border hover:border-primary transition-colors'
               >
-                <img
-                  src={category.icon || '/placeholder.svg'}
-                  alt={category.name}
-                  width={60}
-                  height={60}
-                  className='mb-2'
-                />
                 <span className='text-sm font-medium text-center'>
                   {category.name}
                 </span>

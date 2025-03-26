@@ -78,7 +78,7 @@ export default function CartPage() {
       // Store as unprocessed order first (in case user abandons checkout)
       await deleteAllUserUnprocessedOrders();
       const tempId = uuidv4();
-
+      console.log('cart products', cart);
       // Create unprocessed order data
       const unprocessedOrderData = {
         tempId,

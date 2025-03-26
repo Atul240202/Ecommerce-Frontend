@@ -39,6 +39,13 @@ export function ProductGrid() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [bestSellerProducts, setBestSellerProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -86,19 +93,28 @@ export function ProductGrid() {
   return (
     <div className='py-12'>
       <div className='container mx-auto px-4'>
-        <div className='flex gap-4 mb-8'>
-          <Button
-            variant={activeTab === 'featured' ? 'default' : 'outline'}
-            onClick={() => setActiveTab('featured')}
+        <div className='flex mb-8'>
+          <h2
+            className={`font-semibold text-[#1a2030] ${
+              isMobile ? 'text-xl' : 'text-3xl'
+            }`}
           >
-            Featured
-          </Button>
-          <Button
-            variant={activeTab === 'bestseller' ? 'default' : 'outline'}
-            onClick={() => setActiveTab('bestseller')}
-          >
-            Best Seller
-          </Button>
+            Buy our featured products
+          </h2>
+          <div className='flex ml-auto gap-8'>
+            <Button
+              variant={activeTab === 'featured' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('featured')}
+            >
+              Featured
+            </Button>
+            <Button
+              variant={activeTab === 'bestseller' ? 'default' : 'outline'}
+              onClick={() => setActiveTab('bestseller')}
+            >
+              Best Seller
+            </Button>
+          </div>
         </div>
 
         {loading ? (

@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -33,7 +33,7 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
   const { addToCart, isLoggedIn } = useShop();
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
-
+  const [isMobile, setIsMobile] = useState(false);
   // Use the actual sale price if available, otherwise use the regular price
   const discountedPrice = product.salePrice || product.price;
   const regularPrice = product.regularPrice || product.price;
@@ -62,7 +62,12 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
     await addToCart(product.id, 1, product.title);
     setIsAddingToCart(false);
   };
-
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   return (
     <>
       <Link
@@ -71,9 +76,13 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
         }-${product.id}`}
         className='block'
       >
-        <div className='bg-white rounded-lg p-4 border border-gray-200 hover:border-blue-500 transition-colors h-[450px] flex flex-col'>
+        <div
+          className={`bg-white rounded-lg  border border-gray-200 hover:border-blue-500 transition-colors flex flex-col ${
+            isMobile ? 'p-2 h-[375px] ' : 'p-4 h-[450px] '
+          }`}
+        >
           {/* Product Image and Badge */}
-          <div className='relative h-48 mb-4'>
+          <div className={`relative ${isMobile ? 'mb-2 h-40' : 'mb-4 h-48'}`}>
             <img
               src={product.thumbnail || '/placeholder.svg'}
               alt={product.title}
@@ -118,7 +127,11 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
               {/* Price */}
               <div className='mb-2'>
                 <div className='flex items-baseline gap-2'>
-                  <span className='text-lg font-bold text-[#1a2030]'>
+                  <span
+                    className={`text-lg font-bold text-[#1a2030] ${
+                      isMobile ? 'text-sm' : 'text-lg'
+                    }`}
+                  >
                     Rs. {discountedPrice.toFixed(2)}
                   </span>
                   {(product.salePrice &&
