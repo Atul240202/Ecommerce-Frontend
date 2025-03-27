@@ -248,7 +248,7 @@ export default function CategoryPage() {
             <div className='w-full md:w-3/4'>
               <ProductSort onSortChange={handleSortChange} />
 
-              <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+              <div className='grid grid-cols-2 md:grid-cols-3 gap-6'>
                 {filteredProducts.map((product) => (
                   <ProductCardFeatured
                     key={product.id}

@@ -19,6 +19,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/use-toast';
 import LoginPopup from '@/components/utils/LoginPopup';
 import { isLoggedIn } from '@/services/auth';
+import { Features } from '../../components/utils/Features';
 
 interface ProductImage {
   id: number;
@@ -101,11 +102,20 @@ export default function ProductPage() {
   const [reviewName, setReviewName] = useState('');
   const [reviewComment, setReviewComment] = useState('');
   const [reviewRating, setReviewRating] = useState(5);
+  const [isMobile, setIsMobile] = useState(false);
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   useEffect(() => {
     // Scroll to the top of the page when the component mounts
     window.scrollTo(0, 0);
   }, [id]); // Re-run when the product ID changes
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     if (!id) return;
 
@@ -348,7 +358,7 @@ export default function ProductPage() {
 
   return (
     <MainLayout>
-      <div className='container mx-auto px-8 py-8'>
+      <div className={`container mx-auto  py-8 ${isMobile ? 'px-2' : 'px-8'}`}>
         <Breadcrumb
           items={[
             { label: 'Home', href: '/' },
@@ -362,7 +372,11 @@ export default function ProductPage() {
         />
 
         {/* Product Overview */}
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12 px-12'>
+        <div
+          className={`grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12  ${
+            isMobile ? 'px-2' : 'px-12'
+          }`}
+        >
           <ProductGallery
             images={product.images.map((img) => img.src)}
             thumbnail={product.images[0]?.src || '/placeholder.svg'}
@@ -370,7 +384,13 @@ export default function ProductPage() {
 
           <div className='space-y-6'>
             <div>
-              <h1 className='text-3xl font-bold mb-2'>{product.name}</h1>
+              <h1
+                className={` font-bold mb-2 ${
+                  isMobile ? 'text-xl' : 'text-3xl'
+                }`}
+              >
+                {product.name}
+              </h1>
               {product.brand && (
                 <p className='text-gray-500 mb-4'>Brand: {product.brand}</p>
               )}
@@ -395,7 +415,9 @@ export default function ProductPage() {
               </div>
 
               <div className='mb-4'>
-                <span className='text-3xl font-bold'>
+                <span
+                  className={` font-bold ${isMobile ? 'text-xl' : 'text-3xl'}`}
+                >
                   Rs. {discountedPrice.toFixed(2)}
                 </span>
                 {product.on_sale && (
@@ -446,9 +468,9 @@ export default function ProductPage() {
             </div>
 
             <div className='space-y-4'>
-              <div className='flex gap-2'>
+              <div className={`  gap-2 ${isMobile ? 'flex-col ' : 'flex'}`}>
                 <Button
-                  className='flex-grow-[7]'
+                  className={`flex-grow-[7] ${isMobile ? 'mb-4 w-full' : ''}`}
                   size='lg'
                   onClick={handleAddToCart}
                   disabled={
@@ -465,7 +487,7 @@ export default function ProductPage() {
                   variant={isWishlisted ? 'default' : 'outline'}
                   className={`flex-grow-[3] ${
                     isWishlisted ? 'bg-red-500 hover:bg-red-600' : ''
-                  }`}
+                  } ${isMobile ? 'w-full' : ''}`}
                   size='lg'
                   onClick={handleWishlistClick}
                 >
@@ -504,6 +526,12 @@ export default function ProductPage() {
           </div>
         </div>
 
+        {/* Related Products */}
+        <RelatedProducts
+          category={product.categories[0]?.slug || ''}
+          currentProductId={product.id}
+        />
+        <Features />
         {/* Product Details Tabs */}
         <Tabs defaultValue='description' className='mb-12 '>
           <TabsList>
@@ -644,11 +672,6 @@ export default function ProductPage() {
           </TabsContent>
         </Tabs>
 
-        {/* Related Products */}
-        <RelatedProducts
-          category={product.categories[0]?.slug || ''}
-          currentProductId={product.id}
-        />
         <LoginPopup
           isOpen={isLoginPopupOpen}
           onClose={() => setIsLoginPopupOpen(false)}

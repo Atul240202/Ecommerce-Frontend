@@ -1,5 +1,3 @@
-'use client';
-
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { ChevronDown, ChevronRight, ChevronLeft } from 'lucide-react';
@@ -27,9 +25,10 @@ export const CategorySubheader = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftScroll, setShowLeftScroll] = useState(false);
   const [showRightScroll, setShowRightScroll] = useState(true);
+  const [openDropdown, setOpenDropdown] = useState<number | null>(null); // Track which dropdown is open
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Fetch categories from the JSON file
     fetch('/tempData/categories.json')
       .then((res) => res.json())
       .then((data) => {
@@ -38,6 +37,15 @@ export const CategorySubheader = () => {
       .catch((error) => {
         console.error('Error fetching categories:', error);
       });
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
@@ -53,7 +61,6 @@ export const CategorySubheader = () => {
     const scrollContainer = scrollContainerRef.current;
     if (scrollContainer) {
       scrollContainer.addEventListener('scroll', checkScroll);
-      // Initial check
       checkScroll();
     }
 
@@ -79,7 +86,6 @@ export const CategorySubheader = () => {
   return (
     <nav className='relative bg-white border-b border-gray-200 z-40'>
       <div className='container mx-auto px-4 relative'>
-        {/* Left scroll button - only visible when scrollable to the left */}
         {showLeftScroll && (
           <button
             onClick={scrollLeft}
@@ -90,19 +96,33 @@ export const CategorySubheader = () => {
           </button>
         )}
 
-        {/* Scrollable container for categories */}
         <div
           ref={scrollContainerRef}
           className='flex justify-between overflow-x-auto py-3 scrollbar-hide scroll-smooth'
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {categories.map((category, index) => (
-            <div key={index} className='flex-shrink-0 relative'>
+            <div
+              key={index}
+              className='flex-shrink-0 relative'
+              onMouseEnter={() => setOpenDropdown(index)}
+              onMouseLeave={() => setOpenDropdown(null)}
+            >
               {category.subcategories.length > 0 ? (
-                <DropdownMenu>
+                <DropdownMenu open={openDropdown === index}>
                   <DropdownMenuTrigger asChild>
-                    <button className='flex flex-col items-center px-4 py-2 text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap bg-transparent border-0 cursor-pointer'>
-                      <div className='w-12 h-12 mb-1 rounded-full overflow-hidden border border-gray-200'>
+                    <button
+                      className={`flex flex-col items-center px-4 py-2 ${
+                        isMobile
+                          ? 'h-20 w-20 text-[0.75rem]'
+                          : 'h-28 w-28 text-sm'
+                      } text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap bg-transparent border-0 cursor-pointer`}
+                    >
+                      <div
+                        className={`mb-1 rounded-full overflow-hidden border border-gray-200 ${
+                          isMobile ? 'gap-2 w-10 h-10' : 'w-14 h-14'
+                        }`}
+                      >
                         <img
                           src={category.icon || '/placeholder.svg'}
                           alt={category.name}
@@ -113,11 +133,26 @@ export const CategorySubheader = () => {
                       </div>
                       <div className='flex items-center'>
                         <span>{category.name}</span>
-                        <ChevronDown className='ml-1 h-3 w-3' />
+                        <ChevronDown
+                          className={`ml-1 h-3 w-3 transition-transform ${
+                            openDropdown === index ? 'rotate-180' : ''
+                          }`}
+                        />
                       </div>
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align='start' className='w-56 z-50'>
+                    {/* Parent Category Link */}
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={category.href}
+                        className='font-semibold text-blue-600'
+                      >
+                        {category.name} →
+                      </Link>
+                    </DropdownMenuItem>
+
+                    {/* Subcategories */}
                     {category.subcategories.map((subcategory, subIndex) => (
                       <DropdownMenuItem key={subIndex} asChild>
                         <Link
@@ -135,7 +170,11 @@ export const CategorySubheader = () => {
                   href={category.href}
                   className='flex flex-col items-center px-4 py-2 text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap'
                 >
-                  <div className='w-12 h-12 mb-1 rounded-full overflow-hidden border border-gray-200'>
+                  <div
+                    className={`mb-1 rounded-full overflow-hidden border border-gray-200 ${
+                      isMobile ? 'gap-2 w-10 h-10' : 'w-14 h-14'
+                    }`}
+                  >
                     <img
                       src={category.icon || '/placeholder.svg'}
                       alt={category.name}
@@ -144,16 +183,13 @@ export const CategorySubheader = () => {
                       className='object-cover'
                     />
                   </div>
-                  <div className='flex items-center'>
-                    <span>{category.name}</span>
-                  </div>
+                  <span>{category.name}</span>
                 </Link>
               )}
             </div>
           ))}
         </div>
 
-        {/* Right scroll button - only visible when scrollable to the right */}
         {showRightScroll && (
           <button
             onClick={scrollRight}

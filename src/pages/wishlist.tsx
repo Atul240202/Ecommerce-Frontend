@@ -1,13 +1,17 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MainLayout } from '@/layouts/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { useShop } from '@/contexts/ShopContext';
-import { Trash2, Loader2, ShoppingCart, Heart } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
+import {
+  Trash2,
+  Loader2,
+  ShoppingCart,
+  Heart,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
 
 export default function WishlistPage() {
   const {
@@ -23,6 +27,27 @@ export default function WishlistPage() {
   const [isAddingToCart, setIsAddingToCart] = useState<Record<number, boolean>>(
     {}
   );
+
+  // Mobile detection
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Track expanded items in mobile view
+  const [expandedItems, setExpandedItems] = useState<Record<number, boolean>>(
+    {}
+  );
+
+  const toggleItemExpansion = (productId: number) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [productId]: !prev[productId],
+    }));
+  };
 
   useEffect(() => {
     if (isLoggedIn()) {
@@ -44,20 +69,6 @@ export default function WishlistPage() {
     setIsAddingToCart((prev) => ({ ...prev, [productId]: true }));
 
     try {
-      // const success = await addToCart(productId, 1, productName);
-      // if (success) {
-      //   toast({
-      //     title: 'Added to Cart',
-      //     description: (
-      //       <div>
-      //         {productName} has been added to your cart.{' '}
-      //         <Link to='/cart' className='text-blue-500 hover:underline'>
-      //           View Cart
-      //         </Link>
-      //       </div>
-      //     ),
-      //   });
-      // }
       await addToCart(productId, 1, productName);
     } finally {
       setIsAddingToCart((prev) => ({ ...prev, [productId]: false }));
@@ -80,7 +91,9 @@ export default function WishlistPage() {
   if (!isLoggedIn()) {
     return (
       <MainLayout>
-        <div className='container mx-auto px-4 py-16'>
+        <div
+          className={`container mx-auto px-4 ${isMobile ? 'py-8' : 'py-16'} `}
+        >
           <div className='max-w-md mx-auto text-center'>
             <div className='mb-8'>
               <div className='h-48 w-48 mx-auto mb-6 flex items-center justify-center'>
@@ -105,7 +118,9 @@ export default function WishlistPage() {
   if (wishlist.length === 0) {
     return (
       <MainLayout>
-        <div className='container mx-auto px-4 py-16'>
+        <div
+          className={`container mx-auto px-4 ${isMobile ? 'py-8' : 'py-16'} `}
+        >
           <Breadcrumb
             items={[
               { label: 'Home', href: '/' },
@@ -133,6 +148,137 @@ export default function WishlistPage() {
     );
   }
 
+  // Mobile view
+  if (isMobile) {
+    return (
+      <MainLayout>
+        <div className='container mx-auto px-4 py-6'>
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/' },
+              { label: 'Wishlist', href: '/wishlist' },
+            ]}
+          />
+
+          <div className='flex justify-between items-center mb-4'>
+            <h1 className='text-xl font-bold'>
+              My Wishlist ({wishlist.length})
+            </h1>
+            <Button
+              variant='outline'
+              size='sm'
+              className='text-red-500 text-xs'
+              onClick={handleClearWishlist}
+            >
+              Clear All
+            </Button>
+          </div>
+
+          <div className='space-y-4 mb-6'>
+            {wishlist.map((item) => (
+              <div
+                key={item.productId}
+                className='bg-white rounded-lg border overflow-hidden'
+              >
+                <div
+                  className='p-3 flex items-center justify-between cursor-pointer'
+                  onClick={() => toggleItemExpansion(item.productId)}
+                >
+                  <div className='flex items-center gap-3'>
+                    <div className='relative w-14 h-14 flex-shrink-0'>
+                      <img
+                        src={item.image || '/placeholder.svg'}
+                        alt={item.name}
+                        className='w-full h-full object-contain rounded-md'
+                      />
+                    </div>
+                    <div className='flex-1 min-w-0'>
+                      <h4 className='font-medium text-sm line-clamp-1'>
+                        {item.name}
+                      </h4>
+                      <div className='flex items-center gap-2 mt-1'>
+                        <span className='font-medium text-sm'>
+                          ₹{item.price.toFixed(2)}
+                        </span>
+                        <span
+                          className={`px-1.5 py-0.5 rounded-full text-xs ${
+                            item.stock_status === 'instock'
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-red-100 text-red-800'
+                          }`}
+                        >
+                          {item.stock_status === 'instock'
+                            ? 'In Stock'
+                            : 'Out of Stock'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  {expandedItems[item.productId] ? (
+                    <ChevronUp className='h-4 w-4 text-gray-500' />
+                  ) : (
+                    <ChevronDown className='h-4 w-4 text-gray-500' />
+                  )}
+                </div>
+
+                {expandedItems[item.productId] && (
+                  <div className='p-3 pt-0 border-t'>
+                    <div className='flex flex-col gap-2'>
+                      <Link
+                        to={`/product/${item.productId}`}
+                        className='text-blue-500 text-sm'
+                      >
+                        View Product Details
+                      </Link>
+                      <div className='flex gap-2 mt-2'>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          className='text-blue-500 border-blue-500 flex-1 text-xs py-1 h-8'
+                          onClick={() =>
+                            handleAddToCart(item.productId, item.name)
+                          }
+                          disabled={
+                            item.stock_status !== 'instock' ||
+                            isAddingToCart[item.productId]
+                          }
+                        >
+                          {isAddingToCart[item.productId] ? (
+                            <Loader2 className='h-3 w-3 animate-spin mr-1' />
+                          ) : (
+                            <ShoppingCart className='h-3 w-3 mr-1' />
+                          )}
+                          Add to Cart
+                        </Button>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          className='text-red-500 border-red-500 h-8'
+                          onClick={() => handleRemoveItem(item.productId)}
+                        >
+                          <Trash2 className='h-3 w-3' />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <Button
+            variant='outline'
+            className='w-full mb-4'
+            onClick={() => navigate('/')}
+          >
+            Continue Shopping
+          </Button>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  // Desktop view (original layout)
   return (
     <MainLayout>
       <div className='container mx-auto px-4 py-8'>

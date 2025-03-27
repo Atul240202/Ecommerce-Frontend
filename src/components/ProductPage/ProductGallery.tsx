@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import Image from 'next/image';
+import { useState, useEffect } from 'react';
 
 interface ProductGalleryProps {
   images: string[];
@@ -9,6 +8,14 @@ interface ProductGalleryProps {
 export function ProductGallery({ images, thumbnail }: ProductGalleryProps) {
   const [selectedImage, setSelectedImage] = useState(0);
   const allImages = [thumbnail, ...images];
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div className='flex gap-4'>
@@ -17,9 +24,9 @@ export function ProductGallery({ images, thumbnail }: ProductGalleryProps) {
         {allImages.map((image, index) => (
           <button
             key={index}
-            className={`border-2 rounded-lg overflow-hidden w-20 h-20 ${
+            className={`border-2 rounded-lg overflow-hidden  ${
               selectedImage === index ? 'border-primary' : 'border-gray-200'
-            }`}
+            } ${isMobile ? 'w-12 h-12' : 'w-20 h-20'}`}
             onClick={() => setSelectedImage(index)}
           >
             <img

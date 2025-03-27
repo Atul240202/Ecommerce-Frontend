@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MainLayout } from '@/layouts/MainLayout';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,14 @@ export default function ContactPage() {
     phone: '',
     message: '',
   });
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -139,13 +147,17 @@ export default function ContactPage() {
           {/* Contact Options */}
           <div className='bg-[#f0f3f8] py-12 px-4 rounded-lg'>
             <div className='grid grid-cols-1 sm:grid-cols-3 gap-2'>
-              <div className='text-center w-[30vw]'>
+              <div
+                className={`text-center ${
+                  isMobile ? 'w-auto mb-4' : 'w-[30vw]'
+                }`}
+              >
                 <div className='flex justify-center mb-4'>
                   <div className='bg-white p-4 rounded-full shadow-md'>
                     <MessageSquare className='h-6 w-6 text-[#4280ef]' />
                   </div>
                 </div>
-                <h3 className='text-lg font-semibold mb-2'>Chat to sales</h3>
+                <h3 className='text-lg font-semibold mb-2'>Mail us</h3>
                 <p className='text-gray-600 text-sm mb-2'>Speak to our team</p>
                 <a
                   href='mailto:sales@industrywaala.com'
@@ -155,7 +167,11 @@ export default function ContactPage() {
                 </a>
               </div>
 
-              <div className='text-center w-[25vw]'>
+              <div
+                className={`text-center ${
+                  isMobile ? 'w-auto mb-4' : 'w-[25vw]'
+                }`}
+              >
                 <div className='flex justify-center mb-4'>
                   <div className='bg-white p-4 rounded-full shadow-md'>
                     <Phone className='h-6 w-6 text-[#4280ef]' />
@@ -173,7 +189,9 @@ export default function ContactPage() {
                 </a>
               </div>
 
-              <div className='text-center w-[30vw]'>
+              <div
+                className={`text-center ${isMobile ? 'w-auto' : 'w-[30vw]'}`}
+              >
                 <div className='flex justify-center mb-4'>
                   <div className='bg-white p-4 rounded-full shadow-md'>
                     <MapPin className='h-6 w-6 text-[#4280ef]' />

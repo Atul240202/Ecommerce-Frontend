@@ -66,7 +66,7 @@ export default function MainCategoryPage() {
 
   return (
     <MainLayout>
-      <div className='container ml-[5%] px-2 w-[90%]'>
+      <div className='container px-2 w-[90%] mx-auto'>
         <CategoryGrid categories={categories} />
       </div>
     </MainLayout>

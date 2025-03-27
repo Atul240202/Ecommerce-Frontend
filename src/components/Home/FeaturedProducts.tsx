@@ -41,6 +41,13 @@ export function FeaturedProducts() {
   const [scrollContainer, setScrollContainer] = useState<HTMLDivElement | null>(
     null
   );
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const getProducts = async () => {
@@ -106,7 +113,7 @@ export function FeaturedProducts() {
             Trending This Week
           </h2>
           <p className='text-gray-500 text-sm'>
-            Special products in this month.
+            Special products in this week.
           </p>
         </div>
 
@@ -122,7 +129,12 @@ export function FeaturedProducts() {
             >
               {products.length > 0 ? (
                 products.map((product) => (
-                  <div key={product.id} className='flex-none w-[280px]'>
+                  <div
+                    key={product.id}
+                    className={`flex-none  ${
+                      isMobile ? 'w-[200px]' : 'w-[280px]'
+                    }`}
+                  >
                     <ProductCardFeatured product={product} />
                   </div>
                 ))

@@ -7,7 +7,15 @@ import { Button } from '@/components/ui/button';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { useShop } from '@/contexts/ShopContext';
 import { useCheckout } from '@/contexts/CheckoutContext';
-import { Trash2, Minus, Plus, ShoppingBag, Loader2 } from 'lucide-react';
+import {
+  Trash2,
+  Minus,
+  Plus,
+  ShoppingBag,
+  Loader2,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import {
   storeUnprocessedOrder,
@@ -30,6 +38,15 @@ export default function CartPage() {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [expandedItems, setExpandedItems] = useState<number[]>([]);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (isLoggedIn()) {
@@ -89,19 +106,7 @@ export default function CartPage() {
           quantity: item.quantity,
           thumbnail: item.image,
         })),
-        // We don't have shipping/billing addresses yet, but we'll add them in checkout
-        // Just adding placeholder data for now
-        shippingAddress: {
-          id: 'pending',
-          firstName: 'Pending',
-          lastName: 'Checkout',
-          address1: 'Pending',
-          city: 'Pending',
-          state: 'Pending',
-          postcode: '000000',
-          country: 'India',
-          phone: '0000000000',
-        },
+
         subtotal: cart.reduce(
           (sum, item) => sum + item.price * item.quantity,
           0
@@ -142,6 +147,14 @@ export default function CartPage() {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const toggleItemExpansion = (productId: number) => {
+    setExpandedItems((prev) =>
+      prev.includes(productId)
+        ? prev.filter((id) => id !== productId)
+        : [...prev, productId]
+    );
   };
 
   // Calculate cart totals
@@ -223,6 +236,173 @@ export default function CartPage() {
     );
   }
 
+  // Mobile Cart View
+  if (isMobile) {
+    return (
+      <MainLayout>
+        <div className='container mx-auto px-4 py-4'>
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/' },
+              { label: 'Cart', href: '/cart' },
+            ]}
+          />
+
+          <h1 className='text-xl font-bold mb-4'>Your Shopping Cart</h1>
+
+          {/* Mobile Cart Items */}
+          <div className='mb-6'>
+            <div className='bg-white rounded-lg border overflow-hidden'>
+              {cart.map((item) => (
+                <div
+                  key={item.productId}
+                  className='p-3 border-b last:border-b-0'
+                >
+                  <div className='flex items-start gap-3'>
+                    <div className='relative w-20 h-20 flex-shrink-0'>
+                      <img
+                        src={item.image || '/placeholder.svg'}
+                        alt={item.name}
+                        sizes='80px'
+                        style={{ objectFit: 'contain' }}
+                        className='rounded-md'
+                      />
+                    </div>
+                    <div className='flex-1 min-w-0'>
+                      <div className='flex justify-between items-start'>
+                        <h4 className='font-medium text-sm line-clamp-2 pr-2'>
+                          {item.name}
+                        </h4>
+                        <button
+                          onClick={() => toggleItemExpansion(item.productId)}
+                          className='text-gray-500 p-1'
+                        >
+                          {expandedItems.includes(item.productId) ? (
+                            <ChevronUp className='h-4 w-4' />
+                          ) : (
+                            <ChevronDown className='h-4 w-4' />
+                          )}
+                        </button>
+                      </div>
+
+                      <div className='text-sm font-medium mt-1'>
+                        ₹{item.price.toFixed(2)}
+                      </div>
+
+                      {expandedItems.includes(item.productId) && (
+                        <div className='mt-2 pt-2 border-t border-gray-100'>
+                          <div className='flex justify-between items-center'>
+                            <div className='flex items-center'>
+                              <Button
+                                variant='outline'
+                                size='icon'
+                                className='h-7 w-7'
+                                onClick={() =>
+                                  handleQuantityChange(
+                                    item.productId,
+                                    -1,
+                                    item.quantity
+                                  )
+                                }
+                              >
+                                <Minus className='h-3 w-3' />
+                              </Button>
+                              <span className='w-8 text-center text-sm'>
+                                {item.quantity}
+                              </span>
+                              <Button
+                                variant='outline'
+                                size='icon'
+                                className='h-7 w-7'
+                                onClick={() =>
+                                  handleQuantityChange(
+                                    item.productId,
+                                    1,
+                                    item.quantity
+                                  )
+                                }
+                              >
+                                <Plus className='h-3 w-3' />
+                              </Button>
+                            </div>
+                            <button
+                              onClick={() => handleRemoveItem(item.productId)}
+                              className='text-xs text-red-500 flex items-center gap-1'
+                            >
+                              <Trash2 className='h-3 w-3' /> Remove
+                            </button>
+                          </div>
+                          <div className='mt-2 text-right'>
+                            <span className='text-sm font-bold'>
+                              Total: ₹{(item.price * item.quantity).toFixed(2)}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {!expandedItems.includes(item.productId) && (
+                        <div className='flex justify-between items-center mt-1'>
+                          <span className='text-xs text-gray-500'>
+                            Qty: {item.quantity}
+                          </span>
+                          <span className='text-sm font-bold'>
+                            ₹{(item.price * item.quantity).toFixed(2)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className='mt-3 flex justify-between'>
+              <Button variant='outline' size='sm' onClick={() => navigate('/')}>
+                Continue Shopping
+              </Button>
+              <Button
+                variant='outline'
+                size='sm'
+                className='text-red-500'
+                onClick={handleClearCart}
+              >
+                Clear Cart
+              </Button>
+            </div>
+          </div>
+
+          {/* Mobile Order Summary */}
+          <div className='bg-white rounded-lg border p-4 mb-4'>
+            <h2 className='text-base font-bold mb-3'>Order Summary</h2>
+
+            <div className='space-y-2 mb-4'>
+              <div className='flex justify-between text-sm'>
+                <span className='text-gray-600'>Subtotal</span>
+                <span className='font-medium'>₹{subtotal.toFixed(2)}</span>
+              </div>
+              <div className='flex justify-between text-sm'>
+                <span className='text-gray-600'>Shipping</span>
+                <span className='font-medium'>₹{shipping.toFixed(2)}</span>
+              </div>
+              <div className='border-t pt-2 mt-2'>
+                <div className='flex justify-between'>
+                  <span className='font-bold'>Total</span>
+                  <span className='font-bold'>₹{total.toFixed(2)}</span>
+                </div>
+                <p className='text-xs text-gray-500 mt-1'>Including GST</p>
+              </div>
+            </div>
+
+            <Button className='w-full' onClick={handleProceedToCheckout}>
+              Proceed to Checkout
+            </Button>
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  // Desktop Cart View (Original Layout)
   return (
     <MainLayout>
       <div className='container mx-auto px-4 py-8'>

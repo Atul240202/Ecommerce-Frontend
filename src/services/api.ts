@@ -158,7 +158,7 @@ export const fetchRelatedProducts = async (
 ) => {
   try {
     const response = await fetch(
-      `${API_URL}/products/related?category=${categorySlug}&exclude=${currentProductId}&limit=${limit}`
+      `${API_URL}/products?categories=${categorySlug}&exclude=${currentProductId}&limit=${limit}`
     );
     if (!response.ok) {
       throw new Error('Failed to fetch related products');

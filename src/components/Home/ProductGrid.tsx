@@ -94,14 +94,23 @@ export function ProductGrid() {
     <div className='py-12'>
       <div className='container mx-auto px-4'>
         <div className='flex mb-8'>
-          <h2
-            className={`font-semibold text-[#1a2030] ${
-              isMobile ? 'text-xl' : 'text-3xl'
+          {isMobile ? (
+            <></>
+          ) : (
+            <h2
+              className={`font-semibold text-[#1a2030] ${
+                isMobile ? 'text-lg' : 'text-3xl'
+              }`}
+            >
+              Buy our featured products
+            </h2>
+          )}
+
+          <div
+            className={`flex ml-auto  ${
+              isMobile ? 'w-[100%] justify-between' : 'gap-8'
             }`}
           >
-            Buy our featured products
-          </h2>
-          <div className='flex ml-auto gap-8'>
             <Button
               variant={activeTab === 'featured' ? 'default' : 'outline'}
               onClick={() => setActiveTab('featured')}
@@ -122,7 +131,7 @@ export function ProductGrid() {
             <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#4280ef]'></div>
           </div>
         ) : (
-          <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 px-8'>
+          <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6'>
             {(activeTab === 'featured'
               ? featuredProducts
               : bestSellerProducts

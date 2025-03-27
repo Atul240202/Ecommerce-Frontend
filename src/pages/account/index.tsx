@@ -11,13 +11,26 @@ import { AccountDetails } from '@/components/account/AccountDetails';
 import { LogOut } from 'lucide-react';
 import Cookies from 'js-cookie';
 import { toast } from '@/components/ui/use-toast';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+import { ChevronDown } from 'lucide-react';
 
 export default function AccountPage() {
   const [activeTab, setActiveTab] = useState('wishlist');
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   useEffect(() => {
     checkLoginStatus();
 
@@ -103,11 +116,15 @@ export default function AccountPage() {
               <h1 className='text-2xl font-semibold text-[#0e224d]'>
                 Hello {user?.fullName}
               </h1>
-              <p className='text-gray-600 mt-2'>
-                From your account dashboard, you can easily check & view your
-                recent orders, manage your shipping and billing addresses and
-                edit your password and account details.
-              </p>
+              {isMobile ? (
+                <></>
+              ) : (
+                <p className='text-gray-600 mt-2'>
+                  From your account dashboard, you can easily check & view your
+                  recent orders, manage your shipping and billing addresses and
+                  edit your password and account details.
+                </p>
+              )}
             </div>
             <Button
               variant='outline'
@@ -120,13 +137,50 @@ export default function AccountPage() {
           </div>
 
           <Tabs value={activeTab} onValueChange={handleTabChange}>
-            <TabsList className='border-b w-full justify-start mb-8'>
-              <TabsTrigger value='notification'>Notification</TabsTrigger>
-              <TabsTrigger value='wishlist'>Wishlist</TabsTrigger>
-              <TabsTrigger value='orders'>Orders</TabsTrigger>
-              <TabsTrigger value='tracking'>Order Tracking</TabsTrigger>
-              <TabsTrigger value='details'>Account Details</TabsTrigger>
-            </TabsList>
+            {/* Desktop Tabs */}
+            <div className='hidden md:flex'>
+              <TabsList className='border-b w-full justify-start mb-8'>
+                <TabsTrigger value='notification'>Notification</TabsTrigger>
+                <TabsTrigger value='wishlist'>Wishlist</TabsTrigger>
+                <TabsTrigger value='orders'>Orders</TabsTrigger>
+                <TabsTrigger value='tracking'>Order Tracking</TabsTrigger>
+                <TabsTrigger value='details'>Account Details</TabsTrigger>
+              </TabsList>
+            </div>
+
+            {/* Mobile Dropdown */}
+            <div className='md:hidden w-full mb-4'>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant='outline'
+                    className='w-full flex justify-between'
+                  >
+                    {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}{' '}
+                    <ChevronDown className='ml-2' />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className='w-full'>
+                  <DropdownMenuItem
+                    onClick={() => setActiveTab('notification')}
+                  >
+                    Notification
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setActiveTab('wishlist')}>
+                    Wishlist
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setActiveTab('orders')}>
+                    Orders
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setActiveTab('tracking')}>
+                    Order Tracking
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setActiveTab('details')}>
+                    Account Details
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
 
             <TabsContent value='notification'>
               <AccountNotifications />

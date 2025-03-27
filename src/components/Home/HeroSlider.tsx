@@ -14,7 +14,13 @@ interface HeroSliderProps {
 
 export function HeroSlider({ slides }: HeroSliderProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
-
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -31,7 +37,7 @@ export function HeroSlider({ slides }: HeroSliderProps) {
   };
 
   return (
-    <div className='relative w-full h-[600px]'>
+    <div className={`relative w-full  ${isMobile ? 'h-[30vh]' : 'h-[60vh]'}`}>
       {slides.map((slide, index) => (
         <div
           key={index}

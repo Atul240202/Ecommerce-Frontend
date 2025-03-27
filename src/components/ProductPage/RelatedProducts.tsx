@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
-import { ProductCard } from '../ProductCard';
+import { useEffect, useState, useRef } from 'react';
+import { ProductCardFeatured } from '../Home/ProductCardFeatured';
 import { fetchRelatedProducts } from '@/services/api';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface Product {
   id: number;
@@ -9,16 +11,9 @@ interface Product {
   regular_price: string;
   sale_price: string;
   on_sale: boolean;
-  images: Array<{
-    id: number;
-    src: string;
-  }>;
+  images: Array<{ id: number; src: string }>;
   average_rating: string;
-  categories: Array<{
-    id: number;
-    name: string;
-    slug: string;
-  }>;
+  categories: Array<{ id: number; name: string; slug: string }>;
   slug: string;
 }
 
@@ -33,7 +28,17 @@ export function RelatedProducts({
 }: RelatedProductsProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [scrollContainer, setScrollContainer] = useState<HTMLDivElement | null>(
+    null
+  );
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const getRelatedProducts = async () => {
@@ -46,11 +51,10 @@ export function RelatedProducts({
       try {
         setLoading(true);
         const data = await fetchRelatedProducts(category, currentProductId);
-        setProducts(data);
-        setError(null);
+        console.log('Related products', data);
+        setProducts(data.products);
       } catch (err) {
         console.error('Error fetching related products:', err);
-        setError('Failed to load related products');
       } finally {
         setLoading(false);
       }
@@ -59,72 +63,92 @@ export function RelatedProducts({
     getRelatedProducts();
   }, [category, currentProductId]);
 
-  if (loading) {
-    return (
-      <div>
-        <h2 className='text-2xl font-semibold mb-6'>Related Products</h2>
-        <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6'>
-          {[...Array(5)].map((_, index) => (
-            <div
-              key={index}
-              className='border rounded-md p-4 h-64 animate-pulse'
-            >
-              <div className='bg-gray-200 h-32 w-full mb-4'></div>
-              <div className='bg-gray-200 h-4 w-3/4 mb-2'></div>
-              <div className='bg-gray-200 h-4 w-1/2'></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div>
-        <h2 className='text-2xl font-semibold mb-6'>Related Products</h2>
-        <p className='text-red-500'>{error}</p>
-      </div>
-    );
-  }
-
-  if (products.length === 0) {
-    return (
-      <div>
-        <h2 className='text-2xl font-semibold mb-6'>Related Products</h2>
-        <p className='text-gray-500'>No related products found</p>
-      </div>
-    );
-  }
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainer) {
+      const scrollAmount = direction === 'left' ? -320 : 320;
+      scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   return (
-    <div>
-      <h2 className='text-2xl font-semibold mb-6'>Related Products</h2>
-      <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6'>
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={{
-              id: product.id,
-              title: product.name,
-              brand:
-                product.categories.find((cat) => cat.name === 'Brand')?.name ||
-                '',
-              thumbnail: product.images[0]?.src || '/placeholder.svg',
-              price: Number.parseFloat(product.price),
-              discountPercentage: product.on_sale
-                ? ((Number.parseFloat(product.regular_price) -
-                    Number.parseFloat(product.sale_price)) /
-                    Number.parseFloat(product.regular_price)) *
-                  100
-                : 0,
-              rating: Number.parseFloat(product.average_rating),
-              slug: product.slug,
-            }}
-            onAddToWishlist={() => {}}
-            isInWishlist={false}
-          />
-        ))}
+    <div className='py-8'>
+      <div className='container mx-auto px-4'>
+        <div className='mb-2'>
+          <h2 className='text-2xl font-semibold text-[#1a2030]'>
+            Related Products
+          </h2>
+        </div>
+
+        <div className='relative'>
+          {loading ? (
+            <div className='flex justify-center py-8'>
+              <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#4280ef]'></div>
+            </div>
+          ) : (
+            <div
+              ref={setScrollContainer}
+              className='flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth py-4'
+            >
+              {products.length > 0 ? (
+                products.map((product) => (
+                  <div
+                    key={product.id}
+                    className={`flex-none ${
+                      isMobile ? 'w-[200px]' : 'w-[280px]'
+                    }`}
+                  >
+                    <ProductCardFeatured
+                      product={{
+                        id: product.id,
+                        title: product.name,
+                        brand:
+                          product.categories.find((cat) => cat.name === 'Brand')
+                            ?.name || '',
+                        thumbnail: product.images[0]?.src || '/placeholder.svg',
+                        price: Number.parseFloat(product.price),
+                        discountPercentage: product.on_sale
+                          ? ((Number.parseFloat(product.regular_price) -
+                              Number.parseFloat(product.sale_price)) /
+                              Number.parseFloat(product.regular_price)) *
+                            100
+                          : 0,
+                        rating: Number.parseFloat(product.average_rating),
+                        slug: product.slug,
+                      }}
+                      onAddToWishlist={() => {}}
+                      isInWishlist={false}
+                    />
+                  </div>
+                ))
+              ) : (
+                <div className='w-full text-center py-8'>
+                  <p className='text-gray-500'>No related products available</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {products.length > 0 && (
+            <>
+              <Button
+                variant='ghost'
+                size='icon'
+                className='absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full'
+                onClick={() => scroll('left')}
+              >
+                <ChevronLeft className='h-6 w-6' />
+              </Button>
+              <Button
+                variant='ghost'
+                size='icon'
+                className='absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full'
+                onClick={() => scroll('right')}
+              >
+                <ChevronRight className='h-6 w-6' />
+              </Button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
