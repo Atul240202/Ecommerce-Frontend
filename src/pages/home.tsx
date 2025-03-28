@@ -85,7 +85,12 @@ export default function HomePage() {
       });
   }, []);
 
-  if (!promotions || !categories.length || !featuredProducts.length) {
+  if (
+    !promotions ||
+    !categories.length ||
+    !featuredProducts.length ||
+    !bestSellerProducts.length
+  ) {
     return <div></div>;
   }
 

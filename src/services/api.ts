@@ -23,6 +23,7 @@ export interface Product {
   images: ProductImage[];
   categories: InnerProductCategory[];
   slug: string;
+  sku: string;
 }
 
 export interface ProductImage {
