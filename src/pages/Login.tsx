@@ -2,7 +2,7 @@ import { MainLayout } from '../layouts/MainLayout';
 import LoginForm from '../components/auth/LoginForm';
 import { Breadcrumb } from '../components/Breadcrumb';
 
-export default function LoginPage() {
+export default function Login() {
   return (
     <MainLayout>
       <div className='container mx-auto px-4 py-8'>

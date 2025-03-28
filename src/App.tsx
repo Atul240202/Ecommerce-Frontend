@@ -3,8 +3,8 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { ShopProvider } from './contexts/ShopContext';
-import LoginPage from './pages/login.tsx';
-import RegisterPage from './pages/register.tsx';
+import Login from './pages/login';
+import Register from './pages/register';
 import HomePage from './pages/home';
 import CategoryPage from './pages/category/[slug]';
 import MainCategoryPage from './pages/categorypage';
@@ -48,8 +48,8 @@ function App() {
       <ShopProvider>
         <Router>
           <Routes>
-            <Route path='/login' element={<LoginPage />} />
-            <Route path='/register' element={<RegisterPage />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} />
             <Route path='/verify-otp' element={<VerifyOtpPage />} />
             <Route path='/' element={<HomePage />} />
             <Route path='/bestseller' element={<BestSellersPage />} />
