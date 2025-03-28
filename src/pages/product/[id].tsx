@@ -147,6 +147,8 @@ export default function ProductPage() {
           returnPolicy: '30-day return policy',
           rating_count: parseFloat(productData.average_rating),
           stock_quantity: productData.stock_status === 'instock' ? 1 : 0,
+          sku: productData.sku,
+          weight: productData.weight,
         };
 
         setProduct(transformedProduct);
