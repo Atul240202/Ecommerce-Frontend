@@ -71,12 +71,6 @@ export default function AccountPage() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (user) {
-      console.log('loggedin user');
-    }
-  }, [user]);
-
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     window.location.hash = value;

@@ -2,10 +2,7 @@ import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { ProductCardFeatured } from './ProductCardFeatured';
-import {
-  fetchFeaturedProducts,
-  fetchBestSellerProducts,
-} from '../../services/api';
+import { fetchBestSellerProducts } from '../../services/api';
 
 interface ApiProduct {
   id: number;
@@ -59,9 +56,6 @@ export function FeaturedProducts() {
         const featuredProducts = await fetchBestSellerProducts(8);
 
         if (!featuredProducts || featuredProducts.length === 0) {
-          console.log(
-            'No featured products returned from API, using fallback data'
-          );
           return;
         }
 
@@ -87,7 +81,6 @@ export function FeaturedProducts() {
         );
 
         if (transformedProducts.length === 0) {
-          console.log('No products after transformation, using fallback data');
         } else {
           setProducts(transformedProducts);
         }

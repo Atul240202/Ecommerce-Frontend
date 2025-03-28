@@ -121,7 +121,6 @@ export function AccountDetails({ user }: AccountDetailsProps) {
 
       // Fetch user profile data
       const userProfile = await getUserProfile();
-      console.log('User profile data', userProfile);
       // Fetch user addresses
       const addresses = await getUserAddresses();
 

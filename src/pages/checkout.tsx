@@ -353,7 +353,6 @@ export default function CheckoutPage() {
 
     // Format the current date as YYYY-MM-DD
     const currentDate = format(new Date(), 'yyyy-MM-dd');
-    console.log('Product', products);
     // Prepare order items
     const orderItems = products.map((product) => ({
       id: product.id,

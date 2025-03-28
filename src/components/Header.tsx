@@ -109,12 +109,12 @@ export function Header() {
     setSearchTerm('');
   };
 
-  const handleAccountClick = (e: React.MouseEvent) => {
-    if (!isLoggedIn) {
-      e.preventDefault();
-      navigate('/login');
-    }
-  };
+  // const handleAccountClick = (e: React.MouseEvent) => {
+  //   if (!isLoggedIn) {
+  //     e.preventDefault();
+  //     navigate('/login');
+  //   }
+  // };
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);

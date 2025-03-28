@@ -51,7 +51,6 @@ export function RelatedProducts({
       try {
         setLoading(true);
         const data = await fetchRelatedProducts(category, currentProductId);
-        console.log('Related products', data);
         setProducts(data.products);
       } catch (err) {
         console.error('Error fetching related products:', err);

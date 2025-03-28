@@ -2,10 +2,7 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { ProductCardFeatured } from './ProductCardFeatured';
-import {
-  fetchFeaturedProducts,
-  fetchBestSellerProducts,
-} from '../../services/api';
+import { fetchBestSellerProducts } from '../../services/api';
 
 interface ApiProduct {
   id: number;
@@ -46,7 +43,6 @@ export function MonthFeaturedGrid() {
         const monthFeatured = await fetchBestSellerProducts(15); // Fetch 16 featured products for the month
 
         if (!monthFeatured || monthFeatured.length === 0) {
-          console.log('No month-featured products returned from API.');
           return;
         }
 

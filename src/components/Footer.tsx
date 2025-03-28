@@ -1,15 +1,6 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import {
-  Facebook,
-  Instagram,
-  Youtube,
-  MapPin,
-  ShieldCheck,
-  ShoppingBag,
-  Lock,
-  Plane,
-} from 'lucide-react';
+import { Facebook, Instagram, Youtube } from 'lucide-react';
 import { Features } from './utils/Features';
 import logo from '../assets/logo.webp';
 import { useLocation } from 'react-router-dom';

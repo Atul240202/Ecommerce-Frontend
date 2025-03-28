@@ -36,7 +36,6 @@ export function BestSellerSidebar() {
         const bestSellers = await fetchBestSellerProducts(15);
 
         if (!bestSellers || bestSellers.length === 0) {
-          console.log('No bestseller products returned from API.');
           return;
         }
 

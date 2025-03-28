@@ -1,10 +1,8 @@
-import Image from 'next/image';
 import { Link } from 'react-router-dom';
 
 interface Category {
   name: string;
-  href: string;
-  icon: string;
+  slug: string;
 }
 
 interface CategoryGridProps {
