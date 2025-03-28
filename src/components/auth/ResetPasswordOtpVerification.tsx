@@ -160,7 +160,7 @@ export default function ResetPasswordOtpVerification() {
       const otpString = otp.join('');
 
       const response = await fetch(
-        `http://localhost:5000/api/auth/verify-reset-otp`,
+        `${import.meta.env.VITE_API_URL}/auth/verify-reset-otp`,
         {
           method: 'POST',
           headers: {

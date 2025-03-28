@@ -18,7 +18,7 @@ export default function OtpVerification() {
 
   // Get email and phone from location state
   const email = location.state?.email || '';
-  const phone = location.state?.phone || '';
+  // const phone = location.state?.phone || '';
 
   useEffect(() => {
     // Focus the first input on component mount
@@ -106,7 +106,7 @@ export default function OtpVerification() {
       const token = localStorage.getItem('registrationToken');
 
       const response = await fetch(
-        `http://localhost:5000/api/auth/resend-otp`,
+        `${import.meta.env.VITE_API_URL}/auth/resend-otp`,
         {
           method: 'POST',
           headers: {
@@ -161,14 +161,17 @@ export default function OtpVerification() {
       const token = localStorage.getItem('registrationToken');
       const otpString = otp.join('');
 
-      const response = await fetch(`http://localhost:5000/api/auth/verify`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ otp: otpString }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/verify`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ otp: otpString }),
+        }
+      );
 
       const data = await response.json();
 

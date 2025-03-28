@@ -22,6 +22,7 @@ export interface Product {
   stock_status: string;
   images: ProductImage[];
   categories: InnerProductCategory[];
+  slug: string;
 }
 
 export interface ProductImage {
@@ -158,7 +159,7 @@ export const fetchRelatedProducts = async (
 ) => {
   try {
     const response = await fetch(
-      `${API_URL}/products?categories=${categorySlug}&exclude=${currentProductId}&limit=${limit}`
+      `${API_URL}/products/category/${categorySlug}`
     );
     if (!response.ok) {
       throw new Error('Failed to fetch related products');

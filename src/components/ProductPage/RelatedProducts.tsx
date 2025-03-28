@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { ProductCardFeatured } from '../Home/ProductCardFeatured';
 import { fetchRelatedProducts } from '../../services/api';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -100,22 +100,23 @@ export function RelatedProducts({
                       product={{
                         id: product.id,
                         title: product.name,
-                        brand:
-                          product.categories.find((cat) => cat.name === 'Brand')
-                            ?.name || '',
+                        description: '',
                         thumbnail: product.images[0]?.src || '/placeholder.svg',
                         price: Number.parseFloat(product.price),
+                        regularPrice: Number.parseFloat(product.regular_price),
+                        salePrice: Number.parseFloat(product.sale_price),
                         discountPercentage: product.on_sale
                           ? ((Number.parseFloat(product.regular_price) -
                               Number.parseFloat(product.sale_price)) /
                               Number.parseFloat(product.regular_price)) *
                             100
                           : 0,
+                        stock: product.on_sale === true ? 1 : 0,
                         rating: Number.parseFloat(product.average_rating),
                         slug: product.slug,
                       }}
-                      onAddToWishlist={() => {}}
-                      isInWishlist={false}
+                      // onAddToWishlist={() => {}}
+                      // isInWishlist={false}
                     />
                   </div>
                 ))
