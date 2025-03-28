@@ -1,3 +1,5 @@
+'use client';
+
 import type React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -58,7 +60,7 @@ interface Product {
   rating_count: number;
   stock_status: string;
   stock_quantity: number;
-  sku: string;
+  sku?: string;
   weight: string;
   dimensions: {
     length: string;
@@ -133,24 +135,12 @@ export default function ProductPage() {
 
         const productData = await fetchProductById(productId);
         console.log('Product data', productData);
+        console.log('Product data-1', product);
         // Transform the API data to match our UI needs
         const transformedProduct: Product = {
           ...productData,
-          // Set default values for fields that might not be in the API response
-          // reviews: productData.reviews || [],
-          warrantyInformation: '1 Year Manufacturer Warranty',
-          shippingInformation: 'Free shipping on orders over Rs. 50',
-          availabilityStatus:
-            productData.stock_status === 'instock'
-              ? 'In Stock'
-              : 'Out of Stock',
-          returnPolicy: '30-day return policy',
-          rating_count: parseFloat(productData.average_rating),
-          stock_quantity: productData.stock_status === 'instock' ? 1 : 0,
-          sku: productData.sku,
-          weight: productData.weight,
         };
-
+        console.log('Product data-2', transformedProduct);
         setProduct(transformedProduct);
 
         // Check if product is in wishlist

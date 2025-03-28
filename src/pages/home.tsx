@@ -9,19 +9,8 @@ import { BlogCard } from '../components/Blogs/BlogCard';
 import {
   fetchFeaturedProducts,
   fetchBestSellerProducts,
+  type Product,
 } from '../services/api';
-
-interface Product {
-  id: number;
-  title: string;
-  brand: string;
-  thumbnail: string;
-  price: number;
-  regularPrice: number;
-  salePrice: number;
-  discountPercentage: number;
-  rating: number;
-}
 
 interface Blog {
   id: number;
@@ -107,10 +96,7 @@ export default function HomePage() {
 
         <HeroSlider slides={promotions.slider} />
         <div className='container mx-auto'>
-          <ProductGrid
-            featuredProducts={featuredProducts}
-            bestSellerProducts={bestSellerProducts}
-          />
+          <ProductGrid />
 
           {promotions.mid_banner && promotions.mid_banner.length > 0 && (
             <div
