@@ -132,11 +132,12 @@ export default function ProductPage() {
         const productId = id.split('-').pop() || id;
 
         const productData = await fetchProductById(productId);
+        console.log('Product data', productData);
         // Transform the API data to match our UI needs
         const transformedProduct: Product = {
           ...productData,
           // Set default values for fields that might not be in the API response
-          reviews: productData.reviews || [],
+          // reviews: productData.reviews || [],
           warrantyInformation: '1 Year Manufacturer Warranty',
           shippingInformation: 'Free shipping on orders over Rs. 50',
           availabilityStatus:
@@ -144,9 +145,8 @@ export default function ProductPage() {
               ? 'In Stock'
               : 'Out of Stock',
           returnPolicy: '30-day return policy',
-          brand:
-            productData.categories.find((cat) => cat.name === 'Brand')?.name ||
-            '',
+          rating_count: parseFloat(productData.average_rating),
+          stock_quantity: productData.stock_status === 'instock' ? 1 : 0,
         };
 
         setProduct(transformedProduct);
@@ -308,7 +308,7 @@ export default function ProductPage() {
   const handleLoginSuccess = async () => {
     setIsLoginPopupOpen(false);
     setIsAddingToCart(true);
-    await addToCart(product.id, quantity, product.name);
+    await addToCart(product?.id ?? 1, quantity, product?.name, product?.sku);
     setIsAddingToCart(false);
   };
 
@@ -396,9 +396,9 @@ export default function ProductPage() {
               >
                 {product.name}
               </h1>
-              {product.brand && (
+              {/* {product.brand && (
                 <p className='text-gray-500 mb-4'>Brand: {product.brand}</p>
-              )}
+              )} */}
 
               <div className='flex items-center gap-4 mb-4'>
                 <div className='flex gap-1'>
@@ -556,12 +556,12 @@ export default function ProductPage() {
               <div>
                 <h3 className='font-semibold mb-4'>Product Information</h3>
                 <dl className='space-y-2'>
-                  {product.brand && (
+                  {/* {product.brand && (
                     <div className='flex'>
                       <dt className='w-1/3 text-gray-500'>Brand</dt>
                       <dd className='w-2/3'>{product.brand}</dd>
                     </div>
-                  )}
+                  )} */}
                   {product.weight && (
                     <div className='flex'>
                       <dt className='w-1/3 text-gray-500'>Weight</dt>
@@ -572,15 +572,15 @@ export default function ProductPage() {
                     <div className='flex'>
                       <dt className='w-1/3 text-gray-500'>Dimensions</dt>
                       <dd className='w-2/3'>
-                        {product.dimensions.width} x {product.dimensions.height}{' '}
-                        x {product.dimensions.depth} cm
+                        {product.dimensions.height} x{' '}
+                        {product.dimensions.length} x {product.dimensions.width}
                       </dd>
                     </div>
                   )}
                 </dl>
               </div>
 
-              <div>
+              {/* <div>
                 <h3 className='font-semibold mb-4'>Additional Information</h3>
                 <dl className='space-y-2'>
                   <div className='flex'>
@@ -596,7 +596,7 @@ export default function ProductPage() {
                     <dd className='w-2/3'>{product.returnPolicy}</dd>
                   </div>
                 </dl>
-              </div>
+              </div> */}
             </div>
           </TabsContent>
 
@@ -665,7 +665,7 @@ export default function ProductPage() {
             </div>
 
             {/* Reviews List */}
-            {product.reviews.length > 0 ? (
+            {product.reviews ? (
               <ProductReviews reviews={product.reviews} />
             ) : (
               <div className='text-center py-8'>

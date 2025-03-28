@@ -153,9 +153,9 @@ export const fetchBestSellerProducts = async (
 };
 
 export const fetchRelatedProducts = async (
-  categorySlug: string,
-  currentProductId: number,
-  limit = 5
+  categorySlug: string
+  // currentProductId: number,
+  // limit = 5
 ) => {
   try {
     const response = await fetch(
