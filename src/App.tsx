@@ -3,8 +3,6 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { ShopProvider } from './contexts/ShopContext';
-import Login from './pages/login';
-import Register from './pages/register';
 import HomePage from './pages/home';
 import CategoryPage from './pages/category/[slug]';
 import MainCategoryPage from './pages/categorypage';
@@ -26,6 +24,8 @@ import VerifyResetOtpPage from './pages/verify-reset-otp';
 import ResetPasswordPage from './pages/reset-password';
 import BestSellersPage from './pages/bestsellers';
 import AboutUs from './pages/about-us';
+import Login from './pages/login';
+import Register from './pages/register';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
