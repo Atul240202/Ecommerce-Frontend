@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown, ChevronRight, Menu, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '../../components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { fetchProductCategories, type ProductCategory } from '@/services/api';
+} from '../../components/ui/dropdown-menu';
+import {
+  fetchProductCategories,
+  type ProductCategory,
+} from '../../services/api';
 
 interface CategoryGroup {
   name: string;

@@ -1,22 +1,27 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MainLayout } from '@/layouts/MainLayout';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AccountNotifications } from '@/components/account/AccountNotifications';
-import { AccountWishlist } from '@/components/account/AccountWishlist';
-import { AccountOrders } from '@/components/account/AccountOrders';
-import { AccountTracking } from '@/components/account/AccountTracking';
-import { AccountDetails } from '@/components/account/AccountDetails';
+import { MainLayout } from '../../layouts/MainLayout';
+import { Button } from '../../components/ui/button';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '../../components/ui/tabs';
+import { AccountNotifications } from '../../components/account/AccountNotifications';
+import { AccountWishlist } from '../../components/account/AccountWishlist';
+import { AccountOrders } from '../../components/account/AccountOrders';
+import { AccountTracking } from '../../components/account/AccountTracking';
+import { AccountDetails } from '../../components/account/AccountDetails';
 import { LogOut } from 'lucide-react';
 import Cookies from 'js-cookie';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '../../components/ui/use-toast';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from '@/components/ui/dropdown-menu';
+} from '../../components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
 
 export default function AccountPage() {

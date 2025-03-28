@@ -1,7 +1,6 @@
-import { MainLayout } from '@/layouts/MainLayout';
-import { Breadcrumb } from '@/components/Breadcrumb';
+import { MainLayout } from '../layouts/MainLayout';
+import { Breadcrumb } from '../components/Breadcrumb';
 import { Check } from 'lucide-react';
-import Image from 'next/image';
 
 export default function AboutUs() {
   const breadcrumbItems = [

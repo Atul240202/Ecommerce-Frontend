@@ -1,12 +1,12 @@
 import type React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
 import Cookies from 'js-cookie';
 import { useState, useEffect, useRef } from 'react';
 import { SearchResults } from './SearchResults';
-import { searchProducts } from '@/services/api';
-import { useShop } from '@/contexts/ShopContext';
+import { searchProducts } from '../services/api';
+import { useShop } from '../contexts/ShopContext';
 import logo from '../assets/logo.webp';
 
 export function Header() {

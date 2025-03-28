@@ -1,4 +1,4 @@
-import { getAuthToken } from '@/services/auth';
+import { getAuthToken } from '../services/auth';
 
 export interface UnprocessedOrder {
   tempId: string;

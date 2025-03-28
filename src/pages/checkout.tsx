@@ -1,41 +1,39 @@
-'use client';
-
 import type React from 'react';
 
-import { useState, useEffect, useCallback } from 'react';
-import { MainLayout } from '@/layouts/MainLayout';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
+import { useState, useEffect } from 'react';
+import { MainLayout } from '../layouts/MainLayout';
+import { Input } from '../components/ui/input';
+import { Button } from '../components/ui/button';
+import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
+import { Label } from '../components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { LoginModal } from '@/components/utils/LoginModal';
-import { OrderConfirmation } from '@/components/orders/OrderConfirmation';
-import { useCheckout } from '@/contexts/CheckoutContext';
+} from '../components/ui/select';
+import { Checkbox } from '../components/ui/checkbox';
+import { LoginModal } from '../components/utils/LoginModal';
+import { OrderConfirmation } from '../components/orders/OrderConfirmation';
+import { useCheckout } from '../contexts/CheckoutContext';
 import { Loader2, Plus } from 'lucide-react';
 import Cookies from 'js-cookie';
 import { Link, useNavigate } from 'react-router-dom';
-import { indianStates } from '@/lib/constants';
+import { indianStates } from '../lib/constants';
 import {
   getUserAddresses,
   getDefaultAddresses,
   addUserAddress,
   setDefaultAddress,
-} from '@/services/userService';
-import { toast } from '@/components/ui/use-toast';
+} from '../services/userService';
+import { toast } from '../components/ui/use-toast';
 import {
   storeUnprocessedOrder,
   deleteUnprocessedOrder,
-} from '@/services/unprocessedOrderService';
-import { createFinalOrder } from '@/services/finalOrderService';
-import { getCurrentUser } from '@/services/auth';
+} from '../services/unprocessedOrderService';
+import { createFinalOrder } from '../services/finalOrderService';
+import { getCurrentUser } from '../services/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { format } from 'date-fns';
 

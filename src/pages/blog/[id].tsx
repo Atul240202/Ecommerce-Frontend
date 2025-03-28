@@ -1,5 +1,4 @@
 import type React from 'react';
-
 import { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import {
@@ -10,13 +9,13 @@ import {
   Mail,
   LinkIcon,
 } from 'lucide-react';
-import { MainLayout } from '@/layouts/MainLayout';
-import { Breadcrumb } from '@/components/Breadcrumb';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { BlogCard } from '@/components/Blogs/BlogCard';
-import { toast } from '@/components/ui/use-toast';
+import { MainLayout } from '../../layouts/MainLayout';
+import { Breadcrumb } from '../../components/Breadcrumb';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Textarea } from '../../components/ui/textarea';
+import { BlogCard } from '../../components/Blogs/BlogCard';
+import { toast } from '../../components/ui/use-toast';
 
 export interface Blog {
   id: number;

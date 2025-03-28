@@ -1,5 +1,3 @@
-'use client';
-
 import type React from 'react';
 
 import { useState } from 'react';
@@ -10,15 +8,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from '../../components/ui/dialog';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../../App';
 import Cookies from 'js-cookie';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '../../components/ui/use-toast';
 
 interface LoginModalProps {
   isOpen: boolean;

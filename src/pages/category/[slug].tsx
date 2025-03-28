@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { MainLayout } from '@/layouts/MainLayout';
-import { Breadcrumb } from '@/components/Breadcrumb';
+import { MainLayout } from '../../layouts/MainLayout';
+import { Breadcrumb } from '../../components/Breadcrumb';
 import { ProductCardFeatured } from '../../components/Home/ProductCardFeatured';
-import { ProductFilter } from '@/components/ProductPage/ProductFilter';
-import { ProductSort } from '@/components/ProductPage/ProductSort';
-import { fetchProductsByCategory, type Product } from '@/services/api';
+import { ProductFilter } from '../../components/ProductPage/ProductFilter';
+import { ProductSort } from '../../components/ProductPage/ProductSort';
+import { fetchProductsByCategory, type Product } from '../../services/api';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function CategoryPage() {

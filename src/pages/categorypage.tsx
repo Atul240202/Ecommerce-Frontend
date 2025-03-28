@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { MainLayout } from '@/layouts/MainLayout';
-import { CategoryGrid } from '@/components/Home/CategoryGrid';
+import { MainLayout } from '../layouts/MainLayout';
+import { CategoryGrid } from '../components/Home/CategoryGrid';
 import { fetchProductCategories, type ProductCategory } from '../services/api';
 
 interface CategoryGroup {

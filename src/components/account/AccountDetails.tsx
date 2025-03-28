@@ -1,37 +1,40 @@
-'use client';
-
 import type React from 'react';
 
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+import { Checkbox } from '../../components/ui/checkbox';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '../../components/ui/select';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+} from '../../components/ui/card';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '../../components/ui/tabs';
 import { Plus, Trash2, Edit } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '../../components/ui/use-toast';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { indianStates } from '@/lib/constants';
+} from '../../components/ui/dialog';
+import { indianStates } from '../../lib/constants';
 import {
   getUserProfile,
   updateUserProfile,
@@ -40,7 +43,7 @@ import {
   updateUserAddress,
   deleteUserAddress,
   setDefaultAddress,
-} from '@/services/userService';
+} from '../../services/userService';
 import Cookies from 'js-cookie';
 
 interface Address {

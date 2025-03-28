@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
-import { fetchBestSellerProducts } from '@/services/api';
-import { Button } from '@/components/ui/button';
+import { fetchBestSellerProducts } from '../../services/api';
+import { Button } from '../../components/ui/button';
 import { Link } from 'react-router-dom';
 
 interface ApiProduct {

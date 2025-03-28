@@ -1,11 +1,11 @@
 import type React from 'react';
 import { useState, useEffect } from 'react';
-import { MainLayout } from '@/layouts/MainLayout';
-import { Breadcrumb } from '@/components/Breadcrumb';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { toast } from '@/components/ui/use-toast';
+import { MainLayout } from '../layouts/MainLayout';
+import { Breadcrumb } from '../components/Breadcrumb';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Textarea } from '../components/ui/textarea';
+import { toast } from '../components/ui/use-toast';
 import { MapPin, Phone, MessageSquare } from 'lucide-react';
 
 export default function ContactPage() {

@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { ProductCardFeatured } from '../Home/ProductCardFeatured';
-import { fetchRelatedProducts } from '@/services/api';
+import { fetchRelatedProducts } from '../../services/api';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '../../components/ui/button';
 
 interface Product {
   id: number;

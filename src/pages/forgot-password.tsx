@@ -1,6 +1,6 @@
-import { MainLayout } from '@/layouts/MainLayout';
-import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm';
-import { Breadcrumb } from '@/components/Breadcrumb';
+import { MainLayout } from '../layouts/MainLayout';
+import ForgotPasswordForm from '../components/auth/ForgotPasswordForm';
+import { Breadcrumb } from '../components/Breadcrumb';
 
 export default function ForgotPasswordPage() {
   return (

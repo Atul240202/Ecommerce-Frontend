@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { MainLayout } from '@/layouts/MainLayout';
-import { ProductCard } from '@/components/ProductCard';
-import { searchProducts } from '@/services/api';
-import { Breadcrumb } from '@/components/Breadcrumb';
+import { MainLayout } from '../layouts/MainLayout';
+import { ProductCard } from '../components/ProductCard';
+import { searchProducts } from '../services/api';
+import { Breadcrumb } from '../components/Breadcrumb';
 
 interface Product {
   id: number;

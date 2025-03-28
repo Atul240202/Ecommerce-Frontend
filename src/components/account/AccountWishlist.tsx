@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '../../components/ui/button';
+import { Checkbox } from '../../components/ui/checkbox';
 import { Trash2, ShoppingCart, Loader2 } from 'lucide-react';
-import { useShop } from '@/contexts/ShopContext';
-import { toast } from '@/components/ui/use-toast';
+import { useShop } from '../../contexts/ShopContext';
+import { toast } from '../../components/ui/use-toast';
 
 export function AccountWishlist() {
   const {

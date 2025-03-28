@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Slider } from '@/components/ui/slider';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Slider } from '../../components/ui/slider';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
 
 interface FilterState {
   priceRange: [number, number];

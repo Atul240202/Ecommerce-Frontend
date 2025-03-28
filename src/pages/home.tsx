@@ -1,18 +1,15 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { MainLayout } from '@/layouts/MainLayout';
-import { HeroSlider } from '@/components/Home/HeroSlider';
-import { CategoryGrid } from '@/components/Home/CategoryGrid';
-import { ProductGrid } from '@/components/Home/ProductGrid';
-import { FeaturedProducts } from '@/components/Home/FeaturedProducts';
-import { FeaturedSection } from '@/components/Home/FeaturedSection';
+import { MainLayout } from '../layouts/MainLayout';
+import { HeroSlider } from '../components/Home/HeroSlider';
+import { ProductGrid } from '../components/Home/ProductGrid';
+import { FeaturedProducts } from '../components/Home/FeaturedProducts';
+import { FeaturedSection } from '../components/Home/FeaturedSection';
 import { BlogCard } from '../components/Blogs/BlogCard';
 import {
   fetchFeaturedProducts,
   fetchBestSellerProducts,
 } from '../services/api';
-import { fetchProductCategories, type ProductCategory } from '/services/api';
-import CategorySubheader from '../components/Home/CategorySubheader';
 
 interface Product {
   id: number;

@@ -1,6 +1,5 @@
-import Image from 'next/image';
-import { MainLayout } from '@/layouts/MainLayout';
-import { Breadcrumb } from '@/components/Breadcrumb';
+import { MainLayout } from '../layouts/MainLayout';
+import { Breadcrumb } from '../components/Breadcrumb';
 
 export default function TermsAndConditionsPage() {
   return (

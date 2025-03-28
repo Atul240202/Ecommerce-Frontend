@@ -1,6 +1,6 @@
-import { MainLayout } from '@/layouts/MainLayout';
-import ResetPasswordForm from '@/components/auth/ResetPasswordForm';
-import { Breadcrumb } from '@/components/Breadcrumb';
+import { MainLayout } from '../layouts/MainLayout';
+import ResetPasswordForm from '../components/auth/ResetPasswordForm';
+import { Breadcrumb } from '../components/Breadcrumb';
 
 export default function ResetPasswordPage() {
   return (

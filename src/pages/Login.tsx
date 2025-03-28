@@ -1,6 +1,6 @@
-import { MainLayout } from '@/layouts/MainLayout';
-import LoginForm from '@/components/auth/LoginForm';
-import { Breadcrumb } from '@/components/Breadcrumb';
+import { MainLayout } from '../layouts/MainLayout';
+import LoginForm from '../components/auth/LoginForm';
+import { Breadcrumb } from '../components/Breadcrumb';
 
 export default function LoginPage() {
   return (

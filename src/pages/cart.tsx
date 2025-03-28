@@ -1,12 +1,10 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MainLayout } from '@/layouts/MainLayout';
-import { Button } from '@/components/ui/button';
-import { Breadcrumb } from '@/components/Breadcrumb';
-import { useShop } from '@/contexts/ShopContext';
-import { useCheckout } from '@/contexts/CheckoutContext';
+import { MainLayout } from '../layouts/MainLayout';
+import { Button } from '../components/ui/button';
+import { Breadcrumb } from '../components/Breadcrumb';
+import { useShop } from '../contexts/ShopContext';
+import { useCheckout } from '../contexts/CheckoutContext';
 import {
   Trash2,
   Minus,
@@ -20,9 +18,9 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   storeUnprocessedOrder,
   deleteAllUserUnprocessedOrders,
-} from '@/services/unprocessedOrderService';
-import { getCurrentUser } from '@/services/auth';
-import { toast } from '@/components/ui/use-toast';
+} from '../services/unprocessedOrderService';
+import { getCurrentUser } from '../services/auth';
+import { toast } from '../components/ui/use-toast';
 
 export default function CartPage() {
   const {

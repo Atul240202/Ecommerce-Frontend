@@ -1,9 +1,9 @@
 import type React from 'react';
 import { useState, useEffect } from 'react';
 import { Star } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '../../components/ui/button';
 import { Link } from 'react-router-dom';
-import { useShop } from '@/contexts/ShopContext';
+import { useShop } from '../../contexts/ShopContext';
 import LoginPopup from '../utils/LoginPopup';
 
 interface Product {

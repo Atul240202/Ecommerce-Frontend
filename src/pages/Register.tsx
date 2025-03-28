@@ -1,6 +1,6 @@
-import { MainLayout } from '@/layouts/MainLayout';
-import RegisterForm from '@/components/auth/RegisterForm';
-import { Breadcrumb } from '@/components/Breadcrumb';
+import { MainLayout } from '../layouts/MainLayout';
+import RegisterForm from '../components/auth/RegisterForm';
+import { Breadcrumb } from '../components/Breadcrumb';
 
 export default function RegisterPage() {
   return (

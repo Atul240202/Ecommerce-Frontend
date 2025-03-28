@@ -2,11 +2,11 @@ import type React from 'react';
 
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { toast } from '@/components/ui/use-toast';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+import { Checkbox } from '../../components/ui/checkbox';
+import { toast } from '../../components/ui/use-toast';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import Cookies from 'js-cookie';
 

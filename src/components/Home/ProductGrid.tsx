@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { ProductCardFeatured } from './ProductCardFeatured';
-import { fetchFeaturedProducts, fetchBestSellerProducts } from '@/services/api';
-import { Button } from '@/components/ui/button';
+import {
+  fetchFeaturedProducts,
+  fetchBestSellerProducts,
+} from '../../services/api';
+import { Button } from '../../components/ui/button';
 
 interface ApiProduct {
   id: number;

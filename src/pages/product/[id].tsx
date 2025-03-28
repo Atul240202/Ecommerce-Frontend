@@ -2,23 +2,28 @@ import type React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, Loader2, Minus, Plus, Send } from 'lucide-react';
-import { MainLayout } from '@/layouts/MainLayout';
-import { Breadcrumb } from '@/components/Breadcrumb';
-import { ProductGallery } from '@/components/ProductPage/ProductGallery';
-import { ProductReviews } from '@/components/ProductPage/ProductReviews';
-import { RelatedProducts } from '@/components/ProductPage/RelatedProducts';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { MainLayout } from '../../layouts/MainLayout';
+import { Breadcrumb } from '../../components/Breadcrumb';
+import { ProductGallery } from '../../components/ProductPage/ProductGallery';
+import { ProductReviews } from '../../components/ProductPage/ProductReviews';
+import { RelatedProducts } from '../../components/ProductPage/RelatedProducts';
+import { Button } from '../../components/ui/button';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '../../components/ui/tabs';
 import { Star } from 'lucide-react';
-import { useShop } from '@/contexts/ShopContext';
-import { useCheckout } from '@/contexts/CheckoutContext';
-import { fetchProductById, submitProductReview } from '@/services/api';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { toast } from '@/components/ui/use-toast';
-import LoginPopup from '@/components/utils/LoginPopup';
-import { isLoggedIn } from '@/services/auth';
+import { useShop } from '../../contexts/ShopContext';
+import { useCheckout } from '../../contexts/CheckoutContext';
+import { fetchProductById, submitProductReview } from '../../services/api';
+import { Textarea } from '../../components/ui/textarea';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
+import { toast } from '../../components/ui/use-toast';
+import LoginPopup from '../../components/utils/LoginPopup';
+import { isLoggedIn } from '../../services/auth';
 import { Features } from '../../components/utils/Features';
 
 interface ProductImage {

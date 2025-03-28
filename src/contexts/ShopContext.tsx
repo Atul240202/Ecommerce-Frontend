@@ -1,10 +1,8 @@
-'use client';
-
 import type React from 'react';
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '../components/ui/use-toast';
 
 interface CartItem {
   productId: number;

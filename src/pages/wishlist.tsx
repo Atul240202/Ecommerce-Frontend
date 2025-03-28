@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MainLayout } from '@/layouts/MainLayout';
-import { Button } from '@/components/ui/button';
-import { Breadcrumb } from '@/components/Breadcrumb';
-import { useShop } from '@/contexts/ShopContext';
+import { MainLayout } from '../layouts/MainLayout';
+import { Button } from '../components/ui/button';
+import { Breadcrumb } from '../components/Breadcrumb';
+import { useShop } from '../contexts/ShopContext';
 import {
   Trash2,
   Loader2,

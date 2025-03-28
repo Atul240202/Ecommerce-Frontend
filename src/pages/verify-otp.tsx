@@ -1,6 +1,6 @@
-import { MainLayout } from '@/layouts/MainLayout';
-import OtpVerification from '@/components/auth/OtpVerification';
-import { Breadcrumb } from '@/components/Breadcrumb';
+import { MainLayout } from '../layouts/MainLayout';
+import OtpVerification from '../components/auth/OtpVerification';
+import { Breadcrumb } from '../components/Breadcrumb';
 
 export default function VerifyOtpPage() {
   return (

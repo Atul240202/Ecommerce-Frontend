@@ -1,12 +1,10 @@
-'use client';
-
 import { useState, useEffect } from 'react';
-import { MainLayout } from '@/layouts/MainLayout';
-import { Breadcrumb } from '@/components/Breadcrumb';
-import { ProductCardFeatured } from '@/components/Home/ProductCardFeatured';
-import { ProductFilter } from '@/components/ProductPage/ProductFilter';
-import { ProductSort } from '@/components/ProductPage/ProductSort';
-import { fetchBestSellerProducts, type Product } from '@/services/api';
+import { MainLayout } from '../layouts/MainLayout';
+import { Breadcrumb } from '../components/Breadcrumb';
+import { ProductCardFeatured } from '../components/Home/ProductCardFeatured';
+import { ProductFilter } from '../components/ProductPage/ProductFilter';
+import { ProductSort } from '../components/ProductPage/ProductSort';
+import { fetchBestSellerProducts, type Product } from '../services/api';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function BestSellersPage() {

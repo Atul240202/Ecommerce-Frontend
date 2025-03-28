@@ -1,6 +1,6 @@
-import { MainLayout } from '@/layouts/MainLayout';
-import ResetPasswordOtpVerification from '@/components/auth/ResetPasswordOtpVerification';
-import { Breadcrumb } from '@/components/Breadcrumb';
+import { MainLayout } from '../layouts/MainLayout';
+import ResetPasswordOtpVerification from '../components/auth/ResetPasswordOtpVerification';
+import { Breadcrumb } from '../components/Breadcrumb';
 
 export default function VerifyResetOtpPage() {
   return (

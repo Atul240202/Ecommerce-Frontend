@@ -1,10 +1,10 @@
 import type React from 'react';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { ToastProvider } from '@/components/ui/toast';
-import { Header } from '@/components/Header';
-import { SubHeader } from '@/components/Home/SubHeader';
-import { Footer } from '@/components/Footer';
+import { ToastProvider } from '../components/ui/toast';
+import { Header } from '../components/Header';
+import { SubHeader } from '../components/Home/SubHeader';
+import { Footer } from '../components/Footer';
 import CategorySubheader from '../components/Home/CategorySubheader';
 interface MainLayoutProps {
   children: React.ReactNode;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { MainLayout } from '@/layouts/MainLayout';
-import { BlogCard } from '@/components/Blogs/BlogCard';
-import { Button } from '@/components/ui/button';
+import { MainLayout } from '../../layouts/MainLayout';
+import { BlogCard } from '../../components/Blogs/BlogCard';
+import { Button } from '../../components/ui/button';
 import { Loader2 } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 12;

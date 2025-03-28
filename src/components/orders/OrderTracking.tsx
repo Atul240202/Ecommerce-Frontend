@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { trackOrder } from '@/services/orderTrackingService';
+import { trackOrder } from '../../services/orderTrackingService';
 import { Loader2 } from 'lucide-react';
 
 interface OrderTrackingProps {
