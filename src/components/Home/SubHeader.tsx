@@ -23,7 +23,6 @@ interface CategoryGroup {
 }
 
 export function SubHeader() {
-  const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [categoryGroups, setCategoryGroups] = useState<CategoryGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -33,15 +32,16 @@ export function SubHeader() {
     const getCategories = async () => {
       try {
         const data = await fetchProductCategories();
-        setCategories(data);
 
-        const mainCategories = data.filter((cat) => cat.parent === 0);
+        const mainCategories = data.filter(
+          (cat: ProductCategory) => cat.parent === 0
+        );
         const groups: CategoryGroup[] = [];
 
-        mainCategories.forEach((mainCat) => {
+        mainCategories.forEach((mainCat: ProductCategory) => {
           const subcategories = data
-            .filter((subCat) => subCat.parent === mainCat.id)
-            .map((subCat) => ({
+            .filter((subCat: ProductCategory) => subCat.parent === mainCat.id)
+            .map((subCat: ProductCategory) => ({
               name: subCat.name,
               slug: subCat.slug,
             }));
@@ -71,10 +71,19 @@ export function SubHeader() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // 🔹 Split categories into 6 columns
+  const columnCount = 6;
+  const columnGroups: CategoryGroup[][] = [];
+  categoryGroups.forEach((group, index) => {
+    const columnIndex = index % columnCount;
+    if (!columnGroups[columnIndex]) columnGroups[columnIndex] = [];
+    columnGroups[columnIndex].push(group);
+  });
+
   return (
     <nav className='border-b bg-white'>
       <div className='container mx-auto px-4 flex items-center justify-between'>
-        {/** 📌 Mobile: Hamburger Menu **/}
+        {/** 📌 Mobile Navigation **/}
         {isMobile ? (
           <>
             <button
@@ -91,7 +100,6 @@ export function SubHeader() {
             {/** 📌 Mobile Menu Drawer **/}
             {mobileMenuOpen && (
               <div className='absolute top-28 left-0 w-full bg-white border-r shadow-md z-50 p-6 overflow-y-auto'>
-                {/** Close Button for Mobile Menu **/}
                 <div className='flex justify-between items-center pb-4 border-b'>
                   <span className='text-lg font-semibold'>Menu</span>
                   <button onClick={() => setMobileMenuOpen(false)}>
@@ -118,7 +126,7 @@ export function SubHeader() {
                       ) : (
                         <div className='grid grid-cols-1 gap-x-4 gap-y-2'>
                           {categoryGroups.map((group, groupIndex) => (
-                            <div key={groupIndex} className=''>
+                            <div key={groupIndex}>
                               <DropdownMenuItem asChild>
                                 <Link
                                   to={`/categories/${group.slug}`}
@@ -191,42 +199,50 @@ export function SubHeader() {
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 className='w-[70vw] p-4 max-h-[70vh] overflow-y-auto'
-                sideOffset={0}
-                align='start'
-                alignOffset={0}
                 side='bottom'
+                align='start'
               >
                 {loading ? (
                   <div className='text-center py-4'>Loading categories...</div>
                 ) : (
-                  <div className='grid grid-cols-6 gap-x-4 gap-y-3'>
-                    {categoryGroups.map((group, groupIndex) => (
-                      <div key={groupIndex} className=''>
-                        <DropdownMenuItem asChild>
-                          <Link
-                            to={`/categories/${group.slug}`}
-                            className='font-bold text-base uppercase'
-                          >
-                            {group.name}
-                          </Link>
-                        </DropdownMenuItem>
-                        <div className='pl-2 mt-2 space-y-1'>
-                          {group.subcategories.map((subcat, subcatIndex) => (
-                            <DropdownMenuItem key={subcatIndex} asChild>
-                              <Link to={`/categories/${subcat.slug}`}>
-                                {subcat.name}
+                  <div className='grid grid-cols-6 gap-6'>
+                    {columnGroups.map((column, colIndex) => (
+                      <div key={colIndex} className='space-y-4'>
+                        {column.map((group, groupIndex) => (
+                          <div key={groupIndex} className='mb-4'>
+                            <DropdownMenuItem asChild>
+                              <Link
+                                to={`/categories/${group.slug}`}
+                                className='font-bold text-base uppercase'
+                              >
+                                {group.name}
                               </Link>
                             </DropdownMenuItem>
-                          ))}
-                          <DropdownMenuItem asChild className='text-[#4280ef]'>
-                            <Link
-                              to={`/categories/${group.slug}`}
-                              className='flex items-center'
-                            >
-                              View All <ChevronRight className='h-4 w-4 ml-1' />
-                            </Link>
-                          </DropdownMenuItem>
-                        </div>
+                            <div className='space-y-2 pl-2 mt-2'>
+                              {group.subcategories.map(
+                                (subcat, subcatIndex) => (
+                                  <DropdownMenuItem key={subcatIndex} asChild>
+                                    <Link to={`/categories/${subcat.slug}`}>
+                                      {subcat.name}
+                                    </Link>
+                                  </DropdownMenuItem>
+                                )
+                              )}
+                              <DropdownMenuItem
+                                asChild
+                                className='text-[#4280ef]'
+                              >
+                                <Link
+                                  to={`/categories/${group.slug}`}
+                                  className='flex items-center'
+                                >
+                                  View All{' '}
+                                  <ChevronRight className='h-4 w-4 ml-1' />
+                                </Link>
+                              </DropdownMenuItem>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     ))}
                   </div>

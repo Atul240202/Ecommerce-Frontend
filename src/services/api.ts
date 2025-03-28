@@ -21,7 +21,7 @@ export interface Product {
   average_rating: string;
   stock_status: string;
   images: ProductImage[];
-  categories: ProductCategory[];
+  categories: InnerProductCategory[];
 }
 
 export interface ProductImage {
@@ -31,7 +31,7 @@ export interface ProductImage {
   alt: string;
 }
 
-export interface ProductCategory {
+export interface InnerProductCategory {
   id: number;
   name: string;
   slug: string;

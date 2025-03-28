@@ -1,5 +1,5 @@
 import type React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import Cookies from 'js-cookie';
@@ -20,7 +20,7 @@ export function Header() {
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
   const { cart, wishlist } = useShop();
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const wishlistCount = wishlist.length;
   const [isMobile, setIsMobile] = useState(false);
 
