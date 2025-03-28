@@ -14,8 +14,7 @@ interface CategoryGroup {
 
 export default function MainCategoryPage() {
   const [categories, setCategories] = useState<ProductCategory[]>([]);
-  const [categoryGroups, setCategoryGroups] = useState<CategoryGroup[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const [categoryGroups, setCategoryGroups] = useState<CategoryGroup[]>([]);
 
   // useEffect(() => {
   //   // Fetch categories data
@@ -31,13 +30,15 @@ export default function MainCategoryPage() {
         setCategories(data);
 
         // Process categories into groups
-        const mainCategories = data.filter((cat) => cat.parent === 0);
+        const mainCategories = data.filter(
+          (cat: ProductCategory) => cat.parent === 0
+        );
         const groups: CategoryGroup[] = [];
 
-        mainCategories.forEach((mainCat) => {
+        mainCategories.forEach((mainCat: ProductCategory) => {
           const subcategories = data
-            .filter((subCat) => subCat.parent === mainCat.id)
-            .map((subCat) => ({
+            .filter((subCat: ProductCategory) => subCat.parent === mainCat.id)
+            .map((subCat: ProductCategory) => ({
               name: subCat.name,
               slug: subCat.slug,
             }));
@@ -49,11 +50,9 @@ export default function MainCategoryPage() {
           });
         });
 
-        setCategoryGroups(groups);
+        // setCategoryGroups(groups);
       } catch (error) {
         console.error('Failed to fetch categories:', error);
-      } finally {
-        setLoading(false);
       }
     };
 

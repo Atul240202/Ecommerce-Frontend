@@ -14,7 +14,7 @@ export default function OtpVerification() {
   const [isLoading, setIsLoading] = useState(false);
   const [resendDisabled, setResendDisabled] = useState(true);
   const [countdown, setCountdown] = useState(60);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>(Array(6).fill(null));
 
   // Get email and phone from location state
   const email = location.state?.email || '';
@@ -23,7 +23,7 @@ export default function OtpVerification() {
   useEffect(() => {
     // Focus the first input on component mount
     if (inputRefs.current[0]) {
-      inputRefs.current[0].focus();
+      inputRefs.current[0]?.focus();
     }
 
     // Start countdown for resend button
@@ -64,7 +64,7 @@ export default function OtpVerification() {
 
     // Auto-focus next input
     if (value && index < 5 && inputRefs.current[index + 1]) {
-      inputRefs.current[index + 1].focus();
+      inputRefs.current[index + 1]?.focus();
     }
   };
 
@@ -79,7 +79,7 @@ export default function OtpVerification() {
       index > 0 &&
       inputRefs.current[index - 1]
     ) {
-      inputRefs.current[index - 1].focus();
+      inputRefs.current[index - 1]?.focus();
     }
   };
 
@@ -94,7 +94,7 @@ export default function OtpVerification() {
 
       // Focus the last input
       if (inputRefs.current[5]) {
-        inputRefs.current[5].focus();
+        inputRefs.current[5]?.focus();
       }
     }
   };
@@ -215,13 +215,15 @@ export default function OtpVerification() {
           {otp.map((digit, index) => (
             <Input
               key={index}
-              ref={(el) => (inputRefs.current[index] = el)}
               type='text'
               maxLength={1}
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={index === 0 ? handlePaste : undefined}
+              ref={(el) => {
+                inputRefs.current[index] = el;
+              }}
               className='w-12 h-12 text-center text-xl'
             />
           ))}

@@ -265,7 +265,7 @@ export default function CategoryPage() {
                       ),
                       salePrice: product.on_sale
                         ? Number.parseFloat(product.sale_price)
-                        : null,
+                        : 0,
                       discountPercentage: product.on_sale
                         ? Math.round(
                             ((Number.parseFloat(product.regular_price) -

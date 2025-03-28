@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  storeUnprocessedOrder,
+  // storeUnprocessedOrder,
   deleteAllUserUnprocessedOrders,
 } from '../services/unprocessedOrderService';
 import { getCurrentUser } from '../services/auth';
@@ -94,29 +94,29 @@ export default function CartPage() {
       await deleteAllUserUnprocessedOrders();
       const tempId = uuidv4();
       // Create unprocessed order data
-      const unprocessedOrderData = {
-        tempId,
-        products: cart.map((item) => ({
-          id: item.productId,
-          title: item.name,
-          price: item.price,
-          quantity: item.quantity,
-          thumbnail: item.image,
-        })),
+      // const unprocessedOrderData = {
+      //   tempId,
+      //   products: cart.map((item) => ({
+      //     id: item.productId,
+      //     title: item.name,
+      //     price: item.price,
+      //     quantity: item.quantity,
+      //     thumbnail: item.image,
+      //   })),
 
-        subtotal: cart.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0
-        ),
-        shipping: cart.length > 0 ? 200 : 0,
-        total:
-          cart.reduce((sum, item) => sum + item.price * item.quantity, 0) +
-          (cart.length > 0 ? 200 : 0),
-        reason: 'Process was not completed by the user.',
-      };
+      //   subtotal: cart.reduce(
+      //     (sum, item) => sum + item.price * item.quantity,
+      //     0
+      //   ),
+      //   shipping: cart.length > 0 ? 200 : 0,
+      //   total:
+      //     cart.reduce((sum, item) => sum + item.price * item.quantity, 0) +
+      //     (cart.length > 0 ? 200 : 0),
+      //   reason: 'Process was not completed by the user.',
+      // };
 
       // Store the unprocessed order
-      const result = await storeUnprocessedOrder(unprocessedOrderData);
+      // const result = await storeUnprocessedOrder(unprocessedOrderData);
 
       // Prepare checkout products
       const checkoutProducts = cart.map((item) => ({
@@ -125,6 +125,7 @@ export default function CartPage() {
         thumbnail: item.image,
         price: item.price,
         quantity: item.quantity,
+        sku: item.sku || '',
       }));
 
       // Add to checkout context

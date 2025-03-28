@@ -19,7 +19,7 @@ import { OrderConfirmation } from '../components/orders/OrderConfirmation';
 import { useCheckout } from '../contexts/CheckoutContext';
 import { Loader2, Plus } from 'lucide-react';
 import Cookies from 'js-cookie';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { indianStates } from '../lib/constants';
 import {
   getUserAddresses,
@@ -30,7 +30,7 @@ import {
 import { toast } from '../components/ui/use-toast';
 import {
   storeUnprocessedOrder,
-  deleteUnprocessedOrder,
+  // deleteUnprocessedOrder,
 } from '../services/unprocessedOrderService';
 import { createFinalOrder } from '../services/finalOrderService';
 import { getCurrentUser } from '../services/auth';
@@ -58,11 +58,10 @@ interface FormErrors {
 }
 
 export default function CheckoutPage() {
-  const { products, updateQuantity, subtotal, shipping, total, clearCart } =
-    useCheckout();
+  const { products, updateQuantity, subtotal, shipping, total } = useCheckout();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // Address states
   const [savedAddresses, setSavedAddresses] = useState<UserAddress[]>([]);
@@ -464,7 +463,7 @@ export default function CheckoutPage() {
       setFinalOrderData(orderData);
 
       // Create the final order in the database
-      const response = await createFinalOrder(orderData);
+      await createFinalOrder(orderData);
 
       // Set the order number from the response
       setOrderNumber(orderData.order_id);
@@ -475,15 +474,15 @@ export default function CheckoutPage() {
         sessionStorage.removeItem('unprocessed_order_tempid');
       }
 
-      if (typeof clearCart === 'function') {
-        clearCart();
-      } else {
-        // Fallback if clearCart is not available
-        console.warn(
-          'clearCart function not available, using alternative method'
-        );
-        // localClearCart();
-      }
+      // if (typeof clearCart === 'function') {
+      //   clearCart();
+      // } else {
+      //   // Fallback if clearCart is not available
+      //   console.warn(
+      //     'clearCart function not available, using alternative method'
+      //   );
+      //   // localClearCart();
+      // }
 
       // Show success message
       toast({
