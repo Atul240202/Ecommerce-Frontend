@@ -1,5 +1,5 @@
 import type React from 'react';
-
+import Link from 'next/link';
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '../../components/ui/button';
@@ -142,12 +142,12 @@ export default function LoginForm() {
         <div>
           <div className='flex justify-between items-center'>
             <Label htmlFor='password'>Password</Label>
-            <a
+            <Link
               href='/forgot-password'
               className='text-sm text-blue-600 hover:underline'
             >
               Forgot Password?
-            </a>
+            </Link>
           </div>
           <div className='relative'>
             <Input
@@ -195,9 +195,9 @@ export default function LoginForm() {
 
         <p className='text-center text-sm'>
           Don't have an account?{' '}
-          <a href='/register' className='text-blue-600 hover:underline'>
+          <Link href='/register' className='text-blue-600 hover:underline'>
             Create an account
-          </a>
+          </Link>
         </p>
       </form>
     </div>
