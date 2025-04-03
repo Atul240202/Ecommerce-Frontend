@@ -2,9 +2,9 @@ import type React from 'react';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ToastProvider } from '../components/ui/toast';
-import { Header } from '../components/Header';
+import { Header } from '../components/utils/Header';
 import { SubHeader } from '../components/Home/SubHeader';
-import { Footer } from '../components/Footer';
+import { Footer } from '../components/utils/Footer';
 import CategorySubheader from '../components/Home/CategorySubheader';
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -26,8 +26,8 @@ export function MainLayout({ children }: MainLayoutProps) {
 
   return (
     <ToastProvider>
-      <div className='min-h-screen flex flex-col'>
-        <div className='fixed top-0 left-0 w-full bg-white z-50'>
+      <div className="min-h-screen flex flex-col">
+        <div className="fixed top-0 left-0 w-full bg-white z-50">
           <Header />
         </div>
 
@@ -35,7 +35,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           {!isLoginPage && !isRegisterPage && <SubHeader />}
           <div className={``}>{isHomePage && <CategorySubheader />}</div>
 
-          <main className='flex-1'>{children}</main>
+          <main className="flex-1">{children}</main>
         </div>
 
         <Footer />

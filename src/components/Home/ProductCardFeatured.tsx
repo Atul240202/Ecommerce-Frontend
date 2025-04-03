@@ -32,8 +32,6 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
   // const discountedPrice = product.price
   //   ? product.price * (1 - (product.discountPercentage || 0) / 100)
   //   : 0;
-  console.log('Card product data', product);
-
   const { addToCart, isLoggedIn } = useShop();
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);

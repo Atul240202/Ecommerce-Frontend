@@ -1,5 +1,6 @@
 // Base API URL - will use the environment variable
 const API_URL = import.meta.env.VITE_API_URL;
+import Cookies from 'js-cookie';
 
 // Product interfaces
 export interface ProductResponse {
@@ -74,14 +75,13 @@ export const fetchProductCategories = async () => {
 };
 
 // API functions
-export const fetchProducts = async (
-  page = 1,
-  keyword = ''
-): Promise<ProductResponse> => {
+export const fetchProducts = async (page = 1, limit = 10, query = '') => {
   try {
-    const response = await fetch(
-      `${API_URL}/products?pageNumber=${page}&keyword=${keyword}`
-    );
+    let url = `${API_URL}/products?page=${page}&limit=${limit}`;
+    if (query) {
+      url += `&keyword=${encodeURIComponent(query)}`;
+    }
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Failed to fetch products');
     }
@@ -91,7 +91,6 @@ export const fetchProducts = async (
     throw error;
   }
 };
-
 export const fetchProductById = async (
   id: number | string
 ): Promise<Product> => {
@@ -200,30 +199,6 @@ export const fetchRelatedProducts = async (
 //   }
 // };
 
-export const submitProductReview = async (
-  productId: number,
-  reviewData: { name: string; comment: string; rating: number }
-) => {
-  try {
-    const response = await fetch(`${API_URL}/products/${productId}/reviews`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(reviewData),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to submit review');
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error submitting review:', error);
-    throw error;
-  }
-};
-
 // Search products by keyword
 export const searchProducts = async (keyword: string, limit = 10) => {
   if (!keyword || keyword.trim() === '') {
@@ -244,5 +219,185 @@ export const searchProducts = async (keyword: string, limit = 10) => {
     console.error('Error searching products:', error);
     // Return empty array instead of throwing to prevent component crashes
     return { products: [], total: 0 };
+  }
+};
+
+// Fetch reviews for a product with pagination
+export const fetchProductReviews = async (
+  productId: number,
+  page = 1,
+  limit = 10
+) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/products/${productId}/reviews?page=${page}&limit=${limit}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch reviews');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching product reviews:', error);
+    throw error;
+  }
+};
+
+// Check if user has purchased the product
+export const verifyProductPurchase = async (productId: number) => {
+  try {
+    const token = Cookies.get('authToken');
+    if (!token) {
+      return { verified: false };
+    }
+
+    const response = await fetch(
+      `${API_URL}/products/${productId}/purchase-verification`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to verify purchase');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error verifying product purchase:', error);
+    return { verified: false };
+  }
+};
+
+// Submit a review for a product
+export const submitProductReview = async (
+  productId: number,
+  reviewData: { rating: number; comment: string }
+) => {
+  try {
+    const token = Cookies.get('authToken');
+    if (!token) {
+      throw new Error('User not authenticated');
+    }
+
+    const response = await fetch(`${API_URL}/products/${productId}/reviews`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(reviewData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to submit review');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error submitting product review:', error);
+    throw error;
+  }
+};
+
+// Update an existing review
+export const updateProductReview = async (
+  reviewId: string,
+  reviewData: { rating?: number; comment?: string }
+) => {
+  try {
+    const token = Cookies.get('authToken');
+    if (!token) {
+      throw new Error('User not authenticated');
+    }
+
+    const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(reviewData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to update review');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error updating product review:', error);
+    throw error;
+  }
+};
+
+// Delete a review
+export const deleteProductReview = async (reviewId: string) => {
+  try {
+    const token = Cookies.get('authToken');
+    if (!token) {
+      throw new Error('User not authenticated');
+    }
+
+    const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to delete review');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error deleting product review:', error);
+    throw error;
+  }
+};
+
+// Get user's reviews
+export const fetchUserReviews = async (page = 1, limit = 10) => {
+  try {
+    const token = Cookies.get('authToken');
+    if (!token) {
+      throw new Error('User not authenticated');
+    }
+
+    const response = await fetch(
+      `${API_URL}/users/reviews?page=${page}&limit=${limit}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch user reviews');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching user reviews:', error);
+    throw error;
   }
 };

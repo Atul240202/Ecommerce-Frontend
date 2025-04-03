@@ -1,13 +1,11 @@
-'use client';
-
 import type React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Heart, Loader2, Minus, Plus, Send } from 'lucide-react';
+import { Heart, Loader2, Minus, Plus } from 'lucide-react';
 import { MainLayout } from '../../layouts/MainLayout';
 import { Breadcrumb } from '../../components/Breadcrumb';
 import { ProductGallery } from '../../components/ProductPage/ProductGallery';
-import { ProductReviews } from '../../components/ProductPage/ProductReviews';
+// import { ProductReviews } from '../../components/ProductPage/ProductReviews';
 import { RelatedProducts } from '../../components/ProductPage/RelatedProducts';
 import { Button } from '../../components/ui/button';
 import {
@@ -20,13 +18,12 @@ import { Star } from 'lucide-react';
 import { useShop } from '../../contexts/ShopContext';
 import { useCheckout } from '../../contexts/CheckoutContext';
 import { fetchProductById, submitProductReview } from '../../services/api';
-import { Textarea } from '../../components/ui/textarea';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
 import { toast } from '../../components/ui/use-toast';
 import LoginPopup from '../../components/utils/LoginPopup';
 import { isLoggedIn } from '../../services/auth';
 import { Features } from '../../components/utils/Features';
+import { ReviewForm } from '../../components/ProductPage/ReviewForm';
+import { ProductReviews } from '../../components/ProductPage/ProductReviews';
 
 interface ProductImage {
   id: number;
@@ -134,13 +131,11 @@ export default function ProductPage() {
         const productId = id.split('-').pop() || id;
 
         const productData = await fetchProductById(productId);
-        console.log('Product data', productData);
-        console.log('Product data-1', product);
+        console.log('Specific product', productData);
         // Transform the API data to match our UI needs
         const transformedProduct: Product = {
           ...productData,
         };
-        console.log('Product data-2', transformedProduct);
         setProduct(transformedProduct);
 
         // Check if product is in wishlist
@@ -307,8 +302,8 @@ export default function ProductPage() {
   if (isLoading) {
     return (
       <MainLayout>
-        <div className='flex items-center justify-center h-screen'>
-          <Loader2 className='h-8 w-8 animate-spin' />
+        <div className="flex items-center justify-center h-screen">
+          <Loader2 className="h-8 w-8 animate-spin" />
         </div>
       </MainLayout>
     );
@@ -317,12 +312,12 @@ export default function ProductPage() {
   if (error) {
     return (
       <MainLayout>
-        <div className='container mx-auto px-4 py-8'>
-          <div className='text-center py-12'>
-            <p className='text-lg text-red-600'>{error}</p>
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center py-12">
+            <p className="text-lg text-red-600">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className='mt-4 px-4 py-2 bg-[#4280ef] text-white rounded-md hover:bg-[#3270df]'
+              className="mt-4 px-4 py-2 bg-[#4280ef] text-white rounded-md hover:bg-[#3270df]"
             >
               Try Again
             </button>
@@ -335,7 +330,7 @@ export default function ProductPage() {
   if (!product) {
     return (
       <MainLayout>
-        <div className='container mx-auto px-4 py-8'>
+        <div className="container mx-auto px-4 py-8">
           <h1>Product not found</h1>
         </div>
       </MainLayout>
@@ -379,7 +374,7 @@ export default function ProductPage() {
             thumbnail={product.images[0]?.src || '/placeholder.svg'}
           />
 
-          <div className='space-y-6'>
+          <div className="space-y-6">
             <div>
               <h1
                 className={` font-bold mb-2 ${
@@ -392,8 +387,8 @@ export default function ProductPage() {
                 <p className='text-gray-500 mb-4'>Brand: {product.brand}</p>
               )} */}
 
-              <div className='flex items-center gap-4 mb-4'>
-                <div className='flex gap-1'>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex gap-1">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
@@ -406,12 +401,12 @@ export default function ProductPage() {
                     />
                   ))}
                 </div>
-                <span className='text-sm text-gray-500'>
+                <span className="text-sm text-gray-500">
                   ({product.rating_count} reviews)
                 </span>
               </div>
 
-              <div className='mb-4'>
+              <div className="mb-4">
                 <span
                   className={` font-bold ${isMobile ? 'text-xl' : 'text-3xl'}`}
                 >
@@ -419,41 +414,41 @@ export default function ProductPage() {
                 </span>
                 {product.on_sale && (
                   <>
-                    <span className='text-lg text-gray-500 line-through ml-2'>
+                    <span className="text-lg text-gray-500 line-through ml-2">
                       Rs. {regularPrice.toFixed(2)}
                     </span>
-                    <span className='text-green-500 ml-2'>
+                    <span className="text-green-500 ml-2">
                       Save {discountPercentage.toFixed(0)}%
                     </span>
                   </>
                 )}
-                <p className='text-sm text-gray-500 mt-1'>Inclusive of GST</p>
+                <p className="text-sm text-gray-500 mt-1">Inclusive of GST</p>
               </div>
             </div>
 
-            <div className='flex items-center gap-4'>
-              <div className='flex items-center border rounded-lg'>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center border rounded-lg">
                 <Button
-                  variant='ghost'
-                  size='icon'
+                  variant="ghost"
+                  size="icon"
                   onClick={() => handleQuantityChange(-1)}
                   disabled={quantity <= 1}
                 >
-                  <Minus className='h-4 w-4' />
+                  <Minus className="h-4 w-4" />
                 </Button>
-                <span className='w-12 text-center'>{quantity}</span>
+                <span className="w-12 text-center">{quantity}</span>
                 <Button
-                  variant='ghost'
-                  size='icon'
+                  variant="ghost"
+                  size="icon"
                   onClick={() => handleQuantityChange(1)}
                   disabled={quantity >= (product.stock_quantity || 1)}
                 >
-                  <Plus className='h-4 w-4' />
+                  <Plus className="h-4 w-4" />
                 </Button>
               </div>
               <Button
-                variant='outline'
-                size='icon'
+                variant="outline"
+                size="icon"
                 onClick={handleWishlistClick}
               >
                 <Heart
@@ -464,11 +459,11 @@ export default function ProductPage() {
               </Button>
             </div>
 
-            <div className='space-y-4'>
+            <div className="space-y-4">
               <div className={`  gap-2 ${isMobile ? 'flex-col ' : 'flex'}`}>
                 <Button
                   className={`flex-grow-[7] ${isMobile ? 'mb-4 w-full' : ''}`}
-                  size='lg'
+                  size="lg"
                   onClick={handleAddToCart}
                   disabled={
                     product.stock_status !== 'instock' || isAddingToCart
@@ -485,21 +480,21 @@ export default function ProductPage() {
                   className={`flex-grow-[3] ${
                     isWishlisted ? 'bg-red-500 hover:bg-red-600' : ''
                   } ${isMobile ? 'w-full' : ''}`}
-                  size='lg'
+                  size="lg"
                   onClick={handleWishlistClick}
                 >
                   <Heart
                     className={`h-5 w-5 ${isWishlisted ? 'fill-white' : ''}`}
                   />
-                  <span className='ml-2'>
+                  <span className="ml-2">
                     {isWishlisted ? 'Wishlisted' : 'Add to Wishlist'}
                   </span>
                 </Button>
               </div>
               <Button
-                variant='secondary'
-                className='w-full'
-                size='lg'
+                variant="secondary"
+                className="w-full"
+                size="lg"
                 onClick={handleBuyNow}
                 disabled={product.stock_status !== 'instock'}
               >
@@ -507,16 +502,16 @@ export default function ProductPage() {
               </Button>
             </div>
 
-            <div className='border-t pt-4'>
-              <p className='text-sm text-gray-500'>
+            <div className="border-t pt-4">
+              <p className="text-sm text-gray-500">
                 Availability:{' '}
-                <span className='font-medium'>
+                <span className="font-medium">
                   {product.availabilityStatus}
                 </span>
               </p>
               {product.sku && (
-                <p className='text-sm text-gray-500'>
-                  SKU: <span className='font-medium'>{product.sku}</span>
+                <p className="text-sm text-gray-500">
+                  SKU: <span className="font-medium">{product.sku}</span>
                 </p>
               )}
             </div>
@@ -530,24 +525,24 @@ export default function ProductPage() {
         />
         <Features />
         {/* Product Details Tabs */}
-        <Tabs defaultValue='description' className='mb-12 '>
+        <Tabs defaultValue="description" className="mb-12 ">
           <TabsList>
-            <TabsTrigger value='description'>Description</TabsTrigger>
-            <TabsTrigger value='specifications'>Specifications</TabsTrigger>
-            <TabsTrigger value='reviews'>
+            <TabsTrigger value="description">Description</TabsTrigger>
+            <TabsTrigger value="specifications">Specifications</TabsTrigger>
+            <TabsTrigger value="reviews">
               Reviews ({product.rating_count})
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value='description' className='prose max-w-none px-4'>
+          <TabsContent value="description" className="prose max-w-none px-4">
             <div dangerouslySetInnerHTML={{ __html: product.description }} />
           </TabsContent>
 
-          <TabsContent value='specifications' className='px-4'>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+          <TabsContent value="specifications" className="px-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h3 className='font-semibold mb-4'>Product Information</h3>
-                <dl className='space-y-2'>
+                <h3 className="font-semibold mb-4">Product Information</h3>
+                <dl className="space-y-2">
                   {/* {product.brand && (
                     <div className='flex'>
                       <dt className='w-1/3 text-gray-500'>Brand</dt>
@@ -555,15 +550,15 @@ export default function ProductPage() {
                     </div>
                   )} */}
                   {product.weight && (
-                    <div className='flex'>
-                      <dt className='w-1/3 text-gray-500'>Weight</dt>
-                      <dd className='w-2/3'>{product.weight} kg</dd>
+                    <div className="flex">
+                      <dt className="w-1/3 text-gray-500">Weight</dt>
+                      <dd className="w-2/3">{product.weight} kg</dd>
                     </div>
                   )}
                   {product.dimensions && (
-                    <div className='flex'>
-                      <dt className='w-1/3 text-gray-500'>Dimensions</dt>
-                      <dd className='w-2/3'>
+                    <div className="flex">
+                      <dt className="w-1/3 text-gray-500">Dimensions</dt>
+                      <dd className="w-2/3">
                         {product.dimensions.height} x{' '}
                         {product.dimensions.length} x {product.dimensions.width}
                       </dd>
@@ -592,80 +587,62 @@ export default function ProductPage() {
             </div>
           </TabsContent>
 
-          <TabsContent value='reviews' className='px-4'>
+          <TabsContent value="reviews" className="px-4">
             {/* Review Form */}
-            <div className='mb-8 p-6 border rounded-lg'>
-              <h3 className='text-lg font-semibold mb-4'>Write a Review</h3>
-              <form onSubmit={handleSubmitReview} className='space-y-4'>
-                <div>
-                  <Label htmlFor='review-name'>Your Name</Label>
-                  <Input
-                    id='review-name'
-                    value={reviewName}
-                    onChange={(e) => setReviewName(e.target.value)}
-                    placeholder='Enter your name'
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor='review-rating'>Rating</Label>
-                  <div className='flex gap-1 mt-1'>
-                    {[1, 2, 3, 4, 5].map((rating) => (
-                      <button
-                        key={rating}
-                        type='button'
-                        onClick={() => setReviewRating(rating)}
-                        className='focus:outline-none'
-                      >
-                        <Star
-                          className={`h-6 w-6 ${
-                            rating <= reviewRating
-                              ? 'text-yellow-400 fill-current'
-                              : 'text-gray-300'
-                          }`}
-                        />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor='review-comment'>Your Review</Label>
-                  <Textarea
-                    id='review-comment'
-                    value={reviewComment}
-                    onChange={(e) => setReviewComment(e.target.value)}
-                    placeholder='Share your experience with this product'
-                    rows={4}
-                    required
-                  />
-                </div>
-
-                <Button
-                  type='submit'
-                  disabled={isSubmittingReview}
-                  className='flex items-center gap-2'
-                >
-                  {isSubmittingReview && (
-                    <Loader2 className='h-4 w-4 animate-spin' />
-                  )}
-                  <Send className='h-4 w-4 mr-1' />
-                  Submit Review
-                </Button>
-              </form>
-            </div>
+            <ReviewForm
+              productId={product.id}
+              onReviewSubmitted={() => {
+                // Refresh product data to update ratings
+                const getProduct = async () => {
+                  try {
+                    const productData = await fetchProductById(product.id);
+                    setProduct({
+                      ...productData,
+                      reviews: productData.reviews || [],
+                      warrantyInformation: '1 Year Manufacturer Warranty',
+                      shippingInformation: 'Free shipping on orders over $50',
+                      availabilityStatus:
+                        productData.stock_status === 'instock'
+                          ? 'In Stock'
+                          : 'Out of Stock',
+                      returnPolicy: '30-day return policy',
+                    });
+                  } catch (err) {
+                    console.error('Error refreshing product:', err);
+                  }
+                };
+                getProduct();
+              }}
+            />
 
             {/* Reviews List */}
-            {product.reviews ? (
-              <ProductReviews reviews={product.reviews} />
-            ) : (
-              <div className='text-center py-8'>
-                <p className='text-gray-500'>
-                  Be the first one to share your review & rating.
-                </p>
-              </div>
-            )}
+            <ProductReviews
+              productId={product.id}
+              onReviewsUpdate={() => {
+                // Refresh product data to update ratings
+                const getProduct = async () => {
+                  try {
+                    const productData = await fetchProductById(
+                      Number.parseInt(id)
+                    );
+                    setProduct({
+                      ...productData,
+                      reviews: productData.reviews || [],
+                      warrantyInformation: '1 Year Manufacturer Warranty',
+                      shippingInformation: 'Free shipping on orders over $50',
+                      availabilityStatus:
+                        productData.stock_status === 'instock'
+                          ? 'In Stock'
+                          : 'Out of Stock',
+                      returnPolicy: '30-day return policy',
+                    });
+                  } catch (err) {
+                    console.error('Error refreshing product:', err);
+                  }
+                };
+                getProduct();
+              }}
+            />
           </TabsContent>
         </Tabs>
 

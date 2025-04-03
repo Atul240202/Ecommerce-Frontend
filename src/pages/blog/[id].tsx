@@ -70,7 +70,6 @@ export default function BlogPostPage() {
   const handleSubmitComment = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, you would send this to your backend
-    console.log({ name, email, comment });
     // Reset form
     setComment('');
     setName('');
@@ -141,8 +140,8 @@ export default function BlogPostPage() {
   if (isLoading) {
     return (
       <MainLayout>
-        <div className='flex justify-center py-16'>
-          <Loader2 className='h-8 w-8 animate-spin' />
+        <div className="flex justify-center py-16">
+          <Loader2 className="h-8 w-8 animate-spin" />
         </div>
       </MainLayout>
     );
@@ -151,8 +150,8 @@ export default function BlogPostPage() {
   if (!blog) {
     return (
       <MainLayout>
-        <div className='container mx-auto px-4 py-16'>
-          <h1 className='text-2xl font-bold'>Blog post not found</h1>
+        <div className="container mx-auto px-4 py-16">
+          <h1 className="text-2xl font-bold">Blog post not found</h1>
         </div>
       </MainLayout>
     );
@@ -170,7 +169,7 @@ export default function BlogPostPage() {
 
   return (
     <MainLayout>
-      <div className='container mx-auto px-4 py-8'>
+      <div className="container mx-auto px-4 py-8">
         <Breadcrumb
           items={[
             { label: 'Home', href: '/' },
@@ -179,45 +178,45 @@ export default function BlogPostPage() {
           ]}
         />
 
-        <article className='max-w-4xl mx-auto'>
-          <header className='mb-8'>
-            <div className='mb-4'>
+        <article className="max-w-4xl mx-auto">
+          <header className="mb-8">
+            <div className="mb-4">
               {blog.tags.map((tag) => (
                 <span
                   key={tag}
-                  className='inline-block px-2 py-1 text-xs font-medium bg-blue-50 text-blue-600 rounded'
+                  className="inline-block px-2 py-1 text-xs font-medium bg-blue-50 text-blue-600 rounded"
                 >
                   {tag}
                 </span>
               ))}
             </div>
-            <h1 className='text-3xl font-bold mb-6 text-gray-800'>
+            <h1 className="text-3xl font-bold mb-6 text-gray-800">
               {blog.title}
             </h1>
 
-            <div className='flex items-center gap-3 mb-6'>
-              <div className='w-10 h-10 rounded-full overflow-hidden'>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-full overflow-hidden">
                 <img
-                  src='/placeholder.svg?height=40&width=40'
-                  alt='Author'
+                  src="/placeholder.svg?height=40&width=40"
+                  alt="Author"
                   width={40}
                   height={40}
-                  className='object-cover'
+                  className="object-cover"
                 />
               </div>
               <div>
-                <div className='flex items-center gap-2'>
-                  <span className='text-sm font-medium'>By Sugar Rosie</span>
-                  <span className='text-sm text-gray-500'>{formattedDate}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">By Sugar Rosie</span>
+                  <span className="text-sm text-gray-500">{formattedDate}</span>
                 </div>
-                <div className='text-sm text-gray-500'>
+                <div className="text-sm text-gray-500">
                   {readTime} Mins read
                 </div>
               </div>
             </div>
           </header>
 
-          <div className='relative aspect-[16/9] mb-8 rounded-lg overflow-hidden'>
+          <div className="relative aspect-[16/9] mb-8 rounded-lg overflow-hidden">
             <img
               src={
                 blog.insidePageImage ||
@@ -225,88 +224,88 @@ export default function BlogPostPage() {
                 'https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image'
               }
               alt={blog.title}
-              className='w-full h-full object-cover'
+              className="w-full h-full object-cover"
             />
           </div>
 
-          <div className='prose max-w-none mb-8'>
+          <div className="prose max-w-none mb-8">
             {blog.content.map((paragraph, index) => (
-              <p key={index} className='mb-4 text-gray-700 leading-relaxed'>
+              <p key={index} className="mb-4 text-gray-700 leading-relaxed">
                 {paragraph}
               </p>
             ))}
           </div>
 
-          <div className='flex items-center justify-end gap-2 mb-8'>
-            <span className='text-sm text-gray-600'>Share:</span>
+          <div className="flex items-center justify-end gap-2 mb-8">
+            <span className="text-sm text-gray-600">Share:</span>
             <Button
-              variant='ghost'
-              size='icon'
-              className='rounded-full'
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
               onClick={() => handleShare('facebook')}
             >
-              <Facebook className='h-4 w-4' />
+              <Facebook className="h-4 w-4" />
             </Button>
             <Button
-              variant='ghost'
-              size='icon'
-              className='rounded-full'
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
               onClick={() => handleShare('twitter')}
             >
-              <Twitter className='h-4 w-4' />
+              <Twitter className="h-4 w-4" />
             </Button>
             <Button
-              variant='ghost'
-              size='icon'
-              className='rounded-full'
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
               onClick={() => handleShare('linkedin')}
             >
-              <Linkedin className='h-4 w-4' />
+              <Linkedin className="h-4 w-4" />
             </Button>
             <Button
-              variant='ghost'
-              size='icon'
-              className='rounded-full'
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
               onClick={() => handleShare('email')}
             >
-              <Mail className='h-4 w-4' />
+              <Mail className="h-4 w-4" />
             </Button>
             <Button
-              variant='ghost'
-              size='icon'
-              className='rounded-full'
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
               onClick={() => handleShare('copy')}
             >
-              <LinkIcon className='h-4 w-4' />
+              <LinkIcon className="h-4 w-4" />
             </Button>
           </div>
 
-          <div className='border-t pt-8 mb-12'>
-            <h3 className='text-xl font-semibold mb-4'>Leave a comment</h3>
+          <div className="border-t pt-8 mb-12">
+            <h3 className="text-xl font-semibold mb-4">Leave a comment</h3>
             <form onSubmit={handleSubmitComment}>
               <Textarea
-                placeholder='Write comment'
-                className='mb-4'
+                placeholder="Write comment"
+                className="mb-4"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 required
               />
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-4'>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <Input
-                  placeholder='Name'
+                  placeholder="Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
                 />
                 <Input
-                  type='email'
-                  placeholder='Email'
+                  type="email"
+                  placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
-              <Button type='submit' className='bg-[#4280ef] hover:bg-[#425a8b]'>
+              <Button type="submit" className="bg-[#4280ef] hover:bg-[#425a8b]">
                 Post Comment
               </Button>
             </form>
@@ -314,9 +313,9 @@ export default function BlogPostPage() {
         </article>
 
         {relatedBlogs.length > 0 && (
-          <div className='max-w-6xl mx-auto'>
-            <h2 className='text-2xl font-bold mb-6'>Related Blogs</h2>
-            <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-2xl font-bold mb-6">Related Blogs</h2>
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedBlogs.map((relatedBlog) => (
                 <BlogCard key={relatedBlog.id} blog={relatedBlog} />
               ))}

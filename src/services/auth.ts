@@ -36,6 +36,11 @@ export const getCurrentUser = (): any => {
   }
 };
 
+export const getCurrentUserId = (): string | null => {
+  const user = getCurrentUser();
+  return user ? user.id : null;
+};
+
 /**
  * Log the user out by removing cookies and localStorage data
  */
