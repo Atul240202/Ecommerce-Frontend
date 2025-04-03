@@ -24,6 +24,8 @@ export interface Product {
   categories: InnerProductCategory[];
   slug: string;
   sku: string;
+  type: string;
+  variations: number[];
 }
 
 export interface ProductImage {
@@ -149,6 +151,19 @@ export const fetchBestSellerProducts = async (
     return await response.json();
   } catch (error) {
     console.error('Error fetching bestseller products:', error);
+    throw error;
+  }
+};
+
+export const fetchVariableProducts = async () => {
+  try {
+    const response = await fetch(`${API_URL}/products/type/variable`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch bestseller products');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching variable products:', error);
     throw error;
   }
 };

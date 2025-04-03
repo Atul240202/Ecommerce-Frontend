@@ -9,6 +9,7 @@ import { BlogCard } from '../components/Blogs/BlogCard';
 import {
   fetchFeaturedProducts,
   fetchBestSellerProducts,
+  fetchVariableProducts,
   type Product,
 } from '../services/api';
 
@@ -96,11 +97,11 @@ export default function HomePage() {
 
   return (
     <MainLayout>
-      <div className='mx-auto'>
+      <div className="mx-auto">
         {/* <CategorySubheader /> */}
 
         <HeroSlider slides={promotions.slider} />
-        <div className='container mx-auto'>
+        <div className="container mx-auto">
           <ProductGrid />
 
           {promotions.mid_banner && promotions.mid_banner.length > 0 && (
@@ -114,7 +115,7 @@ export default function HomePage() {
                   <img
                     src={banner.image || '/placeholder.svg'}
                     alt={`Mid Banner ${index + 1}`}
-                    className='max-w-[45vw] max-h-[30vh]'
+                    className="max-w-[45vw] max-h-[30vh]"
                   />
                 </Link>
               ))}
@@ -126,12 +127,12 @@ export default function HomePage() {
           {promotions.mini_banner && (
             <Link
               href={promotions.mini_banner.href}
-              className='flex justify-center my-8'
+              className="flex justify-center my-8"
             >
               <img
                 src={promotions.mini_banner.image || '/placeholder.svg'}
-                alt='Promotional banner'
-                className='w-full max-w-[70vw] max-h-[20vh]'
+                alt="Promotional banner"
+                className="w-full max-w-[70vw] max-h-[20vh]"
               />
             </Link>
           )}
@@ -139,13 +140,13 @@ export default function HomePage() {
           <FeaturedSection />
 
           {promotions.footer_banner && promotions.footer_banner.length > 0 && (
-            <div className='my-2 flex gap-4 justify-center'>
+            <div className="my-2 flex gap-4 justify-center">
               {promotions.footer_banner.map((banner: any, index: number) => (
                 <Link key={index} href={banner.href}>
                   <img
                     src={banner.image || '/placeholder.svg'}
                     alt={`Footer Banner ${index + 1}`}
-                    className='max-w-[35vw] max-h-[30vh] h-fit'
+                    className="max-w-[35vw] max-h-[30vh] h-fit"
                   />
                 </Link>
               ))}
@@ -153,17 +154,17 @@ export default function HomePage() {
           )}
 
           {/* Latest Blogs Section */}
-          <section className='container my-12 px-4'>
-            <h2 className='text-2xl font-bold mb-6'>Latest from Our Blog</h2>
-            <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-6'>
+          <section className="container my-12 px-4">
+            <h2 className="text-2xl font-bold mb-6">Latest from Our Blog</h2>
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-6">
               {latestBlogs.map((blog) => (
                 <BlogCard key={blog.id} blog={blog} />
               ))}
             </div>
-            <div className='text-center mt-8'>
+            <div className="text-center mt-8">
               <Link
-                href='/blog'
-                className='text-blue-600 hover:text-blue-800 font-semibold'
+                href="/blog"
+                className="text-blue-600 hover:text-blue-800 font-semibold"
               >
                 View All Blog Posts
               </Link>

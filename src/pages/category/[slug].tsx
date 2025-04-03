@@ -120,8 +120,8 @@ export default function CategoryPage() {
     if (startPage > 2) {
       items.push(
         <span
-          key='ellipsis-1'
-          className='w-10 h-10 flex items-center justify-center'
+          key="ellipsis-1"
+          className="w-10 h-10 flex items-center justify-center"
         >
           ...
         </span>
@@ -149,8 +149,8 @@ export default function CategoryPage() {
     if (endPage < totalPages - 1) {
       items.push(
         <span
-          key='ellipsis-2'
-          className='w-10 h-10 flex items-center justify-center'
+          key="ellipsis-2"
+          className="w-10 h-10 flex items-center justify-center"
         >
           ...
         </span>
@@ -189,9 +189,9 @@ export default function CategoryPage() {
   if (loading) {
     return (
       <MainLayout>
-        <div className='container mx-auto px-4 py-8'>
-          <div className='flex justify-center items-center h-64'>
-            <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#4280ef]'></div>
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#4280ef]"></div>
           </div>
         </div>
       </MainLayout>
@@ -201,12 +201,12 @@ export default function CategoryPage() {
   if (error) {
     return (
       <MainLayout>
-        <div className='container mx-auto px-4 py-8'>
-          <div className='text-center py-12'>
-            <p className='text-lg text-red-600'>{error}</p>
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center py-12">
+            <p className="text-lg text-red-600">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className='mt-4 px-4 py-2 bg-[#4280ef] text-white rounded-md hover:bg-[#3270df]'
+              className="mt-4 px-4 py-2 bg-[#4280ef] text-white rounded-md hover:bg-[#3270df]"
             >
               Try Again
             </button>
@@ -218,7 +218,7 @@ export default function CategoryPage() {
 
   return (
     <MainLayout>
-      <div className='container mx-auto px-4 py-8'>
+      <div className="container mx-auto px-4 py-8">
         <Breadcrumb
           items={[
             { label: 'Home', href: '/' },
@@ -232,23 +232,23 @@ export default function CategoryPage() {
         </h1> */}
 
         {filteredProducts.length === 0 ? (
-          <div className='text-center py-12'>
-            <p className='text-lg text-gray-600'>
+          <div className="text-center py-12">
+            <p className="text-lg text-gray-600">
               No products found in this category.
             </p>
           </div>
         ) : (
-          <div className='flex flex-col md:flex-row gap-8'>
-            <div className='w-full md:w-1/4'>
+          <div className="flex flex-col md:flex-row gap-8">
+            <div className="w-full md:w-1/4">
               <ProductFilter
                 products={products}
                 onFilterChange={handleFilterChange}
               />
             </div>
-            <div className='w-full md:w-3/4'>
+            <div className="w-full md:w-3/4">
               <ProductSort onSortChange={handleSortChange} />
 
-              <div className='grid grid-cols-2 md:grid-cols-3 gap-6'>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 {filteredProducts.map((product) => (
                   <ProductCardFeatured
                     key={product.id}
@@ -277,6 +277,10 @@ export default function CategoryPage() {
                       rating: Number.parseFloat(product.average_rating),
                       stock: product.stock_status === 'instock' ? 100 : 0,
                       slug: product.slug,
+                      type: product.type,
+                      variations:
+                        product.variations?.map((variation) => variation.id) ||
+                        [],
                     }}
                   />
                 ))}
@@ -284,16 +288,16 @@ export default function CategoryPage() {
 
               {/* Updated Pagination */}
               {totalPages > 1 && (
-                <div className='flex justify-center mt-8'>
-                  <div className='flex border rounded-md overflow-hidden'>
+                <div className="flex justify-center mt-8">
+                  <div className="flex border rounded-md overflow-hidden">
                     <button
                       onClick={() =>
                         setCurrentPage((prev) => Math.max(prev - 1, 1))
                       }
                       disabled={currentPage === 1}
-                      className='px-4 py-2 border-r flex items-center justify-center disabled:opacity-50 bg-white'
+                      className="px-4 py-2 border-r flex items-center justify-center disabled:opacity-50 bg-white"
                     >
-                      <ChevronLeft className='h-4 w-4 mr-1' /> Previous
+                      <ChevronLeft className="h-4 w-4 mr-1" /> Previous
                     </button>
 
                     {getPaginationItems()}
@@ -303,9 +307,9 @@ export default function CategoryPage() {
                         setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                       }
                       disabled={currentPage === totalPages}
-                      className='px-4 py-2 border-l flex items-center justify-center disabled:opacity-50 bg-white'
+                      className="px-4 py-2 border-l flex items-center justify-center disabled:opacity-50 bg-white"
                     >
-                      Next <ChevronRight className='h-4 w-4 ml-1' />
+                      Next <ChevronRight className="h-4 w-4 ml-1" />
                     </button>
                   </div>
                 </div>

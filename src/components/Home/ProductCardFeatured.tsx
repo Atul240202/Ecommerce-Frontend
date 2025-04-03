@@ -11,6 +11,7 @@ interface Product {
   title: string;
   description: string;
   // brand: string;
+  type: string;
   thumbnail: string;
   price: number;
   regularPrice: number;
@@ -19,6 +20,7 @@ interface Product {
   rating: number;
   stock: number;
   slug?: string;
+  variations: number[];
 }
 
 interface ProductCardFeaturedProps {
@@ -30,6 +32,8 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
   // const discountedPrice = product.price
   //   ? product.price * (1 - (product.discountPercentage || 0) / 100)
   //   : 0;
+  console.log('Card product data', product);
+
   const { addToCart, isLoggedIn } = useShop();
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -74,7 +78,7 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
         to={`/product/${
           product.slug || product.title.toLowerCase().replace(/\s+/g, '-')
         }-${product.id}`}
-        className='block'
+        className="block"
       >
         <div
           className={`bg-white rounded-lg  border border-gray-200 hover:border-blue-500 transition-colors flex flex-col ${
@@ -88,10 +92,10 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
               alt={product.title}
               // layout='fill'
               // objectFit='contain'
-              className='w-full h-full object-contain transition-transform group-hover:scale-105'
+              className="w-full h-full object-contain transition-transform group-hover:scale-105"
             />
             {discountPercentage > 0 && (
-              <div className='absolute top-2 right-2 bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded'>
+              <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs font-medium px-2 py-1 rounded">
                 -{Math.round(discountPercentage)}%
               </div>
             )}
@@ -103,15 +107,15 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
           </div>
 
           {/* Product Info */}
-          <div className='flex-1 flex flex-col'>
-            <div className='mb-auto'>
+          <div className="flex-1 flex flex-col">
+            <div className="mb-auto">
               {/* <p className='text-sm text-gray-500 mb-1'>{product.brand}</p> */}
-              <h3 className='font-medium text-[#1a2030] mb-2 line-clamp-2 min-h-[48px]'>
+              <h3 className="font-medium text-[#1a2030] mb-2 line-clamp-2 min-h-[48px]">
                 {product.title}
               </h3>
 
               {/* Rating */}
-              <div className='flex items-center gap-1 mb-2'>
+              <div className="flex items-center gap-1 mb-2">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
@@ -122,11 +126,11 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
                     }`}
                   />
                 ))}
-                <span className='text-xs text-gray-500 ml-1'></span>
+                <span className="text-xs text-gray-500 ml-1"></span>
               </div>
               {/* Price */}
-              <div className='mb-2'>
-                <div className='flex items-baseline gap-2'>
+              <div className="mb-2">
+                <div className="flex items-baseline gap-2">
                   <span
                     className={`text-lg font-bold text-[#1a2030] ${
                       isMobile ? 'text-sm' : 'text-lg'
@@ -136,27 +140,39 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
                   </span>
                   {(product.salePrice &&
                     product.regularPrice >= product.salePrice && (
-                      <span className='text-sm text-gray-500 line-through'>
+                      <span className="text-sm text-gray-500 line-through">
                         Rs. {product.regularPrice.toFixed(2)}
                       </span>
                     )) || (
-                    <span className='text-sm text-gray-500 line-through'></span>
+                    <span className="text-sm text-gray-500 line-through"></span>
                   )}
                 </div>
-                <p className='text-xs text-gray-500'>Inclusive of GST</p>
+                <p className="text-xs text-gray-500">Inclusive of GST</p>
               </div>
             </div>
 
             {/* Add to Cart Button */}
-            <div className='mt-auto'>
-              <Button
-                className='w-full bg-white text-blue-500 border-2 border-blue-500 hover:bg-blue-500 hover:text-white transition-colors'
-                onClick={handleAddToCart}
-                disabled={isAddingToCart}
-              >
-                {isAddingToCart ? 'Adding...' : 'Add To Cart'}
-              </Button>
-            </div>
+            {product.variations?.length > 0 && product.type === 'variable' ? (
+              <div className="mt-auto">
+                <Button
+                  className="w-full hover:bg-white hover:text-blue-500 border-2 border-blue-500 bg-blue-500 text-white transition-colors"
+                  onClick={handleAddToCart}
+                  disabled={isAddingToCart}
+                >
+                  {isAddingToCart ? 'Selecting....' : 'Select Options'}
+                </Button>
+              </div>
+            ) : (
+              <div className="mt-auto">
+                <Button
+                  className="w-full bg-white text-blue-500 border-2 border-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
+                  onClick={handleAddToCart}
+                  disabled={isAddingToCart}
+                >
+                  {isAddingToCart ? 'Adding...' : 'Add To Cart'}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </Link>

@@ -16,6 +16,8 @@ interface ApiProduct {
   stock_status: string;
   images: Array<{ src: string }>;
   categories: Array<{ name: string }>;
+  type: string;
+  variations: Array<{ id: number }>;
 }
 
 interface Product {
@@ -30,6 +32,8 @@ interface Product {
   discountPercentage: number;
   rating: number;
   stock: number;
+  type: string;
+  variations: number[];
 }
 
 export function MonthFeaturedGrid() {
@@ -66,6 +70,9 @@ export function MonthFeaturedGrid() {
               : 0,
             rating: Number.parseFloat(product.average_rating || '0'),
             stock: product.stock_status === 'instock' ? 100 : 0,
+            type: product.type,
+            variations:
+              product.variations?.map((variation) => variation.id) || [],
           })
         );
 
@@ -89,38 +96,38 @@ export function MonthFeaturedGrid() {
     setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages);
 
   return (
-    <div className='flex-1'>
-      <div className='flex items-center justify-between mb-6'>
-        <h2 className='text-2xl font-semibold text-[#1a2030]'>
+    <div className="flex-1">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-semibold text-[#1a2030]">
           Trending Products This Month
         </h2>
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
             onClick={prevPage}
           >
-            <ChevronLeft className='h-4 w-4' />
+            <ChevronLeft className="h-4 w-4" />
           </Button>
           <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
             onClick={nextPage}
           >
-            <ChevronRight className='h-4 w-4' />
+            <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
 
-      <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {currentProducts.length > 0 ? (
           currentProducts.map((product) => (
             <ProductCardFeatured key={product.id} product={product} />
           ))
         ) : (
-          <p className='text-gray-500 text-center'>
+          <p className="text-gray-500 text-center">
             No featured products available this month
           </p>
         )}

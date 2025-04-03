@@ -37,7 +37,7 @@ export function HeroSlider({ slides }: HeroSliderProps) {
   };
 
   return (
-    <div className={`relative w-full  ${isMobile ? 'h-[30vh]' : 'h-[60vh]'}`}>
+    <div className={`relative w-full  ${isMobile ? 'h-[30vh]' : 'h-[70vh]'}`}>
       {slides.map((slide, index) => (
         <div
           key={index}
@@ -48,28 +48,28 @@ export function HeroSlider({ slides }: HeroSliderProps) {
           <Link href={slide.href}>
             <img
               src={slide.image || '/placeholder.svg'}
-              alt='Promotional banner'
-              className='absolute inset-0 w-full h-full object-cover'
+              alt="Promotional banner"
+              className="absolute inset-0 w-full h-full object-cover"
             />
           </Link>
         </div>
       ))}
 
       <Button
-        variant='ghost'
-        className='absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white'
+        variant="ghost"
+        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white"
         onClick={prevSlide}
       >
-        <ChevronLeft className='h-6 w-6' />
+        <ChevronLeft className="h-6 w-6" />
       </Button>
       <Button
-        variant='ghost'
-        className='absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white'
+        variant="ghost"
+        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white"
         onClick={nextSlide}
       >
-        <ChevronRight className='h-6 w-6' />
+        <ChevronRight className="h-6 w-6" />
       </Button>
-      <div className='absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2'>
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
         {slides.map((_, index) => (
           <button
             key={index}

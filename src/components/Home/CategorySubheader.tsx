@@ -98,7 +98,7 @@ export const CategorySubheader = () => {
 
         <div
           ref={scrollContainerRef}
-          className='flex justify-between overflow-x-auto py-3 scrollbar-hide scroll-smooth'
+          className='flex justify-between gap-4 overflow-x-auto py-3 scrollbar-hide scroll-smooth'
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {categories.map((category, index) => (
