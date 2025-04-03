@@ -26,7 +26,7 @@ import BestSellersPage from './pages/bestsellers';
 import AboutUs from './pages/about-us';
 import Login from './pages/login';
 import Register from './pages/register';
-
+import CategoriesPage from './pages/categoriesPage';
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: 'AIzaSyACEOM0JvL7Z9MTX59oa-d8AKx0Q6aPL2c',
@@ -48,34 +48,34 @@ function App() {
       <ShopProvider>
         <Router>
           <Routes>
-            <Route path='/login' element={<Login />} />
-            <Route path='/register' element={<Register />} />
-            <Route path='/verify-otp' element={<VerifyOtpPage />} />
-            <Route path='/' element={<HomePage />} />
-            <Route path='/bestseller' element={<BestSellersPage />} />
-            <Route path='/categories/:slug' element={<CategoryPage />} />
-            <Route path='/categories' element={<MainCategoryPage />} />
-            <Route path='/product/:id' element={<ProductPage />} />
-            <Route path='/cart' element={<CartPage />} />
-            <Route path='/blog' element={<BlogPage />} />
-            <Route path='/blog/:id' element={<BlogPostPage />} />
-            <Route path='/contact' element={<ContactPage />} />
-            <Route path='/wishlist' element={<WishlistPage />} />
-            <Route path='/about-us' element={<AboutUs />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/verify-otp" element={<VerifyOtpPage />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/bestseller" element={<BestSellersPage />} />
+            <Route path="/categories/:slug" element={<CategoryPage />} />
+            <Route path="/categories" element={<CategoriesPage />} />
+            <Route path="/product/:id" element={<ProductPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:id" element={<BlogPostPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/wishlist" element={<WishlistPage />} />
+            <Route path="/about-us" element={<AboutUs />} />
             <Route
-              path='/terms-and-conditions'
+              path="/terms-and-conditions"
               element={<TermsAndConditionsPage />}
             />
             <Route
-              path='/shipping-and-returns'
+              path="/shipping-and-returns"
               element={<ShippingAndReturnsPage />}
             />
-            <Route path='/checkout' element={<CheckoutPage />} />
-            <Route path='/account' element={<AccountPage />} />
-            <Route path='/forgot-password' element={<ForgotPasswordPage />} />
-            <Route path='/verify-reset-otp' element={<VerifyResetOtpPage />} />
-            <Route path='/reset-password' element={<ResetPasswordPage />} />
-            <Route path='*' element={<NotFound />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/verify-reset-otp" element={<VerifyResetOtpPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
       </ShopProvider>
