@@ -1,304 +1,151 @@
 {
   "blogs": [
     {
-      "id": 1,
-      "title": "The Future of Artificial Intelligence",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "Exploring the advancements and ethical considerations of AI",
+      "id": 2,
+      "title": "Staying Safe, Staying Stylish: 3M",
+      "thumbnail": "https://res.cloudinary.com/dbxkmr8dz/image/upload/v1743801291/IW-BLOG-POST-1-1-1024x606_vuw1m1.webp",
+      "subTitle": "Exploring the diverse product innovations by 3M",
       "content": [
-        "Artificial Intelligence (AI) is transforming industries across the globe...",
-        "From healthcare to finance, AI is enabling new possibilities...",
-        "However, ethical concerns such as bias and privacy remain critical..."
+        "3M is a multinational conglomerate corporation that produces a wide variety of products for different industries and consumer needs.",
+        "The company’s product range includes:",
+        "Adhesives and Tapes: 3M is well-known for its adhesive products, including Scotch tape and Post-it notes. They also produce industrial adhesives used in various applications.",
+        "Abrasive Materials: 3M manufactures abrasive materials used in sandpaper and other abrasive products for industrial and consumer use.",
+        "Health Care Products: This includes a range of medical and dental products, such as bandages, sterilization products, dental products, and more.",
+        "Automotive Products: 3M provides a variety of products for the automotive industry, including adhesives, abrasives, tapes, and coatings.",
+        "Electronics and Energy Solutions: 3M produces products for the electronics industry, including films, tapes, and adhesives used in the manufacturing of electronic devices. They also offer energy-related products.",
+        "Personal Protective Equipment (PPE): 3M is a major producer of personal protective equipment, including respiratory protection, hearing protection, eye and face protection, and more.",
+        "Films: 3M produces a range of films used in various applications, including window films, graphic films, and industrial films.",
+        "Industrial and Consumer Products: This category includes a wide range of products, such as abrasives, adhesives, tapes, sealants, and more, for both industrial and consumer use.",
+        "Home Care Products: This includes a variety of household cleaning and maintenance products.",
+        "Health Information Systems: 3M provides software and services for healthcare information management and analytics.",
+        "Traffic Safety and Security Products: 3M produces products for traffic management, including reflective materials, road markings, and safety and security solutions.",
+        "Water Purification Products: 3M offers a range of water purification and filtration products for residential, commercial, and industrial use.",
+        "Visit our website https://industrywaala.com/ 🛒📍 Address [B — 80, B Block, Sector 5, Noida, Uttar Pradesh 201301] Phone Number📞 [7377017377]"
       ],
-      "tags": ["AI", "Technology", "Ethics"],
-      "priorityStatus": "High",
-      "createdDateTime": "2023-10-01T09:15:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+      "tags": ["3M", "Products", "Safety", "Innovation"],
+      "priorityStatus": "Medium",
+      "createdDateTime": "2025-04-05T10:00:00Z",
+      "insidePageImage": "https://res.cloudinary.com/dbxkmr8dz/image/upload/v1743801291/IW-BLOG-POST-1-1-1024x606_vuw1m1.webp"
     },
     {
       "id": 2,
-      "title": "Sustainable Living: A Beginner's Guide",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "Simple steps to reduce your carbon footprint",
+      "title": "Safety First Trips for Properly using power Tools",
+      "thumbnail": "https://res.cloudinary.com/dbxkmr8dz/image/upload/v1743801961/Picsart_23-10-10_11-45-49-860-1024x651_awf4w5.webp",
+      "subTitle": "Safety First Trips for Properly using power Tools",
       "content": [
-        "Sustainable living is about making choices that reduce your environmental impact...",
-        "Start by reducing waste, conserving energy, and supporting eco-friendly products...",
-        "Small changes can lead to a big difference over time..."
+        "Using power tools safely is crucial to prevent accidents and injuries. Here are some tips for properly using power tools:",
+        "1. Read the Manual: Always start by reading the manufacturer’s instruction manual that comes with the tool. Familiarize yourself with the tool’s operation, safety precautions, and maintenance guidelines.",
+        "2. Personal Protective Equipment (PPE): Wear appropriate PPE, including safety glasses or goggles, hearing protection, dust masks, gloves, and steel-toed boots to protect yourself from potential hazards.",
+        "3. Inspect Tools: Before using any power tool, inspect it for damage, loose parts, or frayed cords. Never use a damaged tool; replace or repair it as needed.",
+        "4. Health Care Products: This includes a range of medical and dental products, such as bandages, sterilization products, dental products, and more.",
+        "5. Automotive Products: 3M provides a variety of products for the automotive industry, including adhesives, abrasives, tapes, and coatings.",
+        "6. Electronics and Energy Solutions: 3M produces products for the electronics industry, including films, tapes, and adhesives used in the manufacturing of electronic devices. They also offer energy-related products.",
+        "7. Personal Protective Equipment (PPE): 3M is a major producer of personal protective equipment, including respiratory protection, hearing protection, eye and face protection, and more.",
+        "8. Films: 3M produces a range of films used in various applications, including window films, graphic films, and industrial films.",
+        "9. Industrial and Consumer Products: This category includes a wide range of products, such as abrasives, adhesives, tapes, sealants, and more, for both industrial and consumer use.",
+        "10. Home Care Products: This includes a variety of household cleaning and maintenance products.",
+        "11. Health Information Systems: 3M provides software and services for healthcare information management and analytics.",
+        "12. Traffic Safety and Security Products: 3M produces products for traffic management, including reflective materials, road markings, and safety and security solutions.",
+        "13. Water Purification Products: 3M offers a range of water purification and filtration products for residential, commercial, and industrial use.",
+        "14. Visit our website https://industrywaala.com/ 🛒📍 Address [B — 80, B Block, Sector 5, Noida, Uttar Pradesh 201301] Phone Number📞 [7377017377]"
       ],
       "tags": ["Sustainability", "Eco-Friendly", "Lifestyle"],
       "priorityStatus": "Medium",
       "createdDateTime": "2023-09-25T14:30:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+      "insidePageImage": "https://res.cloudinary.com/dbxkmr8dz/image/upload/v1743801961/Picsart_23-10-10_11-45-49-860-1024x651_awf4w5.webp"
     },
     {
       "id": 3,
-      "title": "The Rise of Remote Work",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "How remote work is reshaping the modern workplace",
+      "title": "Types of Fevicol and their uses",
+      "thumbnail": "https://res.cloudinary.com/dbxkmr8dz/image/upload/v1743801960/fevicol-1024x606_dnlp7p.webp",
+      "subTitle": "Explore the different types of Fevicol adhesives and their specific applications.",
       "content": [
-        "The COVID-19 pandemic accelerated the adoption of remote work...",
-        "Companies are now embracing hybrid models to attract talent...",
-        "But challenges like communication and work-life balance persist..."
+        "Fevicol offers various types of adhesives, each designed for specific applications and materials. Here are some common types of Fevicol and their uses:",
+        "Fevicol SH (Synthetic Resin Adhesive):",
+        "Uses: Fevicol SH is a popular adhesive used in woodworking, carpentry, and furniture making. It is suitable for bonding wood, plywood, MDF (Medium-Density Fiberboard), laminates, particleboard, and other porous materials.",
+        "Fevicol Marine:",
+        "Uses: Fevicol Marine is specially formulated for applications that require water resistance. It is commonly used in boatbuilding, outdoor furniture, and marine-related projects where the adhesive may come into contact with water or moisture.",
+        "Fevicol Hi-Per (High-Performance Adhesive):",
+        "Uses: Fevicol Hi-Per is a fast-setting adhesive with high bonding strength. It is ideal for quick repairs, fixing loose edges, and bonding various materials like wood, metal, glass, and ceramics.",
+        "Fevicol HeatX:",
+        "Uses: Fevicol HeatX is designed for applications that involve exposure to high temperatures. It is commonly used in bonding heat-sensitive materials like PVC, vinyl, and foam boards.",
+        "Fevicol Kwik (Instant Adhesive):",
+        "Uses: Fevicol Kwik is a super-fast curing adhesive that is ideal for bonding small components, rubber, plastics, and metal parts. It is commonly used in DIY projects and small repairs.",
+        "Fevicol SR (Solvent Resin Adhesive):",
+        "Uses: Fevicol SR is a solvent-based adhesive used in various industrial applications, including laminating paper to wood or paper to paper bonding.",
+        "Fevicol SpeedX:",
+        "Uses: Fevicol SpeedX is a high-strength adhesive suitable for a wide range of materials, including wood, MDF, plywood, and particleboard. It offers quick drying and high bonding performance.",
+        "Fevicol Pro:",
+        "Uses: Fevicol Pro is a professional-grade adhesive designed for carpentry and interior applications. It is suitable for bonding wood, laminates, veneers, and other materials used in the furniture and construction industry.",
+        "Remember to carefully read the manufacturer’s instructions and recommendations for each type of Fevicol to ensure proper usage and optimal bonding results. Additionally, always consider the specific requirements of your project before choosing the most appropriate type of Fevicol adhesive.",
+        "Visit our website https://industrywaala.com/ 🛒📍 Address[B – 80, B Block, Sector 5, Noida, Uttar Pradesh 201301] Phone Number📞 [7377017377]"
       ],
-      "tags": ["Remote Work", "Workplace", "Productivity"],
-      "priorityStatus": "High",
-      "createdDateTime": "2023-09-18T11:45:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+      "tags": ["Fevicol", "Adhesive", "DIY", "Furniture"],
+      "priorityStatus": "Medium",
+      "createdDateTime": "2025-04-05T10:30:00Z",
+      "insidePageImage": "https://res.cloudinary.com/dbxkmr8dz/image/upload/v1743801960/fevicol-1024x606_dnlp7p.webp"
     },
     {
       "id": 4,
-      "title": "Exploring the Wonders of Space",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "A journey through the cosmos",
+      "title": "Make Every Job a Breeze With Our Power Tools",
+      "thumbnail": "https://res.cloudinary.com/dbxkmr8dz/image/upload/v1743801960/Picsart_23-10-10_11-48-29-124-1024x642_t9kiao.webp",
+      "subTitle": "Discover how our powerful tools can transform your productivity and ease your workload.",
       "content": [
-        "Space has always fascinated humanity...",
-        "From black holes to distant galaxies, the universe is full of mysteries...",
-        "Recent advancements in technology are helping us explore further than ever before..."
+        "Welcome to a world where every job becomes a breeze, and your projects are completed with ease and precision. In the realm of productivity, the right tools can make all the difference.",
+        "Section 1: The Power of Precision",
+        "Our power tools are designed with precision in mind. Whether you’re a DIY enthusiast, a professional tradesperson, or someone who simply loves getting things done, our tools are crafted to ensure accuracy and finesse in every job.",
+        "Section 2: Effortless Efficiency",
+        "Gone are the days of struggling with manual tools that require excessive effort. Our power tools are engineered to minimize fatigue and maximize efficiency.",
+        "Section 3: Versatility Redefined",
+        "One of the key features of our power tools is their versatility. Tackle a variety of tasks with a single tool, saving you both time and money.",
+        "Section 4: Innovation at Your Fingertips",
+        "Stay ahead of the curve with our cutting-edge power tools. We’re committed to innovation, constantly updating our product line to incorporate the latest advancements.",
+        "Section 5: Safety First",
+        "Our tools are equipped with state-of-the-art safety features, providing peace of mind while working on your projects.",
+        "Visit our website https://industrywaala.com/ 🛒📍 Address[B – 80, B Block, Sector 5, Noida, Uttar Pradesh 201301] Phone Number📞 [7377017377]"
       ],
-      "tags": ["Space", "Science", "Astronomy"],
+      "tags": ["Power Tools", "DIY", "Efficiency", "Safety"],
       "priorityStatus": "Medium",
-      "createdDateTime": "2023-09-10T16:20:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+      "createdDateTime": "2025-04-05T11:15:00Z",
+      "insidePageImage": "https://res.cloudinary.com/dbxkmr8dz/image/upload/v1743801960/Picsart_23-10-10_11-48-29-124-1024x642_t9kiao.webp"
     },
     {
       "id": 5,
-      "title": "The Art of Mindfulness",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "Finding peace in a busy world",
+      "title": "Best Angle Grinders: A Comprehensive Guide",
+      "thumbnail": "https://res.cloudinary.com/dbxkmr8dz/image/upload/v1743802397/best-angle-grinder-1000x667-1_y1b1px.webp",
+      "subTitle": "Explore the top-performing angle grinders and choose the best fit for your project needs.",
       "content": [
-        "Mindfulness is the practice of being present in the moment...",
-        "It can reduce stress, improve focus, and enhance overall well-being...",
-        "Simple techniques like meditation and deep breathing can make a big difference..."
+        "Angle grinders are versatile tools that can perform a variety of tasks, including cutting, grinding, and polishing.",
+        "DEWALT DWE402N 4-1/2-Inch 11-Amp Paddle Switch Angle Grinder: Features a powerful 11-amp motor, 11,000 RPM, and a dust ejection system for durability.",
+        "Makita 9557PBX1 4-1/2-Inch Angle Grinder: Compact and lightweight with a 7.5-amp motor. Includes accessories like a grinding wheel, cutting wheel, and case.",
+        "Bosch 1375A 4-1/2-Inch Angle Grinder: Ideal for cutting and sanding. It features a 6-amp motor and a comfortable grip.",
+        "BLACK+DECKER BDEG400 6 Amp Angle Grinder: Budget-friendly, great for DIY projects with 10,000 RPM and a metal gear case for durability.",
+        "Metabo HPT G12SR4 4-1/2-Inch Angle Grinder: Compact design with 6.2-amp motor and low-profile gear case for tight spaces.",
+        "Conclusion: Choose the grinder based on your workload, ergonomics, and features. Industrywaala offers a wide range from top brands like DEWALT, Makita, Bosch, and more."
       ],
-      "tags": ["Mindfulness", "Mental Health", "Wellness"],
-      "priorityStatus": "Low",
-      "createdDateTime": "2023-09-05T08:00:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+      "tags": ["Angle Grinder", "Power Tools", "DIY", "Construction"],
+      "priorityStatus": "Medium",
+      "createdDateTime": "2025-04-05T11:45:00Z",
+      "insidePageImage": "https://res.cloudinary.com/dbxkmr8dz/image/upload/v1743802397/best-angle-grinder-1000x667-1_y1b1px.webp"
     },
     {
       "id": 6,
-      "title": "The Evolution of E-Commerce",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "How online shopping is changing the retail landscape",
+      "title": "Purchasing Industrial Safety Equipment in India: A Complete Buyer’s Guide",
+      "thumbnail": "https://res.cloudinary.com/dbxkmr8dz/image/upload/v1743802397/industrial-safety-equipment-1_pxkioo.webp",
+      "subTitle": "Understand the key considerations when buying safety equipment to protect your workplace and workers.",
       "content": [
-        "E-commerce has revolutionized the way we shop...",
-        "From convenience to personalized experiences, it offers numerous benefits...",
-        "But challenges like cybersecurity and logistics remain..."
+        "Industrial safety equipment is vital to prevent accidents, reduce liabilities, and ensure worker protection.",
+        "Identify the Safety Equipment Required: Assess your workplace hazards to determine the right equipment.",
+        "Quality and Standards: Ensure the equipment meets BIS standards and is built for durability.",
+        "Comfort and Ergonomics: Comfortable and adjustable equipment increases worker compliance.",
+        "Maintenance and Serviceability: Choose gear that's easy to maintain and comes with manufacturer instructions.",
+        "Cost: Compare options based on price and features, but never compromise on safety.",
+        "Conclusion: At Industrywaala, we offer high-quality industrial safety gear that meets Indian standards and budget requirements. Explore our range today!"
       ],
-      "tags": ["E-Commerce", "Retail", "Technology"],
+      "tags": ["Safety Equipment", "Industrial", "BIS", "Buyer Guide"],
       "priorityStatus": "High",
-      "createdDateTime": "2023-08-28T12:10:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
-    },
-    {
-      "id": 7,
-      "title": "The Power of Positive Thinking",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "How optimism can transform your life",
-      "content": [
-        "Positive thinking is more than just a mindset...",
-        "It can improve mental health, boost resilience, and enhance relationships...",
-        "Learn how to cultivate positivity in your daily life..."
-      ],
-      "tags": ["Positive Thinking", "Mental Health", "Self-Improvement"],
-      "priorityStatus": "Medium",
-      "createdDateTime": "2023-08-20T10:05:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
-    },
-    {
-      "id": 8,
-      "title": "The Impact of Climate Change",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "Understanding the global crisis",
-      "content": [
-        "Climate change is one of the most pressing issues of our time...",
-        "Rising temperatures, melting ice caps, and extreme weather events are just the beginning...",
-        "Collective action is needed to mitigate its effects..."
-      ],
-      "tags": ["Climate Change", "Environment", "Sustainability"],
-      "priorityStatus": "High",
-      "createdDateTime": "2023-08-15T17:50:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
-    },
-    {
-      "id": 9,
-      "title": "The Joy of Cooking",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "Discovering the art of culinary creativity",
-      "content": [
-        "Cooking is more than just a necessity...",
-        "It's a way to express creativity, connect with others, and explore cultures...",
-        "Learn how to make cooking a joyful part of your life..."
-      ],
-      "tags": ["Cooking", "Food", "Lifestyle"],
-      "priorityStatus": "Low",
-      "createdDateTime": "2023-08-10T09:30:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
-    },
-    {
-      "id": 10,
-      "title": "The World of Cryptocurrency",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "Understanding the digital currency revolution",
-      "content": [
-        "Cryptocurrency is changing the way we think about money...",
-        "From Bitcoin to Ethereum, digital currencies offer new opportunities...",
-        "But they also come with risks and challenges..."
-      ],
-      "tags": ["Cryptocurrency", "Finance", "Technology"],
-      "priorityStatus": "High",
-      "createdDateTime": "2023-08-05T14:15:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
-    },
-    {
-      "id": 11,
-      "title": "The Benefits of Yoga",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "Improving physical and mental health through yoga",
-      "content": [
-        "Yoga is a practice that combines physical postures, breathing, and meditation...",
-        "It can improve flexibility, reduce stress, and enhance overall well-being...",
-        "Discover how to incorporate yoga into your daily routine..."
-      ],
-      "tags": ["Yoga", "Fitness", "Wellness"],
-      "priorityStatus": "Medium",
-      "createdDateTime": "2023-07-30T07:45:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
-    },
-    {
-      "id": 12,
-      "title": "The History of Photography",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "From daguerreotypes to digital cameras",
-      "content": [
-        "Photography has come a long way since its invention...",
-        "Explore the evolution of cameras and techniques over the years...",
-        "Learn how photography has shaped our perception of the world..."
-      ],
-      "tags": ["Photography", "History", "Art"],
-      "priorityStatus": "Low",
-      "createdDateTime": "2023-07-25T13:20:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
-    },
-    {
-      "id": 13,
-      "title": "The Science of Sleep",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "Understanding the importance of rest",
-      "content": [
-        "Sleep is essential for physical and mental health...",
-        "Learn about the stages of sleep and how to improve your sleep quality...",
-        "Discover the impact of sleep on productivity and well-being..."
-      ],
-      "tags": ["Sleep", "Health", "Science"],
-      "priorityStatus": "Medium",
-      "createdDateTime": "2023-07-20T18:10:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
-    },
-    {
-      "id": 14,
-      "title": "The Rise of Electric Vehicles",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "How EVs are transforming the automotive industry",
-      "content": [
-        "Electric vehicles (EVs) are becoming increasingly popular...",
-        "They offer environmental benefits and lower operating costs...",
-        "But challenges like charging infrastructure remain..."
-      ],
-      "tags": ["Electric Vehicles", "Automotive", "Sustainability"],
-      "priorityStatus": "High",
-      "createdDateTime": "2023-07-15T11:55:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
-    },
-    {
-      "id": 15,
-      "title": "The Art of Storytelling",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "Crafting compelling narratives",
-      "content": [
-        "Storytelling is a powerful tool for communication...",
-        "Whether in writing, film, or marketing, stories captivate audiences...",
-        "Learn how to create stories that resonate with others..."
-      ],
-      "tags": ["Storytelling", "Writing", "Communication"],
-      "priorityStatus": "Medium",
-      "createdDateTime": "2023-07-10T09:40:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
-    },
-    {
-      "id": 16,
-      "title": "The Future of Renewable Energy",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "Exploring sustainable energy solutions",
-      "content": [
-        "Renewable energy is key to combating climate change...",
-        "From solar to wind power, new technologies are emerging...",
-        "Discover how renewable energy is shaping the future..."
-      ],
-      "tags": ["Renewable Energy", "Sustainability", "Technology"],
-      "priorityStatus": "High",
-      "createdDateTime": "2023-07-05T16:25:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
-    },
-    {
-      "id": 17,
-      "title": "The Psychology of Happiness",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "Understanding what makes us happy",
-      "content": [
-        "Happiness is a complex emotion influenced by various factors...",
-        "From relationships to personal goals, learn what contributes to happiness...",
-        "Discover practical tips to increase your happiness..."
-      ],
-      "tags": ["Happiness", "Psychology", "Wellness"],
-      "priorityStatus": "Medium",
-      "createdDateTime": "2023-06-30T12:15:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
-    },
-    {
-      "id": 18,
-      "title": "The World of Virtual Reality",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "Exploring immersive technologies",
-      "content": [
-        "Virtual reality (VR) is transforming entertainment, education, and more...",
-        "From gaming to training simulations, VR offers endless possibilities...",
-        "Learn about the challenges and future of VR..."
-      ],
-      "tags": ["Virtual Reality", "Technology", "Innovation"],
-      "priorityStatus": "High",
-      "createdDateTime": "2023-06-25T14:50:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
-    },
-    {
-      "id": 19,
-      "title": "The Benefits of Reading",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "Why reading is good for your mind and soul",
-      "content": [
-        "Reading is a habit that offers numerous benefits...",
-        "It improves knowledge, reduces stress, and enhances empathy...",
-        "Discover how to make reading a regular part of your life..."
-      ],
-      "tags": ["Reading", "Books", "Self-Improvement"],
-      "priorityStatus": "Low",
-      "createdDateTime": "2023-06-20T10:30:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
-    },
-    {
-      "id": 20,
-      "title": "The Evolution of Social Media",
-      "thumbnail": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image",
-      "subTitle": "How social media has changed the way we connect",
-      "content": [
-        "Social media has revolutionized communication...",
-        "From Facebook to TikTok, platforms have evolved over the years...",
-        "Explore the impact of social media on society and relationships..."
-      ],
-      "tags": ["Social Media", "Technology", "Communication"],
-      "priorityStatus": "High",
-      "createdDateTime": "2023-06-15T15:05:00Z",
-      "insidePageImage": "https://dummyimage.com/600x400/000/bfb8bf&text=Alt+Image"
+      "createdDateTime": "2025-04-05T12:00:00Z",
+      "insidePageImage": "https://res.cloudinary.com/dbxkmr8dz/image/upload/v1743802397/industrial-safety-equipment-1_pxkioo.webp"
     }
   ]
 }

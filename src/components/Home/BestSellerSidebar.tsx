@@ -33,7 +33,7 @@ export function BestSellerSidebar() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const bestSellers = await fetchBestSellerProducts(15);
+        const bestSellers = await fetchBestSellerProducts(10);
 
         if (!bestSellers || bestSellers.length === 0) {
           return;
@@ -71,45 +71,45 @@ export function BestSellerSidebar() {
     setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages);
 
   return (
-    <div className='w-[300px] bg-white rounded-lg border border-gray-200'>
-      <div className='bg-blue-500 p-4 rounded-t-lg flex items-center justify-between'>
-        <h2 className='text-white font-semibold'>Best Seller</h2>
-        <div className='flex gap-2'>
+    <div className="w-[350px] bg-white rounded-lg border border-gray-200">
+      <div className="bg-blue-500 p-4 rounded-t-lg flex items-center justify-between">
+        <h2 className="text-white font-semibold">Best Seller</h2>
+        <div className="flex gap-2">
           <Button
-            variant='ghost'
-            size='icon'
-            className='h-6 w-6 text-white hover:bg-blue-600'
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 text-white hover:bg-blue-600"
             onClick={prevPage}
           >
-            <ChevronLeft className='h-4 w-4' />
+            <ChevronLeft className="h-4 w-4" />
           </Button>
           <Button
-            variant='ghost'
-            size='icon'
-            className='h-6 w-6 text-white hover:bg-blue-600'
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 text-white hover:bg-blue-600"
             onClick={nextPage}
           >
-            <ChevronRight className='h-4 w-4' />
+            <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
-      <div className='p-4 space-y-4'>
+      <div className="p-4 space-y-4">
         {currentProducts.length > 0 ? (
           currentProducts.map((product) => (
-            <Link to={`/product/${product.id}`} className='block'>
-              <div className='flex gap-3 group cursor-pointer'>
-                <div className='relative w-16 h-16 flex-shrink-0'>
+            <Link to={`/product/${product.id}`} className="block">
+              <div className="flex gap-3 group cursor-pointer">
+                <div className="relative w-20 h-20 flex-shrink-0">
                   <img
                     src={product.thumbnail}
                     alt={product.title}
-                    className='rounded-lg'
+                    className="rounded-lg"
                   />
                 </div>
-                <div className='flex-1 min-w-0'>
-                  <h3 className='text-sm font-medium text-gray-900 truncate group-hover:text-blue-500'>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-md font-medium text-gray-900 truncate group-hover:text-blue-500">
                     {product.title}
                   </h3>
-                  <div className='flex items-center gap-1 mt-1'>
+                  <div className="flex items-center gap-1 mt-1">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
@@ -121,17 +121,17 @@ export function BestSellerSidebar() {
                       />
                     ))}
                   </div>
-                  <div className='mt-1'>
-                    <span className='font-semibold text-gray-900'>
+                  <div className="mt-1">
+                    <span className="font-semibold text-gray-900">
                       Rs. {product.price.toFixed(2)}
                     </span>
                     {(product.salePrice &&
                       product.regularPrice >= product.salePrice && (
-                        <span className='text-sm text-gray-500 line-through'>
+                        <span className="text-sm text-gray-500 line-through">
                           Rs. {product.regularPrice.toFixed(2)}
                         </span>
                       )) || (
-                      <span className='text-sm text-gray-500 line-through'></span>
+                      <span className="text-sm text-gray-500 line-through"></span>
                     )}
                   </div>
                 </div>
@@ -139,7 +139,7 @@ export function BestSellerSidebar() {
             </Link>
           ))
         ) : (
-          <p className='text-gray-500 text-center'>No bestsellers available</p>
+          <p className="text-gray-500 text-center">No bestsellers available</p>
         )}
       </div>
     </div>

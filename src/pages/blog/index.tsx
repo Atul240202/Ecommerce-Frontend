@@ -53,9 +53,9 @@ export default function BlogPage() {
   if (isLoading) {
     return (
       <MainLayout>
-        <div className='container mx-auto px-4 py-16'>
-          <div className='flex justify-center'>
-            <Loader2 className='h-8 w-8 animate-spin' />
+        <div className="container mx-auto px-4 py-16">
+          <div className="flex justify-center">
+            <Loader2 className="h-8 w-8 animate-spin" />
           </div>
         </div>
       </MainLayout>
@@ -64,21 +64,21 @@ export default function BlogPage() {
 
   return (
     <MainLayout>
-      <div className='container mx-auto px-24 py-8'>
-        <div className='flex items-center justify-between mb-8'>
-          <h1 className='text-4xl font-bold'>BLOGS</h1>
+      <div className="container mx-auto px-24 py-8">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-4xl font-bold">BLOGS</h1>
         </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {currentBlogs.map((blog) => (
             <BlogCard key={blog.id} blog={blog} />
           ))}
         </div>
 
         {totalPages > 1 && (
-          <div className='flex justify-center gap-2 mt-8'>
+          <div className="flex justify-center gap-2 mt-8">
             <Button
-              variant='outline'
+              className="text-[#2D81FF] bg-[#D2EEFF] hover:bg-[#9cd9ff]"
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
             >
@@ -87,14 +87,18 @@ export default function BlogPage() {
             {[...Array(totalPages)].map((_, i) => (
               <Button
                 key={i}
-                variant={currentPage === i + 1 ? 'default' : 'outline'}
+                className={` ${
+                  currentPage === i + 1
+                    ? 'bg-[#2D81FF] text-white hover:bg-[#2D81FF]'
+                    : 'text-[#2D81FF] bg-white hover:bg-[#D2EEFF]'
+                }`}
                 onClick={() => setCurrentPage(i + 1)}
               >
                 {i + 1}
               </Button>
             ))}
             <Button
-              variant='outline'
+              className="text-[#2D81FF] bg-[#D2EEFF] hover:bg-[#9cd9ff]"
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
             >

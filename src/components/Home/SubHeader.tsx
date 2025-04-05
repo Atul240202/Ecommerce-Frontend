@@ -82,7 +82,7 @@ export function SubHeader() {
   });
 
   return (
-    <nav className="border-b bg-white">
+    <nav className="border-b-2 bg-white ">
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/** 📌 Mobile Navigation **/}
         {isMobile ? (
@@ -116,7 +116,7 @@ export function SubHeader() {
                     Home
                   </Link>
                   <Link to="/categories" className="py-2 hover:text-[#4280ef]">
-                    Shop by Department
+                    Shop by Brand
                   </Link>
                   <Link to="/bestseller" className="py-2 hover:text-[#4280ef]">
                     Best Sellers
@@ -136,10 +136,13 @@ export function SubHeader() {
           </>
         ) : (
           /** 📌 Desktop Navigation **/
-          <div className="flex items-center gap-6 text-sm">
+          <div className="flex items-center gap-6 text-sm py-1">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-12 gap-2">
+                <Button
+                  variant="ghost"
+                  className="h-12 gap-2 hover:bg-[#D2EEFF]"
+                >
                   Shop By Categories
                   <ChevronDown className="h-4 w-4" />
                 </Button>
@@ -219,7 +222,7 @@ export function SubHeader() {
               to="/categories"
               className="h-12 flex items-center hover:text-[#4280ef]"
             >
-              Shop by Department
+              Shop by Brand
             </Link>
             <Link
               to="/bestseller"

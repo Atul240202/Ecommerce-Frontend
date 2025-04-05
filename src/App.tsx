@@ -8,6 +8,7 @@ import CategoryPage from './pages/category/[slug]';
 import ProductPage from './pages/product/[id]';
 import CartPage from './pages/cart';
 import BlogPage from './pages/blog';
+import GoogleRegisterPage from './pages/register/google';
 import BlogPostPage from './pages/blog/[id]';
 import ContactPage from './pages/contact-us';
 import TermsAndConditionsPage from './pages/terms-and-condition';
@@ -49,6 +50,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/register/google" element={<GoogleRegisterPage />} />
             <Route path="/verify-otp" element={<VerifyOtpPage />} />
             <Route path="/" element={<HomePage />} />
             <Route path="/bestseller" element={<BestSellersPage />} />

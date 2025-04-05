@@ -31,7 +31,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           <Header />
         </div>
 
-        <div className={`flex-1 ${isMobile ? 'mt-[120px]' : 'mt-[75px]'}`}>
+        <div className={`flex-1 ${isMobile ? 'mt-[105px]' : 'mt-[85px]'}`}>
           {!isLoginPage && !isRegisterPage && <SubHeader />}
           <div className={``}>{isHomePage && <CategorySubheader />}</div>
 

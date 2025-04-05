@@ -84,27 +84,27 @@ export const CategorySubheader = () => {
   };
 
   return (
-    <nav className='relative bg-white border-b border-gray-200 z-40'>
-      <div className='container mx-auto px-4 relative'>
+    <nav className="relative bg-white border-b border-gray-200 z-40">
+      <div className="container mx-auto px-4 relative">
         {showLeftScroll && (
           <button
             onClick={scrollLeft}
-            className='absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full shadow-md p-1 md:p-2'
-            aria-label='Scroll left'
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full shadow-md p-1 md:p-2"
+            aria-label="Scroll left"
           >
-            <ChevronLeft className='h-5 w-5 text-gray-700' />
+            <ChevronLeft className="h-5 w-5 text-gray-700" />
           </button>
         )}
 
         <div
           ref={scrollContainerRef}
-          className='flex justify-between gap-4 overflow-x-auto py-3 scrollbar-hide scroll-smooth'
+          className="flex justify-between gap-4 overflow-x-auto py-3 scrollbar-hide scroll-smooth"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {categories.map((category, index) => (
             <div
               key={index}
-              className='flex-shrink-0 relative'
+              className="flex-shrink-0 relative"
               onMouseEnter={() => setOpenDropdown(index)}
               onMouseLeave={() => setOpenDropdown(null)}
             >
@@ -115,11 +115,11 @@ export const CategorySubheader = () => {
                       className={`flex flex-col items-center px-4 py-2 ${
                         isMobile
                           ? 'h-20 w-20 text-[0.75rem]'
-                          : 'h-28 w-28 text-sm'
+                          : 'h-auto w-28 text-sm'
                       } text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap bg-transparent border-0 cursor-pointer`}
                     >
                       <div
-                        className={`mb-1 rounded-full overflow-hidden border border-gray-200 ${
+                        className={`mb-1 overflow-hidden border border-gray-200 ${
                           isMobile ? 'gap-2 w-10 h-10' : 'w-14 h-14'
                         }`}
                       >
@@ -128,10 +128,10 @@ export const CategorySubheader = () => {
                           alt={category.name}
                           width={60}
                           height={60}
-                          className='object-cover'
+                          className="object-cover"
                         />
                       </div>
-                      <div className='flex items-center'>
+                      <div className="flex items-center">
                         <span>{category.name}</span>
                         <ChevronDown
                           className={`ml-1 h-3 w-3 transition-transform ${
@@ -141,12 +141,12 @@ export const CategorySubheader = () => {
                       </div>
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align='start' className='w-56 z-50'>
+                  <DropdownMenuContent align="start" className="w-56 z-50">
                     {/* Parent Category Link */}
                     <DropdownMenuItem asChild>
                       <Link
                         href={category.href}
-                        className='font-semibold text-blue-600'
+                        className="font-semibold text-blue-600"
                       >
                         {category.name} →
                       </Link>
@@ -157,7 +157,7 @@ export const CategorySubheader = () => {
                       <DropdownMenuItem key={subIndex} asChild>
                         <Link
                           href={subcategory.href}
-                          className='w-full cursor-pointer'
+                          className="w-full cursor-pointer"
                         >
                           {subcategory.name}
                         </Link>
@@ -168,10 +168,10 @@ export const CategorySubheader = () => {
               ) : (
                 <Link
                   href={category.href}
-                  className='flex flex-col items-center px-4 py-2 text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap'
+                  className="flex flex-col items-center px-4 py-2 text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap"
                 >
                   <div
-                    className={`mb-1 rounded-full overflow-hidden border border-gray-200 ${
+                    className={`mb-1 overflow-hidden border border-gray-200 ${
                       isMobile ? 'gap-2 w-10 h-10' : 'w-14 h-14'
                     }`}
                   >
@@ -180,7 +180,7 @@ export const CategorySubheader = () => {
                       alt={category.name}
                       width={60}
                       height={60}
-                      className='object-cover'
+                      className="object-cover"
                     />
                   </div>
                   <span>{category.name}</span>
@@ -193,10 +193,10 @@ export const CategorySubheader = () => {
         {showRightScroll && (
           <button
             onClick={scrollRight}
-            className='absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full shadow-md p-1 md:p-2'
-            aria-label='Scroll right'
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full shadow-md p-1 md:p-2"
+            aria-label="Scroll right"
           >
-            <ChevronRight className='h-5 w-5 text-gray-700' />
+            <ChevronRight className="h-5 w-5 text-gray-700" />
           </button>
         )}
       </div>

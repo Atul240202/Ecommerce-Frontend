@@ -19,11 +19,11 @@ export function Footer() {
   return (
     <>
       {!isProduct && <Features />}
-      <footer className="bg-gray-50 border-t">
+      <footer className=" bg-gray-50 border-t">
         {/* Yellow top border */}
         <div className="h-1 w-full bg-yellow-400"></div>
 
-        <div className="mx-auto px-4 py-8">
+        <div className="mx-4 px-4 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Company Info Column */}
             <div className="space-y-4">
@@ -51,15 +51,21 @@ export function Footer() {
               <div className="hidden md:block">
                 <h3 className="font-semibold text-gray-800 mb-3">Follow us</h3>
                 <div className="flex gap-4">
-                  <Link href="#" className="text-gray-600 hover:text-gray-800">
+                  <Link
+                    href="https://www.facebook.com/industrywaala.com1"
+                    className="text-gray-600 hover:text-gray-800"
+                  >
                     <Facebook className="h-5 w-5" />
                   </Link>
-                  <Link href="#" className="text-gray-600 hover:text-gray-800">
+                  <Link
+                    href="https://www.instagram.com/industrywaala/"
+                    className="text-gray-600 hover:text-gray-800"
+                  >
                     <Instagram className="h-5 w-5" />
                   </Link>
-                  <Link href="#" className="text-gray-600 hover:text-gray-800">
+                  {/* <Link href="#" className="text-gray-600 hover:text-gray-800">
                     <Youtube className="h-5 w-5" />
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
             </div>
@@ -75,7 +81,7 @@ export function Footer() {
                 <ul className="space-y-2">
                   <li>
                     <Link
-                      href="/about"
+                      href="/about-us"
                       className="text-gray-600 hover:text-gray-800"
                     >
                       About Us
@@ -83,7 +89,7 @@ export function Footer() {
                   </li>
                   <li>
                     <Link
-                      href="/shop"
+                      href="/"
                       className="text-gray-600 hover:text-gray-800"
                     >
                       Shop All
@@ -91,10 +97,10 @@ export function Footer() {
                   </li>
                   <li>
                     <Link
-                      href="/brands"
+                      href="/categories"
                       className="text-gray-600 hover:text-gray-800"
                     >
-                      Shop by brands
+                      Shop by Brands
                     </Link>
                   </li>
                   <li>
@@ -102,15 +108,7 @@ export function Footer() {
                       href="/categories"
                       className="text-gray-600 hover:text-gray-800"
                     >
-                      Shop by categories
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/departments"
-                      className="text-gray-600 hover:text-gray-800"
-                    >
-                      Shop by Department
+                      Shop by Categories
                     </Link>
                   </li>
                 </ul>
@@ -122,18 +120,18 @@ export function Footer() {
                 <ul className="space-y-2">
                   <li>
                     <Link
-                      href="/privacy-policy"
+                      href="/terms-and-conditions"
                       className="text-gray-600 hover:text-gray-800"
                     >
-                      Privacy Policy
+                      Terms and Condition
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/shipping-return"
+                      href="/shipping-and-returns"
                       className="text-gray-600 hover:text-gray-800"
                     >
-                      Shipping & Return
+                      Shipping and Return
                     </Link>
                   </li>
                   <li>
@@ -144,14 +142,14 @@ export function Footer() {
                       Contact Us
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link
                       href="/career"
                       className="text-gray-600 hover:text-gray-800"
                     >
                       Career
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>

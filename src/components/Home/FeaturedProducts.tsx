@@ -102,26 +102,26 @@ export function FeaturedProducts() {
   };
 
   return (
-    <div className='bg-[#f8fbff] py-8'>
-      <div className='container mx-auto px-4'>
-        <div className='mb-2'>
-          <h2 className='text-2xl font-semibold text-[#1a2030]'>
+    <div className="bg-[#D2EEFF] py-8">
+      <div className="container mx-auto px-4">
+        <div className="mb-2">
+          <h2 className="text-2xl font-semibold text-[#1a2030]">
             Trending This Week
           </h2>
-          <p className='text-gray-500 text-sm'>
+          <p className="text-gray-500 text-sm">
             Special products in this week.
           </p>
         </div>
 
-        <div className='relative'>
+        <div className="relative">
           {loading ? (
-            <div className='flex justify-center py-8'>
-              <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#4280ef]'></div>
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#4280ef]"></div>
             </div>
           ) : (
             <div
               ref={setScrollContainer}
-              className='flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth py-4'
+              className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth py-4"
             >
               {products.length > 0 ? (
                 products.map((product) => (
@@ -135,8 +135,8 @@ export function FeaturedProducts() {
                   </div>
                 ))
               ) : (
-                <div className='w-full text-center py-8'>
-                  <p className='text-gray-500'>
+                <div className="w-full text-center py-8">
+                  <p className="text-gray-500">
                     No featured products available
                   </p>
                 </div>
@@ -147,20 +147,20 @@ export function FeaturedProducts() {
           {products.length > 0 && (
             <>
               <Button
-                variant='ghost'
-                size='icon'
-                className='absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full'
+                variant="ghost"
+                size="icon"
+                className="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full"
                 onClick={() => scroll('left')}
               >
-                <ChevronLeft className='h-6 w-6' />
+                <ChevronLeft className="h-6 w-6" />
               </Button>
               <Button
-                variant='ghost'
-                size='icon'
-                className='absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full'
+                variant="ghost"
+                size="icon"
+                className="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full"
                 onClick={() => scroll('right')}
               >
-                <ChevronRight className='h-6 w-6' />
+                <ChevronRight className="h-6 w-6" />
               </Button>
             </>
           )}

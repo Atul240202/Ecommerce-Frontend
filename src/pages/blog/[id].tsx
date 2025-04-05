@@ -178,8 +178,11 @@ export default function BlogPostPage() {
           ]}
         />
 
-        <article className="max-w-4xl mx-auto">
+        <article className="max-w-7xl mx-auto">
           <header className="mb-8">
+            <h1 className="text-3xl font-bold mb-6 text-gray-800">
+              {blog.title}
+            </h1>
             <div className="mb-4">
               {blog.tags.map((tag) => (
                 <span
@@ -189,30 +192,6 @@ export default function BlogPostPage() {
                   {tag}
                 </span>
               ))}
-            </div>
-            <h1 className="text-3xl font-bold mb-6 text-gray-800">
-              {blog.title}
-            </h1>
-
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-full overflow-hidden">
-                <img
-                  src="/placeholder.svg?height=40&width=40"
-                  alt="Author"
-                  width={40}
-                  height={40}
-                  className="object-cover"
-                />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">By Sugar Rosie</span>
-                  <span className="text-sm text-gray-500">{formattedDate}</span>
-                </div>
-                <div className="text-sm text-gray-500">
-                  {readTime} Mins read
-                </div>
-              </div>
             </div>
           </header>
 
@@ -313,7 +292,7 @@ export default function BlogPostPage() {
         </article>
 
         {relatedBlogs.length > 0 && (
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <h2 className="text-2xl font-bold mb-6">Related Blogs</h2>
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedBlogs.map((relatedBlog) => (

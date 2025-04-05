@@ -493,7 +493,7 @@ export default function ProductPage() {
               </div>
               <Button
                 variant="secondary"
-                className="w-full"
+                className="w-full hover:bg-[#D2EEFF]"
                 size="lg"
                 onClick={handleBuyNow}
                 disabled={product.stock_status !== 'instock'}

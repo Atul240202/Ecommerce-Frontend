@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 import { SearchResults } from './SearchResults';
 import { fetchProducts } from '../../services/api';
 import { useShop } from '../../contexts/ShopContext';
-import logo from '../../assets/logo.webp';
+import logo from '/headerLogo.png';
 import { useDebounce } from 'use-debounce';
 import { Search } from 'lucide-react';
 
@@ -149,8 +149,8 @@ export function Header() {
   }, []);
 
   return (
-    <header className="border-b">
-      <div className="container mx-auto px-4 py-4">
+    <header className=" border-2 border-yellow-300">
+      <div className="container mx-auto px-4 py-2">
         {isMobile ? (
           <div>
             <div className="flex items-center justify-between">
@@ -262,7 +262,7 @@ export function Header() {
                 alt="Industrywaala Logo"
                 width={180}
                 height={40}
-                className="h-10 w-auto"
+                className="h-16 w-auto"
               />
             </Link>
             <div className="flex-1 max-w-xl mx-4 hidden md:block">

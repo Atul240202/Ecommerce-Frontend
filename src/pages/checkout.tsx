@@ -356,7 +356,7 @@ export default function CheckoutPage() {
     const orderItems = products.map((product) => ({
       id: product.id,
       name: product.title,
-      sku: product.sku || '', // Replace with actual SKU if available
+      sku: product.sku || `Shiprocket-${product.id}`, // Replace with actual SKU if available
       units: product.quantity.toString(),
       selling_price: product.price.toString(),
       discount: '0', // Replace with actual discount if available
@@ -368,8 +368,7 @@ export default function CheckoutPage() {
     const finalOrderData = {
       order_id: generatedOrderId,
       order_date: currentDate,
-      pickup_location:
-        'B - 80, B Block, Sector 5, , Gautam Buddha Nagar, Uttar Pradesh, 201301', // Replace with actual pickup location
+      pickup_location: 'Home', // Replace with actual pickup location
       channel_id: '2970164',
       comment: '',
       reseller_name: '',
@@ -401,7 +400,7 @@ export default function CheckoutPage() {
       billing_alternate_phone: '',
 
       // Shipping information
-      shipping_is_billing: useSameAddress ? 'true' : 'false',
+      shipping_is_billing: useSameAddress ? true : false,
       shipping_customer_name: selectedShippingAddress.firstName,
       shipping_last_name: selectedShippingAddress.lastName,
       shipping_address: selectedShippingAddress.address1,
@@ -434,10 +433,10 @@ export default function CheckoutPage() {
       ewaybill_no: '',
       customer_gstin: '',
       invoice_number: '',
-      order_type: 'Retail',
+      order_type: 'ESSENTIALS',
 
       // Reference to unprocessed order if exists
-      unprocessed_order_id: tempOrderId || null,
+      // unprocessed_order_id: tempOrderId || null,
     };
 
     return finalOrderData;
@@ -674,15 +673,15 @@ export default function CheckoutPage() {
   if (products.length === 0) {
     return (
       <MainLayout>
-        <div className='container mx-auto px-4 py-16'>
-          <div className='max-w-md mx-auto text-center'>
-            <h1 className='text-2xl font-semibold mb-4'>
+        <div className="container mx-auto px-4 py-16">
+          <div className="max-w-md mx-auto text-center">
+            <h1 className="text-2xl font-semibold mb-4">
               Your checkout is empty
             </h1>
-            <p className='text-gray-600 mb-8'>
+            <p className="text-gray-600 mb-8">
               Add some products to proceed with checkout.
             </p>
-            <Link to='/'>
+            <Link to="/">
               <Button>Continue Shopping</Button>
             </Link>
           </div>
@@ -696,35 +695,35 @@ export default function CheckoutPage() {
 
   return (
     <MainLayout>
-      <div className='container mx-auto px-4 py-8'>
+      <div className="container mx-auto px-4 py-8">
         {isSubmitting && (
-          <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50'>
-            <div className='bg-white p-6 rounded-lg flex items-center gap-4'>
-              <Loader2 className='h-6 w-6 animate-spin' />
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg flex items-center gap-4">
+              <Loader2 className="h-6 w-6 animate-spin" />
               <span>Processing your order...</span>
             </div>
           </div>
         )}
 
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Checkout Form */}
-          <div className='lg:col-span-2 space-y-8'>
+          <div className="lg:col-span-2 space-y-8">
             {isLoggedIn ? (
               <>
                 {/* Shipping Address Section */}
-                <div className='border rounded-lg overflow-hidden'>
-                  <div className='bg-gray-50 p-4 border-b'>
-                    <h2 className='text-xl font-semibold'>Delivery address</h2>
+                <div className="border rounded-lg overflow-hidden">
+                  <div className="bg-gray-50 p-4 border-b">
+                    <h2 className="text-xl font-semibold">Delivery address</h2>
                   </div>
 
-                  <div className='p-4'>
+                  <div className="p-4">
                     {!showAddressSelection && !showNewShippingForm && (
                       <>
                         {selectedShippingAddress ? (
-                          <div className='border rounded-lg p-4 mb-4'>
-                            <div className='flex justify-between items-start mb-2'>
+                          <div className="border rounded-lg p-4 mb-4">
+                            <div className="flex justify-between items-start mb-2">
                               <div>
-                                <p className='font-medium'>
+                                <p className="font-medium">
                                   {selectedShippingAddress.firstName}{' '}
                                   {selectedShippingAddress.lastName}
                                 </p>
@@ -741,9 +740,9 @@ export default function CheckoutPage() {
                                 <p>Phone: {selectedShippingAddress.phone}</p>
                               </div>
                               <Button
-                                variant='ghost'
-                                size='sm'
-                                className='text-blue-600'
+                                variant="ghost"
+                                size="sm"
+                                className="text-blue-600"
                                 onClick={() => setShowAddressSelection(true)}
                               >
                                 Change
@@ -751,10 +750,10 @@ export default function CheckoutPage() {
                             </div>
                           </div>
                         ) : defaultShippingAddress ? (
-                          <div className='border rounded-lg p-4 mb-4'>
-                            <div className='flex justify-between items-start mb-2'>
+                          <div className="border rounded-lg p-4 mb-4">
+                            <div className="flex justify-between items-start mb-2">
                               <div>
-                                <p className='font-medium'>
+                                <p className="font-medium">
                                   {defaultShippingAddress.firstName}{' '}
                                   {defaultShippingAddress.lastName}
                                 </p>
@@ -771,9 +770,9 @@ export default function CheckoutPage() {
                                 <p>Phone: {defaultShippingAddress.phone}</p>
                               </div>
                               <Button
-                                variant='ghost'
-                                size='sm'
-                                className='text-blue-600'
+                                variant="ghost"
+                                size="sm"
+                                className="text-blue-600"
                                 onClick={() => setShowAddressSelection(true)}
                               >
                                 Change
@@ -781,8 +780,8 @@ export default function CheckoutPage() {
                             </div>
                           </div>
                         ) : (
-                          <div className='text-center py-4'>
-                            <p className='text-gray-500 mb-4'>
+                          <div className="text-center py-4">
+                            <p className="text-gray-500 mb-4">
                               You don't have any saved shipping addresses.
                             </p>
                             <Button
@@ -796,11 +795,11 @@ export default function CheckoutPage() {
                         {(selectedShippingAddress ||
                           defaultShippingAddress) && (
                           <Button
-                            variant='outline'
-                            className='w-full flex items-center justify-center gap-2'
+                            variant="outline"
+                            className="w-full flex items-center justify-center gap-2"
                             onClick={() => setShowNewShippingForm(true)}
                           >
-                            <Plus className='h-4 w-4' />
+                            <Plus className="h-4 w-4" />
                             Use New Address
                           </Button>
                         )}
@@ -809,13 +808,13 @@ export default function CheckoutPage() {
 
                     {/* Address Selection List */}
                     {showAddressSelection && (
-                      <div className='space-y-4'>
-                        <h3 className='font-medium mb-4'>Your addresses</h3>
+                      <div className="space-y-4">
+                        <h3 className="font-medium mb-4">Your addresses</h3>
                         <RadioGroup
                           value={selectedShippingAddressId}
                           onValueChange={handleShippingAddressSelect}
                         >
-                          <div className='space-y-4'>
+                          <div className="space-y-4">
                             {savedAddresses
                               .filter((addr) => addr.type === 'shipping')
                               .map((address) => (
@@ -827,38 +826,38 @@ export default function CheckoutPage() {
                                       : ''
                                   }`}
                                 >
-                                  <div className='flex items-start gap-3'>
+                                  <div className="flex items-start gap-3">
                                     <RadioGroupItem
                                       value={address.id}
                                       id={`address-${address.id}`}
-                                      className='mt-1'
+                                      className="mt-1"
                                     />
-                                    <div className='flex-1'>
+                                    <div className="flex-1">
                                       <Label
                                         htmlFor={`address-${address.id}`}
-                                        className='font-medium'
+                                        className="font-medium"
                                       >
                                         {address.firstName} {address.lastName}
                                       </Label>
-                                      <p className='text-sm text-gray-600'>
+                                      <p className="text-sm text-gray-600">
                                         {address.address1}
                                       </p>
                                       {address.apartment && (
-                                        <p className='text-sm text-gray-600'>
+                                        <p className="text-sm text-gray-600">
                                           {address.apartment}
                                         </p>
                                       )}
-                                      <p className='text-sm text-gray-600'>
+                                      <p className="text-sm text-gray-600">
                                         {address.city}, {address.state}{' '}
                                         {address.postcode}, {address.country}
                                       </p>
-                                      <p className='text-sm text-gray-600'>
+                                      <p className="text-sm text-gray-600">
                                         Phone: {address.phone}
                                       </p>
-                                      <div className='mt-2 text-sm'>
+                                      <div className="mt-2 text-sm">
                                         <Link
                                           to={`/account?tab=addresses&edit=${address.id}`}
-                                          className='text-blue-600 hover:underline'
+                                          className="text-blue-600 hover:underline"
                                         >
                                           Edit address
                                         </Link>
@@ -869,22 +868,22 @@ export default function CheckoutPage() {
                               ))}
 
                             <Button
-                              variant='outline'
-                              className='w-full flex items-center justify-center gap-2'
+                              variant="outline"
+                              className="w-full flex items-center justify-center gap-2"
                               onClick={() => {
                                 setShowAddressSelection(false);
                                 setShowNewShippingForm(true);
                               }}
                             >
-                              <Plus className='h-4 w-4' />
+                              <Plus className="h-4 w-4" />
                               Add New Address
                             </Button>
                           </div>
                         </RadioGroup>
 
-                        <div className='flex justify-between mt-4'>
+                        <div className="flex justify-between mt-4">
                           <Button
-                            variant='outline'
+                            variant="outline"
                             onClick={() => setShowAddressSelection(false)}
                           >
                             Cancel
@@ -901,16 +900,16 @@ export default function CheckoutPage() {
 
                     {/* New Shipping Address Form */}
                     {showNewShippingForm && (
-                      <div className='space-y-4'>
-                        <h3 className='font-medium mb-4'>Add a new address</h3>
-                        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                      <div className="space-y-4">
+                        <h3 className="font-medium mb-4">Add a new address</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label htmlFor='shipping_firstName'>
+                            <Label htmlFor="shipping_firstName">
                               First name *
                             </Label>
                             <Input
-                              id='shipping_firstName'
-                              name='firstName'
+                              id="shipping_firstName"
+                              name="firstName"
                               value={newShippingAddress.firstName || ''}
                               onChange={handleNewShippingAddressChange}
                               className={
@@ -922,12 +921,12 @@ export default function CheckoutPage() {
                             />
                           </div>
                           <div>
-                            <Label htmlFor='shipping_lastName'>
+                            <Label htmlFor="shipping_lastName">
                               Last name *
                             </Label>
                             <Input
-                              id='shipping_lastName'
-                              name='lastName'
+                              id="shipping_lastName"
+                              name="lastName"
                               value={newShippingAddress.lastName || ''}
                               onChange={handleNewShippingAddressChange}
                               className={
@@ -941,24 +940,24 @@ export default function CheckoutPage() {
                         </div>
 
                         <div>
-                          <Label htmlFor='shipping_company'>
+                          <Label htmlFor="shipping_company">
                             Company name (optional)
                           </Label>
                           <Input
-                            id='shipping_company'
-                            name='company'
+                            id="shipping_company"
+                            name="company"
                             value={newShippingAddress.company || ''}
                             onChange={handleNewShippingAddressChange}
                           />
                         </div>
 
                         <div>
-                          <Label htmlFor='shipping_address1'>
+                          <Label htmlFor="shipping_address1">
                             Address line 1 *
                           </Label>
                           <Input
-                            id='shipping_address1'
-                            name='address1'
+                            id="shipping_address1"
+                            name="address1"
                             value={newShippingAddress.address1 || ''}
                             onChange={handleNewShippingAddressChange}
                             className={
@@ -971,23 +970,23 @@ export default function CheckoutPage() {
                         </div>
 
                         <div>
-                          <Label htmlFor='shipping_apartment'>
+                          <Label htmlFor="shipping_apartment">
                             Apartment, suite, etc. (optional)
                           </Label>
                           <Input
-                            id='shipping_apartment'
-                            name='apartment'
+                            id="shipping_apartment"
+                            name="apartment"
                             value={newShippingAddress.apartment || ''}
                             onChange={handleNewShippingAddressChange}
                           />
                         </div>
 
-                        <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div>
-                            <Label htmlFor='shipping_city'>City *</Label>
+                            <Label htmlFor="shipping_city">City *</Label>
                             <Input
-                              id='shipping_city'
-                              name='city'
+                              id="shipping_city"
+                              name="city"
                               value={newShippingAddress.city || ''}
                               onChange={handleNewShippingAddressChange}
                               className={
@@ -997,20 +996,20 @@ export default function CheckoutPage() {
                             />
                           </div>
                           <div>
-                            <Label htmlFor='shipping_state'>State *</Label>
+                            <Label htmlFor="shipping_state">State *</Label>
                             <Select
                               value={newShippingAddress.state || ''}
                               onValueChange={handleShippingStateChange}
                             >
                               <SelectTrigger
-                                id='shipping_state'
+                                id="shipping_state"
                                 className={
                                   formErrors.shipping_state
                                     ? 'border-red-500'
                                     : ''
                                 }
                               >
-                                <SelectValue placeholder='Select state' />
+                                <SelectValue placeholder="Select state" />
                               </SelectTrigger>
                               <SelectContent>
                                 {indianStates.map((state) => (
@@ -1022,12 +1021,12 @@ export default function CheckoutPage() {
                             </Select>
                           </div>
                           <div>
-                            <Label htmlFor='shipping_postcode'>
+                            <Label htmlFor="shipping_postcode">
                               PIN code *
                             </Label>
                             <Input
-                              id='shipping_postcode'
-                              name='postcode'
+                              id="shipping_postcode"
+                              name="postcode"
                               value={newShippingAddress.postcode || ''}
                               onChange={handleNewShippingAddressChange}
                               className={
@@ -1041,10 +1040,10 @@ export default function CheckoutPage() {
                         </div>
 
                         <div>
-                          <Label htmlFor='shipping_phone'>Phone *</Label>
+                          <Label htmlFor="shipping_phone">Phone *</Label>
                           <Input
-                            id='shipping_phone'
-                            name='phone'
+                            id="shipping_phone"
+                            name="phone"
                             value={newShippingAddress.phone || ''}
                             onChange={handleNewShippingAddressChange}
                             className={
@@ -1054,25 +1053,25 @@ export default function CheckoutPage() {
                           />
                         </div>
 
-                        <div className='flex items-center space-x-2'>
+                        <div className="flex items-center space-x-2">
                           <Checkbox
-                            id='saveShippingAddress'
+                            id="saveShippingAddress"
                             checked={saveNewShippingAddress}
                             onCheckedChange={(checked) =>
                               setSaveNewShippingAddress(!!checked)
                             }
                           />
                           <Label
-                            htmlFor='saveShippingAddress'
-                            className='text-sm font-normal'
+                            htmlFor="saveShippingAddress"
+                            className="text-sm font-normal"
                           >
                             Save this address for future orders
                           </Label>
                         </div>
 
-                        <div className='flex justify-between mt-4'>
+                        <div className="flex justify-between mt-4">
                           <Button
-                            variant='outline'
+                            variant="outline"
                             onClick={() => {
                               setShowNewShippingForm(false);
                               if (
@@ -1190,7 +1189,7 @@ export default function CheckoutPage() {
 
                 {/* Proceed to Payment Button */}
                 {!showPaymentOptions && (
-                  <Button onClick={handleProceedToPayment} className='w-full'>
+                  <Button onClick={handleProceedToPayment} className="w-full">
                     Proceed to Payment
                   </Button>
                 )}
@@ -1198,8 +1197,8 @@ export default function CheckoutPage() {
                 {/* Payment Section */}
                 {showPaymentOptions && (
                   <div>
-                    <h2 className='text-xl font-semibold mb-4'>Payment</h2>
-                    <p className='text-sm text-gray-600 mb-4'>
+                    <h2 className="text-xl font-semibold mb-4">Payment</h2>
+                    <p className="text-sm text-gray-600 mb-4">
                       All transactions are secure and encrypted.
                     </p>
                     <RadioGroup
@@ -1208,20 +1207,20 @@ export default function CheckoutPage() {
                         setPaymentMethod(value)
                       }
                     >
-                      <div className='space-y-4'>
-                        <Label className='flex items-center space-x-3 border rounded-lg p-4'>
-                          <RadioGroupItem value='phonepe' />
+                      <div className="space-y-4">
+                        <Label className="flex items-center space-x-3 border rounded-lg p-4">
+                          <RadioGroupItem value="phonepe" />
                           <span>PhonePe Payment Solutions</span>
                           <img
-                            src='/placeholder.svg'
-                            alt='PhonePe'
+                            src="/placeholder.svg"
+                            alt="PhonePe"
                             width={80}
                             height={24}
-                            className='ml-auto'
+                            className="ml-auto"
                           />
                         </Label>
-                        <Label className='flex items-center space-x-3 border rounded-lg p-4'>
-                          <RadioGroupItem value='cod' />
+                        <Label className="flex items-center space-x-3 border rounded-lg p-4">
+                          <RadioGroupItem value="cod" />
                           <span>Cash on delivery</span>
                         </Label>
                       </div>
@@ -1232,10 +1231,10 @@ export default function CheckoutPage() {
                 {/* Billing Address Section */}
                 {showPaymentOptions && (
                   <div>
-                    <h2 className='text-xl font-semibold mb-2'>
+                    <h2 className="text-xl font-semibold mb-2">
                       Billing address
                     </h2>
-                    <p className='text-sm text-gray-600 mb-4'>
+                    <p className="text-sm text-gray-600 mb-4">
                       Select the address that matches your card or payment
                       method.
                     </p>
@@ -1249,27 +1248,27 @@ export default function CheckoutPage() {
                         }
                       }}
                     >
-                      <div className='space-y-4'>
-                        <Label className='flex items-center space-x-3 border rounded-lg p-4'>
-                          <RadioGroupItem value='same' />
+                      <div className="space-y-4">
+                        <Label className="flex items-center space-x-3 border rounded-lg p-4">
+                          <RadioGroupItem value="same" />
                           <span>Same as shipping address</span>
                         </Label>
-                        <div className='border rounded-lg'>
-                          <Label className='flex items-center space-x-3 p-4'>
-                            <RadioGroupItem value='different' />
+                        <div className="border rounded-lg">
+                          <Label className="flex items-center space-x-3 p-4">
+                            <RadioGroupItem value="different" />
                             <span>Use a different billing address</span>
                           </Label>
 
                           {!useSameAddress && (
-                            <div className='border-t p-4'>
+                            <div className="border-t p-4">
                               {!showBillingAddressSelection &&
                                 !showNewBillingForm && (
                                   <>
                                     {selectedBillingAddress ? (
-                                      <div className='border rounded-lg p-4 mb-4'>
-                                        <div className='flex justify-between items-start mb-2'>
+                                      <div className="border rounded-lg p-4 mb-4">
+                                        <div className="flex justify-between items-start mb-2">
                                           <div>
-                                            <p className='font-medium'>
+                                            <p className="font-medium">
                                               {selectedBillingAddress.firstName}{' '}
                                               {selectedBillingAddress.lastName}
                                             </p>
@@ -1297,9 +1296,9 @@ export default function CheckoutPage() {
                                             </p>
                                           </div>
                                           <Button
-                                            variant='ghost'
-                                            size='sm'
-                                            className='text-blue-600'
+                                            variant="ghost"
+                                            size="sm"
+                                            className="text-blue-600"
                                             onClick={() =>
                                               setShowBillingAddressSelection(
                                                 true
@@ -1311,10 +1310,10 @@ export default function CheckoutPage() {
                                         </div>
                                       </div>
                                     ) : defaultBillingAddress ? (
-                                      <div className='border rounded-lg p-4 mb-4'>
-                                        <div className='flex justify-between items-start mb-2'>
+                                      <div className="border rounded-lg p-4 mb-4">
+                                        <div className="flex justify-between items-start mb-2">
                                           <div>
-                                            <p className='font-medium'>
+                                            <p className="font-medium">
                                               {defaultBillingAddress.firstName}{' '}
                                               {defaultBillingAddress.lastName}
                                             </p>
@@ -1342,9 +1341,9 @@ export default function CheckoutPage() {
                                             </p>
                                           </div>
                                           <Button
-                                            variant='ghost'
-                                            size='sm'
-                                            className='text-blue-600'
+                                            variant="ghost"
+                                            size="sm"
+                                            className="text-blue-600"
                                             onClick={() =>
                                               setShowBillingAddressSelection(
                                                 true
@@ -1356,8 +1355,8 @@ export default function CheckoutPage() {
                                         </div>
                                       </div>
                                     ) : (
-                                      <div className='text-center py-4'>
-                                        <p className='text-gray-500 mb-4'>
+                                      <div className="text-center py-4">
+                                        <p className="text-gray-500 mb-4">
                                           You don't have any saved billing
                                           addresses.
                                         </p>
@@ -1374,13 +1373,13 @@ export default function CheckoutPage() {
                                     {(selectedBillingAddress ||
                                       defaultBillingAddress) && (
                                       <Button
-                                        variant='outline'
-                                        className='w-full flex items-center justify-center gap-2'
+                                        variant="outline"
+                                        className="w-full flex items-center justify-center gap-2"
                                         onClick={() =>
                                           setShowNewBillingForm(true)
                                         }
                                       >
-                                        <Plus className='h-4 w-4' />
+                                        <Plus className="h-4 w-4" />
                                         Use New Address
                                       </Button>
                                     )}
@@ -1389,15 +1388,15 @@ export default function CheckoutPage() {
 
                               {/* Billing Address Selection List */}
                               {showBillingAddressSelection && (
-                                <div className='space-y-4'>
-                                  <h3 className='font-medium mb-4'>
+                                <div className="space-y-4">
+                                  <h3 className="font-medium mb-4">
                                     Your billing addresses
                                   </h3>
                                   <RadioGroup
                                     value={selectedBillingAddressId}
                                     onValueChange={handleBillingAddressSelect}
                                   >
-                                    <div className='space-y-4'>
+                                    <div className="space-y-4">
                                       {savedAddresses
                                         .filter(
                                           (addr) => addr.type === 'billing'
@@ -1412,41 +1411,41 @@ export default function CheckoutPage() {
                                                 : ''
                                             }`}
                                           >
-                                            <div className='flex items-start gap-3'>
+                                            <div className="flex items-start gap-3">
                                               <RadioGroupItem
                                                 value={address.id}
                                                 id={`billing-address-${address.id}`}
-                                                className='mt-1'
+                                                className="mt-1"
                                               />
-                                              <div className='flex-1'>
+                                              <div className="flex-1">
                                                 <Label
                                                   htmlFor={`billing-address-${address.id}`}
-                                                  className='font-medium'
+                                                  className="font-medium"
                                                 >
                                                   {address.firstName}{' '}
                                                   {address.lastName}
                                                 </Label>
-                                                <p className='text-sm text-gray-600'>
+                                                <p className="text-sm text-gray-600">
                                                   {address.address1}
                                                 </p>
                                                 {address.apartment && (
-                                                  <p className='text-sm text-gray-600'>
+                                                  <p className="text-sm text-gray-600">
                                                     {address.apartment}
                                                   </p>
                                                 )}
-                                                <p className='text-sm text-gray-600'>
+                                                <p className="text-sm text-gray-600">
                                                   {address.city},{' '}
                                                   {address.state}{' '}
                                                   {address.postcode},{' '}
                                                   {address.country}
                                                 </p>
-                                                <p className='text-sm text-gray-600'>
+                                                <p className="text-sm text-gray-600">
                                                   Phone: {address.phone}
                                                 </p>
-                                                <div className='mt-2 text-sm'>
+                                                <div className="mt-2 text-sm">
                                                   <Link
                                                     to={`/account?tab=addresses&edit=${address.id}`}
-                                                    className='text-blue-600 hover:underline'
+                                                    className="text-blue-600 hover:underline"
                                                   >
                                                     Edit address
                                                   </Link>
@@ -1457,22 +1456,22 @@ export default function CheckoutPage() {
                                         ))}
 
                                       <Button
-                                        variant='outline'
-                                        className='w-full flex items-center justify-center gap-2'
+                                        variant="outline"
+                                        className="w-full flex items-center justify-center gap-2"
                                         onClick={() => {
                                           setShowBillingAddressSelection(false);
                                           setShowNewBillingForm(true);
                                         }}
                                       >
-                                        <Plus className='h-4 w-4' />
+                                        <Plus className="h-4 w-4" />
                                         Add New Address
                                       </Button>
                                     </div>
                                   </RadioGroup>
 
-                                  <div className='flex justify-between mt-4'>
+                                  <div className="flex justify-between mt-4">
                                     <Button
-                                      variant='outline'
+                                      variant="outline"
                                       onClick={() =>
                                         setShowBillingAddressSelection(false)
                                       }
@@ -1493,18 +1492,18 @@ export default function CheckoutPage() {
 
                               {/* New Billing Address Form */}
                               {showNewBillingForm && (
-                                <div className='space-y-4'>
-                                  <h3 className='font-medium mb-4'>
+                                <div className="space-y-4">
+                                  <h3 className="font-medium mb-4">
                                     Add a new billing address
                                   </h3>
-                                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                      <Label htmlFor='billing_firstName'>
+                                      <Label htmlFor="billing_firstName">
                                         First name *
                                       </Label>
                                       <Input
-                                        id='billing_firstName'
-                                        name='firstName'
+                                        id="billing_firstName"
+                                        name="firstName"
                                         value={
                                           newBillingAddress.firstName || ''
                                         }
@@ -1518,12 +1517,12 @@ export default function CheckoutPage() {
                                       />
                                     </div>
                                     <div>
-                                      <Label htmlFor='billing_lastName'>
+                                      <Label htmlFor="billing_lastName">
                                         Last name *
                                       </Label>
                                       <Input
-                                        id='billing_lastName'
-                                        name='lastName'
+                                        id="billing_lastName"
+                                        name="lastName"
                                         value={newBillingAddress.lastName || ''}
                                         onChange={handleNewBillingAddressChange}
                                         className={
@@ -1537,24 +1536,24 @@ export default function CheckoutPage() {
                                   </div>
 
                                   <div>
-                                    <Label htmlFor='billing_company'>
+                                    <Label htmlFor="billing_company">
                                       Company name (optional)
                                     </Label>
                                     <Input
-                                      id='billing_company'
-                                      name='company'
+                                      id="billing_company"
+                                      name="company"
                                       value={newBillingAddress.company || ''}
                                       onChange={handleNewBillingAddressChange}
                                     />
                                   </div>
 
                                   <div>
-                                    <Label htmlFor='billing_address1'>
+                                    <Label htmlFor="billing_address1">
                                       Address line 1 *
                                     </Label>
                                     <Input
-                                      id='billing_address1'
-                                      name='address1'
+                                      id="billing_address1"
+                                      name="address1"
                                       value={newBillingAddress.address1 || ''}
                                       onChange={handleNewBillingAddressChange}
                                       className={
@@ -1567,25 +1566,25 @@ export default function CheckoutPage() {
                                   </div>
 
                                   <div>
-                                    <Label htmlFor='billing_apartment'>
+                                    <Label htmlFor="billing_apartment">
                                       Apartment, suite, etc. (optional)
                                     </Label>
                                     <Input
-                                      id='billing_apartment'
-                                      name='apartment'
+                                      id="billing_apartment"
+                                      name="apartment"
                                       value={newBillingAddress.apartment || ''}
                                       onChange={handleNewBillingAddressChange}
                                     />
                                   </div>
 
-                                  <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
-                                      <Label htmlFor='billing_city'>
+                                      <Label htmlFor="billing_city">
                                         City *
                                       </Label>
                                       <Input
-                                        id='billing_city'
-                                        name='city'
+                                        id="billing_city"
+                                        name="city"
                                         value={newBillingAddress.city || ''}
                                         onChange={handleNewBillingAddressChange}
                                         className={
@@ -1597,7 +1596,7 @@ export default function CheckoutPage() {
                                       />
                                     </div>
                                     <div>
-                                      <Label htmlFor='billing_state'>
+                                      <Label htmlFor="billing_state">
                                         State *
                                       </Label>
                                       <Select
@@ -1605,14 +1604,14 @@ export default function CheckoutPage() {
                                         onValueChange={handleBillingStateChange}
                                       >
                                         <SelectTrigger
-                                          id='billing_state'
+                                          id="billing_state"
                                           className={
                                             formErrors.billing_state
                                               ? 'border-red-500'
                                               : ''
                                           }
                                         >
-                                          <SelectValue placeholder='Select state' />
+                                          <SelectValue placeholder="Select state" />
                                         </SelectTrigger>
                                         <SelectContent>
                                           {indianStates.map((state) => (
@@ -1627,12 +1626,12 @@ export default function CheckoutPage() {
                                       </Select>
                                     </div>
                                     <div>
-                                      <Label htmlFor='billing_postcode'>
+                                      <Label htmlFor="billing_postcode">
                                         PIN code *
                                       </Label>
                                       <Input
-                                        id='billing_postcode'
-                                        name='postcode'
+                                        id="billing_postcode"
+                                        name="postcode"
                                         value={newBillingAddress.postcode || ''}
                                         onChange={handleNewBillingAddressChange}
                                         className={
@@ -1646,12 +1645,12 @@ export default function CheckoutPage() {
                                   </div>
 
                                   <div>
-                                    <Label htmlFor='billing_phone'>
+                                    <Label htmlFor="billing_phone">
                                       Phone *
                                     </Label>
                                     <Input
-                                      id='billing_phone'
-                                      name='phone'
+                                      id="billing_phone"
+                                      name="phone"
                                       value={newBillingAddress.phone || ''}
                                       onChange={handleNewBillingAddressChange}
                                       className={
@@ -1663,25 +1662,25 @@ export default function CheckoutPage() {
                                     />
                                   </div>
 
-                                  <div className='flex items-center space-x-2'>
+                                  <div className="flex items-center space-x-2">
                                     <Checkbox
-                                      id='saveBillingAddress'
+                                      id="saveBillingAddress"
                                       checked={saveNewBillingAddress}
                                       onCheckedChange={(checked) =>
                                         setSaveNewBillingAddress(!!checked)
                                       }
                                     />
                                     <Label
-                                      htmlFor='saveBillingAddress'
-                                      className='text-sm font-normal'
+                                      htmlFor="saveBillingAddress"
+                                      className="text-sm font-normal"
                                     >
                                       Save this address for future orders
                                     </Label>
                                   </div>
 
-                                  <div className='flex justify-between mt-4'>
+                                  <div className="flex justify-between mt-4">
                                     <Button
-                                      variant='outline'
+                                      variant="outline"
                                       onClick={() => {
                                         setShowNewBillingForm(false);
                                         if (
@@ -1811,8 +1810,8 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                <div className='space-y-4'>
-                  <Label className='flex items-center space-x-3'>
+                <div className="space-y-4">
+                  <Label className="flex items-center space-x-3">
                     <Checkbox
                       checked={acceptTerms}
                       onCheckedChange={(checked) =>
@@ -1820,11 +1819,11 @@ export default function CheckoutPage() {
                       }
                       required
                     />
-                    <span className='text-sm'>
+                    <span className="text-sm">
                       I have read and agree to the website{' '}
                       <Link
-                        to='/terms-and-conditions'
-                        className='text-blue-600 hover:underline'
+                        to="/terms-and-conditions"
+                        className="text-blue-600 hover:underline"
                       >
                         terms and conditions
                       </Link>
@@ -1832,8 +1831,8 @@ export default function CheckoutPage() {
                   </Label>
 
                   <Button
-                    type='submit'
-                    className='w-full'
+                    type="submit"
+                    className="w-full"
                     disabled={!acceptTerms}
                     onClick={handleSubmit}
                   >
@@ -1842,8 +1841,8 @@ export default function CheckoutPage() {
                 </div>
               </>
             ) : (
-              <div className='text-center'>
-                <p className='mb-4'>
+              <div className="text-center">
+                <p className="mb-4">
                   Please log in to continue with your purchase.
                 </p>
                 <Button onClick={() => setIsLoginModalOpen(true)}>
@@ -1854,49 +1853,49 @@ export default function CheckoutPage() {
           </div>
 
           {/* Order Summary */}
-          <div className='bg-gray-50 p-6 rounded-lg h-fit'>
-            <h2 className='text-xl font-semibold mb-6'>Order Summary</h2>
-            <div className='space-y-4'>
+          <div className="bg-gray-50 p-6 rounded-lg h-fit">
+            <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
+            <div className="space-y-4">
               {products.map((product) => (
-                <div key={product.id} className='flex items-center gap-4'>
-                  <div className='relative w-20 h-20'>
+                <div key={product.id} className="flex items-center gap-4">
+                  <div className="relative w-20 h-20">
                     <img
                       src={product.thumbnail || '/placeholder.svg'}
                       alt={product.title}
                       width={80}
                       height={80}
-                      className='rounded-lg object-cover'
+                      className="rounded-lg object-cover"
                     />
                   </div>
-                  <div className='flex-1'>
-                    <h3 className='font-medium'>{product.title}</h3>
+                  <div className="flex-1">
+                    <h3 className="font-medium">{product.title}</h3>
                     {product.sku && (
-                      <p className='text-xs text-gray-500'>
+                      <p className="text-xs text-gray-500">
                         SKU: {product.sku}
                       </p>
                     )}
-                    <div className='flex items-center gap-2 mt-2'>
+                    <div className="flex items-center gap-2 mt-2">
                       <Button
-                        variant='outline'
-                        size='icon'
-                        className='h-6 w-6'
+                        variant="outline"
+                        size="icon"
+                        className="h-6 w-6"
                         onClick={() => handleQuantityChange(product.id, -1)}
                       >
                         -
                       </Button>
                       <span>{product.quantity}</span>
                       <Button
-                        variant='outline'
-                        size='icon'
-                        className='h-6 w-6'
+                        variant="outline"
+                        size="icon"
+                        className="h-6 w-6"
                         onClick={() => handleQuantityChange(product.id, 1)}
                       >
                         +
                       </Button>
                     </div>
                   </div>
-                  <div className='text-right'>
-                    <p className='font-medium'>
+                  <div className="text-right">
+                    <p className="font-medium">
                       ₹{(product.price * product.quantity).toFixed(2)}
                     </p>
                   </div>
@@ -1904,16 +1903,16 @@ export default function CheckoutPage() {
               ))}
             </div>
 
-            <div className='border-t mt-6 pt-6 space-y-4'>
-              <div className='flex justify-between'>
+            <div className="border-t mt-6 pt-6 space-y-4">
+              <div className="flex justify-between">
                 <span>Subtotal</span>
                 <span>₹{subtotal.toFixed(2)}</span>
               </div>
-              <div className='flex justify-between'>
+              <div className="flex justify-between">
                 <span>Shipping</span>
                 <span>₹{shipping.toFixed(2)}</span>
               </div>
-              <div className='flex justify-between font-semibold text-lg'>
+              <div className="flex justify-between font-semibold text-lg">
                 <span>Total</span>
                 <span>₹{total.toFixed(2)}</span>
               </div>

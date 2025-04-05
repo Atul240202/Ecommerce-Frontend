@@ -94,9 +94,9 @@ export function ProductGrid() {
   }, []);
 
   return (
-    <div className='py-12'>
-      <div className='container mx-auto px-4'>
-        <div className='flex mb-8'>
+    <div className="py-12">
+      <div className="container mx-auto px-4">
+        <div className="flex mb-8">
           {isMobile ? (
             <></>
           ) : (
@@ -115,13 +115,23 @@ export function ProductGrid() {
             }`}
           >
             <Button
-              variant={activeTab === 'featured' ? 'default' : 'outline'}
+              // variant={activeTab === 'featured' ? 'bg-[#2D81FF] text-white' : 'outline'}
+              className={` ${
+                activeTab === 'featured'
+                  ? 'bg-[#2D81FF] text-white hover:bg-[#2D81FF]'
+                  : 'text-[#2D81FF] bg-white hover:bg-[#eaf2ff]'
+              }`}
               onClick={() => setActiveTab('featured')}
             >
               Featured
             </Button>
             <Button
-              variant={activeTab === 'bestseller' ? 'default' : 'outline'}
+              // variant={activeTab === 'bestseller' ? 'default' : 'outline'}
+              className={`  ${
+                activeTab === 'bestseller'
+                  ? 'bg-[#2D81FF] text-white hover:bg-[#2D81FF]'
+                  : 'text-[#2D81FF] bg-white hover:bg-[#eaf2ff]'
+              }`}
               onClick={() => setActiveTab('bestseller')}
             >
               Best Seller
@@ -130,11 +140,11 @@ export function ProductGrid() {
         </div>
 
         {loading ? (
-          <div className='flex justify-center py-8 px-8'>
-            <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#4280ef]'></div>
+          <div className="flex justify-center py-8 px-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#4280ef]"></div>
           </div>
         ) : (
-          <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6'>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {(activeTab === 'featured'
               ? featuredProducts
               : bestSellerProducts
