@@ -27,6 +27,8 @@ import AboutUs from './pages/about-us';
 import Login from './pages/login';
 import Register from './pages/register';
 import CategoriesPage from './pages/categoriesPage';
+import InnerBrandPage from './pages/brand/[slug]';
+import BrandsPage from './pages/brand';
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: 'AIzaSyACEOM0JvL7Z9MTX59oa-d8AKx0Q6aPL2c',
@@ -77,6 +79,8 @@ function App() {
             <Route path="/verify-reset-otp" element={<VerifyResetOtpPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="*" element={<NotFound />} />
+            <Route path="/brands" element={<BrandsPage />} />
+            <Route path="/brand/:slug" element={<InnerBrandPage />} />
           </Routes>
         </Router>
       </ShopProvider>

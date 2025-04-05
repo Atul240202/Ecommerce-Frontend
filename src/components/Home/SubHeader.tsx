@@ -115,7 +115,7 @@ export function SubHeader() {
                   <Link to="/" className="py-2 hover:text-[#4280ef]">
                     Home
                   </Link>
-                  <Link to="/categories" className="py-2 hover:text-[#4280ef]">
+                  <Link to="/brands" className="py-2 hover:text-[#4280ef]">
                     Shop by Brand
                   </Link>
                   <Link to="/bestseller" className="py-2 hover:text-[#4280ef]">
@@ -219,7 +219,7 @@ export function SubHeader() {
               Home
             </Link>
             <Link
-              to="/categories"
+              to="/brands"
               className="h-12 flex items-center hover:text-[#4280ef]"
             >
               Shop by Brand

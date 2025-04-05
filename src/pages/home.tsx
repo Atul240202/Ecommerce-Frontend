@@ -12,7 +12,7 @@ import {
   fetchVariableProducts,
   type Product,
 } from '../services/api';
-
+import { BrandSlider } from '../components/Home/BrandSlider';
 interface Blog {
   id: number;
   title: string;
@@ -124,18 +124,7 @@ export default function HomePage() {
 
           <FeaturedProducts />
 
-          {promotions.mini_banner && (
-            <Link
-              href={promotions.mini_banner.href}
-              className="flex justify-center my-8"
-            >
-              <img
-                src={promotions.mini_banner.image || '/placeholder.svg'}
-                alt="Promotional banner"
-                className="w-full max-w-[70vw] max-h-[20vh]"
-              />
-            </Link>
-          )}
+          <BrandSlider />
 
           <FeaturedSection />
 
@@ -170,6 +159,19 @@ export default function HomePage() {
               </Link>
             </div>
           </section>
+
+          {promotions.mini_banner && (
+            <Link
+              href={promotions.mini_banner.href}
+              className="flex justify-center my-8"
+            >
+              <img
+                src={promotions.mini_banner.image || '/placeholder.svg'}
+                alt="Promotional banner"
+                className="w-full max-w-[70vw] max-h-[20vh]"
+              />
+            </Link>
+          )}
         </div>
       </div>
     </MainLayout>

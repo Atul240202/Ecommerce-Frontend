@@ -200,27 +200,6 @@ export const fetchRelatedProducts = async (
 // };
 
 // Search products by keyword
-export const searchProducts = async (keyword: string, limit = 10) => {
-  if (!keyword || keyword.trim() === '') {
-    return { products: [], total: 0 };
-  }
-
-  try {
-    const response = await fetch(
-      `${API_URL}/products/search?keyword=${encodeURIComponent(
-        keyword
-      )}&limit=${limit}`
-    );
-    if (!response.ok) {
-      throw new Error('Failed to search products');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Error searching products:', error);
-    // Return empty array instead of throwing to prevent component crashes
-    return { products: [], total: 0 };
-  }
-};
 
 // Fetch reviews for a product with pagination
 export const fetchProductReviews = async (
@@ -399,5 +378,49 @@ export const fetchUserReviews = async (page = 1, limit = 10) => {
   } catch (error) {
     console.error('Error fetching user reviews:', error);
     throw error;
+  }
+};
+
+export const searchBrandedProducts = async (
+  keyword: string,
+  page = 1,
+  limit = 10
+) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/products?keyword=${encodeURIComponent(
+        keyword
+      )}&page=${page}&limit=${limit}`
+    );
+    if (!response.ok) {
+      throw new Error('Failed to search products');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Error searching products with keyword ${keyword}:`, error);
+    // Return empty array instead of throwing to prevent component crashes
+    return { products: [], total: 0 };
+  }
+};
+
+export const searchProducts = async (keyword: string, limit = 10) => {
+  if (!keyword || keyword.trim() === '') {
+    return { products: [], total: 0 };
+  }
+
+  try {
+    const response = await fetch(
+      `${API_URL}/products/search?keyword=${encodeURIComponent(
+        keyword
+      )}&limit=${limit}`
+    );
+    if (!response.ok) {
+      throw new Error('Failed to search products');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error searching products:', error);
+    // Return empty array instead of throwing to prevent component crashes
+    return { products: [], total: 0 };
   }
 };

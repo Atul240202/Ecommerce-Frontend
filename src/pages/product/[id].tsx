@@ -218,6 +218,10 @@ export default function ProductPage() {
     navigate('/checkout');
   };
 
+  const handleContactForNull = () => {
+    navigate('/contact');
+  };
+
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -466,7 +470,9 @@ export default function ProductPage() {
                   size="lg"
                   onClick={handleAddToCart}
                   disabled={
-                    product.stock_status !== 'instock' || isAddingToCart
+                    product.stock_status !== 'instock' ||
+                    isAddingToCart ||
+                    product.regular_price == '0'
                   }
                 >
                   {product.stock_status === 'instock'
@@ -491,15 +497,30 @@ export default function ProductPage() {
                   </span>
                 </Button>
               </div>
+
               <Button
                 variant="secondary"
                 className="w-full hover:bg-[#D2EEFF]"
                 size="lg"
                 onClick={handleBuyNow}
-                disabled={product.stock_status !== 'instock'}
+                disabled={
+                  product.stock_status !== 'instock' ||
+                  product.regular_price == '0'
+                }
               >
                 Buy Now
               </Button>
+              {product.regular_price === '0' && (
+                <Button
+                  variant="secondary"
+                  className="w-full hover:bg-[#D2EEFF]"
+                  size="lg"
+                  onClick={handleContactForNull}
+                  disabled={product.stock_status !== 'instock'}
+                >
+                  Ask for Quote
+                </Button>
+              )}
             </div>
 
             <div className="border-t pt-4">
