@@ -86,16 +86,6 @@ export const CategorySubheader = () => {
   return (
     <nav className="relative bg-white border-b border-gray-200 z-40">
       <div className="container mx-auto px-4 relative">
-        {showLeftScroll && (
-          <button
-            onClick={scrollLeft}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full shadow-md p-1 md:p-2"
-            aria-label="Scroll left"
-          >
-            <ChevronLeft className="h-5 w-5 text-gray-700" />
-          </button>
-        )}
-
         <div
           ref={scrollContainerRef}
           className="flex justify-between gap-4 overflow-x-auto py-3 scrollbar-hide scroll-smooth"
@@ -119,15 +109,15 @@ export const CategorySubheader = () => {
                       } text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap bg-transparent border-0 cursor-pointer`}
                     >
                       <div
-                        className={`mb-1 overflow-hidden border border-gray-200 ${
-                          isMobile ? 'gap-2 w-10 h-10' : 'w-14 h-14'
+                        className={`mb-1 overflow-hidden  ${
+                          isMobile ? 'gap-2 w-10 h-10' : 'w-18 h-18'
                         }`}
                       >
                         <img
                           src={category.icon || '/placeholder.svg'}
                           alt={category.name}
-                          width={60}
-                          height={60}
+                          width={80}
+                          height={80}
                           className="object-cover"
                         />
                       </div>
@@ -171,15 +161,15 @@ export const CategorySubheader = () => {
                   className="flex flex-col items-center px-4 py-2 text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap"
                 >
                   <div
-                    className={`mb-1 overflow-hidden border border-gray-200 ${
-                      isMobile ? 'gap-2 w-10 h-10' : 'w-14 h-14'
+                    className={`mb-1 overflow-hidden ${
+                      isMobile ? 'gap-2 w-10 h-10' : 'w-18 h-18'
                     }`}
                   >
                     <img
                       src={category.icon || '/placeholder.svg'}
                       alt={category.name}
-                      width={60}
-                      height={60}
+                      width={80}
+                      height={80}
                       className="object-cover"
                     />
                   </div>
@@ -189,7 +179,15 @@ export const CategorySubheader = () => {
             </div>
           ))}
         </div>
-
+        {showLeftScroll && (
+          <button
+            onClick={scrollLeft}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full shadow-md p-1 md:p-2"
+            aria-label="Scroll left"
+          >
+            <ChevronLeft className="h-5 w-5 text-gray-700" />
+          </button>
+        )}
         {showRightScroll && (
           <button
             onClick={scrollRight}

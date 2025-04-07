@@ -37,7 +37,7 @@ export function HeroSlider({ slides }: HeroSliderProps) {
   };
 
   return (
-    <div className={`relative w-full  ${isMobile ? 'h-[30vh]' : 'h-[70vh]'}`}>
+    <div className={`relative w-full  ${isMobile ? 'h-[13vh]' : 'h-[65vh]'}`}>
       {slides.map((slide, index) => (
         <div
           key={index}

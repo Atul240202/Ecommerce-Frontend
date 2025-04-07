@@ -5,21 +5,17 @@ interface Brand {
   image: string;
   keyword: string;
 }
+
 export function BrandSlider() {
   const [brands, setBrands] = useState<Brand[]>([]);
-  const [sliderWidth, setSliderWidth] = useState(0);
 
   useEffect(() => {
     const fetchBrands = async () => {
       try {
         const response = await fetch('/tempData/brand.json');
-        if (!response.ok) {
-          throw new Error('Failed to fetch brands');
-        }
+        if (!response.ok) throw new Error('Failed to fetch brands');
         const data: Brand[] = await response.json();
         setBrands(data);
-        // Calculate slider width based on the number of brands
-        setSliderWidth(data.length * 220); // Adjust 150px as needed for each brand
       } catch (error) {
         console.error('Error fetching brands:', error);
       }
@@ -30,15 +26,11 @@ export function BrandSlider() {
 
   return (
     <div className="relative w-full overflow-hidden">
-      <div
-        className="flex animate-brand-scroll"
-        style={{
-          width: `${sliderWidth}px`,
-        }}
-      >
-        {brands.map((brand) => (
+      <div className="flex w-max animate-marquee whitespace-nowrap">
+        {/* Original List */}
+        {brands.concat(brands).map((brand, index) => (
           <div
-            key={brand.name}
+            key={`${brand.name}-${index}`}
             className="flex items-center justify-center w-[220px] px-4 py-2"
           >
             <img

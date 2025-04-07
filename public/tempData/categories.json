@@ -3,7 +3,7 @@
     {
       "name": "Adhesives",
       "href": "/categories/adhesive",
-      "icon": "https://dummyimage.com/60x60/ff5733/fff.png",
+      "icon": "https://res.cloudinary.com/da3r1iagy/image/upload/v1744037915/1_f048ao.png",
       "subcategories": [
         {
           "name": "Rubber and Contact Adhesive",
@@ -22,7 +22,7 @@
     {
       "name": "Bearing",
       "href": "/categories/bearing",
-      "icon": "https://dummyimage.com/60x60/33ff57/fff.png",
+      "icon": "https://res.cloudinary.com/da3r1iagy/image/upload/v1744037915/2_c5e83l.png",
       "subcategories": [
         {
           "name": "Deep Groove Ball Bearing",
@@ -33,7 +33,7 @@
     {
       "name": "Cutting Tools",
       "href": "/categories/cutting-tools",
-      "icon": "https://dummyimage.com/60x60/3357ff/fff.png",
+      "icon": "https://res.cloudinary.com/da3r1iagy/image/upload/v1744037915/3_jfuv8c.png",
       "subcategories": [
         {
           "name": "Dead Centre",
@@ -48,7 +48,7 @@
     {
       "name": "Electrical",
       "href": "/categories/electrical",
-      "icon": "https://dummyimage.com/60x60/ff33a8/fff.png",
+      "icon": "https://res.cloudinary.com/da3r1iagy/image/upload/v1744037914/4_ucmbsk.png",
       "subcategories": [
         {
           "name": "Inverter Generators",
@@ -63,7 +63,7 @@
     {
       "name": "Fastners",
       "href": "/categories/fastners",
-      "icon": "https://dummyimage.com/60x60/a833ff/fff.png",
+      "icon": "https://res.cloudinary.com/da3r1iagy/image/upload/v1744037915/5_bw5eyu.png",
       "subcategories": [
         {
           "name": "Alum / Steel Blind Rivets",
@@ -95,7 +95,7 @@
     {
       "name": "Hand Tools",
       "href": "/categories/hand-tools",
-      "icon": "https://dummyimage.com/60x60/33fff5/fff.png",
+      "icon": "https://res.cloudinary.com/da3r1iagy/image/upload/v1744037915/6_zrbh1p.png",
       "subcategories": [
         {
           "name": "Hacksaw Frame with Plastic Handle",
@@ -114,7 +114,7 @@
     {
       "name": "Power Tools",
       "href": "/categories/power-tools",
-      "icon": "https://dummyimage.com/60x60/ff8c33/fff.png",
+      "icon": "https://res.cloudinary.com/da3r1iagy/image/upload/v1744037914/7_jkyytl.png",
       "subcategories": [
         {
           "name": "Miter Saw",
@@ -133,13 +133,13 @@
     {
       "name": "Pump",
       "href": "/categories/pump",
-      "icon": "https://dummyimage.com/60x60/ff3333/fff.png",
+      "icon": "https://res.cloudinary.com/da3r1iagy/image/upload/v1744037914/8_quhitg.png",
       "subcategories": []
     },
     {
       "name": "Shop by Categories",
       "href": "/categories",
-      "icon": "https://dummyimage.com/60x60/33a8ff/fff.png",
+      "icon": "https://res.cloudinary.com/da3r1iagy/image/upload/v1744037914/9_ubpa0p.png",
       "subcategories": []
     }
   ]

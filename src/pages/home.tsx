@@ -128,18 +128,17 @@ export default function HomePage() {
 
           <FeaturedSection />
 
-          {promotions.footer_banner && promotions.footer_banner.length > 0 && (
-            <div className="my-2 flex gap-4 justify-center">
-              {promotions.footer_banner.map((banner: any, index: number) => (
-                <Link key={index} href={banner.href}>
-                  <img
-                    src={banner.image || '/placeholder.svg'}
-                    alt={`Footer Banner ${index + 1}`}
-                    className="max-w-[35vw] max-h-[30vh] h-fit"
-                  />
-                </Link>
-              ))}
-            </div>
+          {promotions.mini_banner && (
+            <Link
+              href={promotions.mini_banner.href}
+              className="flex justify-center my-8"
+            >
+              <img
+                src={promotions.mini_banner.image || '/placeholder.svg'}
+                alt="Promotional banner"
+                className="w-full max-w-[70vw] max-h-[20vh]"
+              />
+            </Link>
           )}
 
           {/* Latest Blogs Section */}
@@ -160,17 +159,18 @@ export default function HomePage() {
             </div>
           </section>
 
-          {promotions.mini_banner && (
-            <Link
-              href={promotions.mini_banner.href}
-              className="flex justify-center my-8"
-            >
-              <img
-                src={promotions.mini_banner.image || '/placeholder.svg'}
-                alt="Promotional banner"
-                className="w-full max-w-[70vw] max-h-[20vh]"
-              />
-            </Link>
+          {promotions.footer_banner && promotions.footer_banner.length > 0 && (
+            <div className="my-2 flex gap-4 justify-center">
+              {promotions.footer_banner.map((banner: any, index: number) => (
+                <Link key={index} href={banner.href}>
+                  <img
+                    src={banner.image || '/placeholder.svg'}
+                    alt={`Footer Banner ${index + 1}`}
+                    className="max-w-[35vw] max-h-[30vh] h-fit"
+                  />
+                </Link>
+              ))}
+            </div>
           )}
         </div>
       </div>
