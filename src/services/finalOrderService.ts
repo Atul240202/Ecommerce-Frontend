@@ -1,145 +1,85 @@
-import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Create a new final order
+// Helper to make authorized fetch requests
+const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
+  const token = Cookies.get('authToken');
+
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+    ...options.headers,
+  };
+
+  const response = await fetch(url, { ...options, headers });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || 'API request failed');
+  }
+  return response.json();
+};
+
+// 1. Create a new final order
 export const createFinalOrder = async (orderData: any) => {
-  try {
-    const response = await axios.post(`${API_URL}/final-orders`, orderData, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error creating final order:', error);
-    throw error;
-  }
+  return await fetchWithAuth(`${API_URL}/final-orders`, {
+    method: 'POST',
+    body: JSON.stringify(orderData),
+  });
 };
 
-// Get all final orders
+// 2. Get all final orders (admin)
 export const getFinalOrders = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/final-orders`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching final orders:', error);
-    throw error;
-  }
+  return await fetchWithAuth(`${API_URL}/final-orders/all`, {
+    method: 'GET',
+  });
 };
 
-// Get a specific final order by ID
-export const getFinalOrderById = async (orderId: string) => {
-  try {
-    const response = await axios.get(`${API_URL}/final-orders/${orderId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(`Error fetching final order ${orderId}:`, error);
-    throw error;
-  }
-};
-
-// Get final orders for the current user
+// 3. Get final orders for the current user
 export const getUserFinalOrders = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/final-orders/user`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching user final orders:', error);
-    throw error;
-  }
+  return await fetchWithAuth(`${API_URL}/final-orders/my-orders`, {
+    method: 'GET',
+  });
 };
 
-// Update a final order status
+// 4. Get a specific final order by ID
+export const getFinalOrderById = async (orderId: string) => {
+  return await fetchWithAuth(`${API_URL}/final-orders/${orderId}`, {
+    method: 'GET',
+  });
+};
+
+// 5. Update a final order status (admin)
 export const updateFinalOrderStatus = async (
   orderId: string,
   status: string
 ) => {
-  try {
-    const response = await axios.patch(
-      `${API_URL}/final-orders/${orderId}/status`,
-      { status },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error(`Error updating final order ${orderId} status:`, error);
-    throw error;
-  }
+  return await fetchWithAuth(`${API_URL}/final-orders/${orderId}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({ status }),
+  });
 };
 
-// Delete a final order (admin only)
+// 6. Delete a final order (admin only)
 export const deleteFinalOrder = async (orderId: string) => {
-  try {
-    const response = await axios.delete(`${API_URL}/final-orders/${orderId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(`Error deleting final order ${orderId}:`, error);
-    throw error;
-  }
+  return await fetchWithAuth(`${API_URL}/final-orders/${orderId}`, {
+    method: 'DELETE',
+  });
 };
 
-// Retry ShipRocket integration for a failed order
+// 7. Retry ShipRocket integration
 export const retryShipRocketIntegration = async (orderId: string) => {
-  try {
-    const response = await axios.post(
-      `${API_URL}/final-orders/${orderId}/retry-shiprocket`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error(
-      `Error retrying ShipRocket integration for order ${orderId}:`,
-      error
-    );
-    throw error;
-  }
+  return await fetchWithAuth(
+    `${API_URL}/final-orders/${orderId}/retry-shiprocket`,
+    {
+      method: 'POST',
+    }
+  );
 };
 
-// Check ShipRocket API status for an order
-export const checkShipRocketStatus = async (orderId: string) => {
-  try {
-    const response = await axios.get(
-      `${API_URL}/final-orders/${orderId}/shiprocket-status`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error(
-      `Error checking ShipRocket status for order ${orderId}:`,
-      error
-    );
-    throw error;
-  }
+// 8. Track order via ShipRocket (tracking endpoint)
+export const trackFinalOrder = async (orderId: string) => {
+  return await fetchWithAuth(`${API_URL}/final-orders/${orderId}/track`, {
+    method: 'GET',
+  });
 };
