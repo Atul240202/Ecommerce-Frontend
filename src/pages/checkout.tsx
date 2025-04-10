@@ -1,41 +1,42 @@
-import type React from 'react';
+import type React from "react";
 
-import { useState, useEffect } from 'react';
-import { MainLayout } from '../layouts/MainLayout';
-import { Input } from '../components/ui/input';
-import { Button } from '../components/ui/button';
-import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
-import { Label } from '../components/ui/label';
+import { useState, useEffect } from "react";
+import { MainLayout } from "../layouts/MainLayout";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
+import { RadioGroup, RadioGroupItem } from "../components/ui/radio-group";
+import { Label } from "../components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../components/ui/select';
-import { Checkbox } from '../components/ui/checkbox';
-import { LoginModal } from '../components/utils/LoginModal';
-import { OrderConfirmation } from '../components/orders/OrderConfirmation';
-import { useCheckout } from '../contexts/CheckoutContext';
-import { Loader2, Plus } from 'lucide-react';
-import Cookies from 'js-cookie';
-import { Link } from 'react-router-dom';
-import { indianStates } from '../lib/constants';
+} from "../components/ui/select";
+import { Checkbox } from "../components/ui/checkbox";
+import { LoginModal } from "../components/utils/LoginModal";
+import { OrderConfirmation } from "../components/orders/OrderConfirmation";
+import { useCheckout } from "../contexts/CheckoutContext";
+import { Loader2, Plus } from "lucide-react";
+import Cookies from "js-cookie";
+import { Link } from "react-router-dom";
+import { indianStates } from "../lib/constants";
 import {
   getUserAddresses,
   getDefaultAddresses,
   addUserAddress,
   setDefaultAddress,
-} from '../services/userService';
-import { toast } from '../components/ui/use-toast';
+} from "../services/userService";
+import { toast } from "../components/ui/use-toast";
 import {
   storeUnprocessedOrder,
   // deleteUnprocessedOrder,
-} from '../services/unprocessedOrderService';
-import { createFinalOrder } from '../services/finalOrderService';
-import { getCurrentUser } from '../services/auth';
-import { v4 as uuidv4 } from 'uuid';
-import { format } from 'date-fns';
+} from "../services/unprocessedOrderService";
+import { createFinalOrder } from "../services/finalOrderService";
+import { getCurrentUser } from "../services/auth";
+import { v4 as uuidv4 } from "uuid";
+import { format } from "date-fns";
+import phonepe from "/phonepe.png";
 
 interface UserAddress {
   id: string;
@@ -49,7 +50,7 @@ interface UserAddress {
   postcode: string;
   city: string;
   phone: string;
-  type: 'shipping' | 'billing';
+  type: "shipping" | "billing";
   isDefault: boolean;
 }
 
@@ -70,9 +71,9 @@ export default function CheckoutPage() {
   const [defaultBillingAddress, setDefaultBillingAddress] =
     useState<UserAddress | null>(null);
   const [selectedShippingAddressId, setSelectedShippingAddressId] =
-    useState<string>('');
+    useState<string>("");
   const [selectedBillingAddressId, setSelectedBillingAddressId] =
-    useState<string>('');
+    useState<string>("");
   const [showNewShippingForm, setShowNewShippingForm] = useState(false);
   const [showNewBillingForm, setShowNewBillingForm] = useState(false);
   const [saveNewShippingAddress, setSaveNewShippingAddress] = useState(true);
@@ -85,19 +86,19 @@ export default function CheckoutPage() {
   const [newShippingAddress, setNewShippingAddress] = useState<
     Partial<UserAddress>
   >({
-    type: 'shipping',
-    country: 'India',
+    type: "shipping",
+    country: "India",
   });
   const [newBillingAddress, setNewBillingAddress] = useState<
     Partial<UserAddress>
   >({
-    type: 'billing',
-    country: 'India',
+    type: "billing",
+    country: "India",
   });
 
   // Payment and checkout flow states
-  const [paymentMethod, setPaymentMethod] = useState<'phonepe' | 'cod'>(
-    'phonepe'
+  const [paymentMethod, setPaymentMethod] = useState<"phonepe" | "cod">(
+    "phonepe"
   );
   const [useSameAddress, setUseSameAddress] = useState(true);
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -105,25 +106,70 @@ export default function CheckoutPage() {
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
-  const [orderNumber, setOrderNumber] = useState('');
+  const [orderNumber, setOrderNumber] = useState("");
   const [finalOrderData, setFinalOrderData] = useState<any>(null);
 
   // Unprocessed order tracking
-  const [tempOrderId, setTempOrderId] = useState<string>('');
+  const [tempOrderId, setTempOrderId] = useState<string>("");
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [includeGST, setIncludeGST] = useState(false);
+  const [gstNumber, setGstNumber] = useState("");
+
+  //To sustain checkout page data
+  useEffect(() => {
+    const savedCheckoutData = sessionStorage.getItem("checkoutData");
+    if (savedCheckoutData) {
+      const parsedData = JSON.parse(savedCheckoutData);
+
+      setSelectedShippingAddressId(parsedData.selectedShippingAddressId || "");
+      setSelectedBillingAddressId(parsedData.selectedBillingAddressId || "");
+      setPaymentMethod(parsedData.paymentMethod || "phonepe");
+      setIncludeGST(parsedData.includeGST || false);
+      setGstNumber(parsedData.gstNumber || "");
+      setAcceptTerms(parsedData.acceptTerms || false);
+
+      if (parsedData.products && parsedData.products.length > 0) {
+        parsedData.products.forEach((product: any) => {
+          updateQuantity(product.id, product.quantity); // Restore quantity
+        });
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const checkoutData = {
+      selectedShippingAddressId,
+      selectedBillingAddressId,
+      paymentMethod,
+      includeGST,
+      gstNumber,
+      acceptTerms,
+      products,
+    };
+
+    sessionStorage.setItem("checkoutData", JSON.stringify(checkoutData));
+  }, [
+    selectedShippingAddressId,
+    selectedBillingAddressId,
+    paymentMethod,
+    includeGST,
+    gstNumber,
+    acceptTerms,
+    products,
+  ]);
 
   useEffect(() => {
     checkLoginStatus();
     // Get tempId from sessionStorage if available
-    const storedTempId = sessionStorage.getItem('unprocessed_order_tempid');
+    const storedTempId = sessionStorage.getItem("unprocessed_order_tempid");
     if (storedTempId) {
       setTempOrderId(storedTempId);
     }
   }, []);
 
   const checkLoginStatus = async () => {
-    const authToken = Cookies.get('authToken');
-    const loggedIn = Cookies.get('isLoggedIn') === 'true';
+    const authToken = Cookies.get("authToken");
+    const loggedIn = Cookies.get("isLoggedIn") === "true";
     setIsLoggedIn(authToken != null && loggedIn);
 
     if (authToken && loggedIn) {
@@ -134,7 +180,7 @@ export default function CheckoutPage() {
         const user = await getCurrentUser();
         setCurrentUser(user);
       } catch (error) {
-        console.error('Error fetching current user:', error);
+        console.error("Error fetching current user:", error);
       }
     }
   };
@@ -158,11 +204,11 @@ export default function CheckoutPage() {
         setSelectedBillingAddressId(billing.id);
       }
     } catch (error) {
-      console.error('Error fetching addresses:', error);
+      console.error("Error fetching addresses:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to load your saved addresses',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to load your saved addresses",
+        variant: "destructive",
       });
     }
   };
@@ -191,9 +237,9 @@ export default function CheckoutPage() {
           prev.map((addr) => ({
             ...addr,
             isDefault:
-              addr.id === addressId && addr.type === 'shipping'
+              addr.id === addressId && addr.type === "shipping"
                 ? true
-                : addr.type === 'shipping'
+                : addr.type === "shipping"
                 ? false
                 : addr.isDefault,
           }))
@@ -202,11 +248,11 @@ export default function CheckoutPage() {
         // Update default shipping address
         setDefaultShippingAddress(selectedAddress);
       } catch (error) {
-        console.error('Error setting default address:', error);
+        console.error("Error setting default address:", error);
         toast({
-          title: 'Error',
-          description: 'Failed to set default address. Please try again.',
-          variant: 'destructive',
+          title: "Error",
+          description: "Failed to set default address. Please try again.",
+          variant: "destructive",
         });
       }
     }
@@ -231,9 +277,9 @@ export default function CheckoutPage() {
           prev.map((addr) => ({
             ...addr,
             isDefault:
-              addr.id === addressId && addr.type === 'billing'
+              addr.id === addressId && addr.type === "billing"
                 ? true
-                : addr.type === 'billing'
+                : addr.type === "billing"
                 ? false
                 : addr.isDefault,
           }))
@@ -242,11 +288,11 @@ export default function CheckoutPage() {
         // Update default billing address
         setDefaultBillingAddress(selectedAddress);
       } catch (error) {
-        console.error('Error setting default address:', error);
+        console.error("Error setting default address:", error);
         toast({
-          title: 'Error',
-          description: 'Failed to set default address. Please try again.',
-          variant: 'destructive',
+          title: "Error",
+          description: "Failed to set default address. Please try again.",
+          variant: "destructive",
         });
       }
     }
@@ -288,13 +334,13 @@ export default function CheckoutPage() {
     // Validate new shipping address if shown
     if (showNewShippingForm) {
       const requiredFields = [
-        'firstName',
-        'lastName',
-        'address1',
-        'city',
-        'state',
-        'postcode',
-        'phone',
+        "firstName",
+        "lastName",
+        "address1",
+        "city",
+        "state",
+        "postcode",
+        "phone",
       ];
       requiredFields.forEach((field) => {
         if (!newShippingAddress[field]) {
@@ -312,13 +358,13 @@ export default function CheckoutPage() {
       // Validate new billing address if shown
       if (showNewBillingForm) {
         const requiredFields = [
-          'firstName',
-          'lastName',
-          'address1',
-          'city',
-          'state',
-          'postcode',
-          'phone',
+          "firstName",
+          "lastName",
+          "address1",
+          "city",
+          "state",
+          "postcode",
+          "phone",
         ];
         requiredFields.forEach((field) => {
           if (!newBillingAddress[field]) {
@@ -342,7 +388,7 @@ export default function CheckoutPage() {
     const selectedBillingAddress = getSelectedBillingAddress();
 
     if (!selectedShippingAddress) {
-      throw new Error('Shipping address is required');
+      throw new Error("Shipping address is required");
     }
 
     // Generate a unique order ID
@@ -351,7 +397,7 @@ export default function CheckoutPage() {
     )}`;
 
     // Format the current date as YYYY-MM-DD
-    const currentDate = format(new Date(), 'yyyy-MM-dd');
+    const currentDate = format(new Date(), "yyyy-MM-dd");
     // Prepare order items
     const orderItems = products.map((product) => ({
       id: product.id,
@@ -359,21 +405,21 @@ export default function CheckoutPage() {
       sku: product.sku || `Shiprocket-${product.id}`, // Replace with actual SKU if available
       units: product.quantity.toString(),
       selling_price: product.price.toString(),
-      discount: '0', // Replace with actual discount if available
-      tax: '0', // Replace with actual tax if available
-      hsn: '', // Replace with actual HSN code if available
+      discount: "0", // Replace with actual discount if available
+      tax: "0", // Replace with actual tax if available
+      hsn: "", // Replace with actual HSN code if available
     }));
 
     // Create the final order data object
     const finalOrderData = {
       order_id: generatedOrderId,
       order_date: currentDate,
-      pickup_location: 'Home', // Replace with actual pickup location
-      channel_id: '2970164',
-      comment: '',
-      reseller_name: '',
-      company_name: '',
-
+      pickup_location: "Home", // Replace with actual pickup location
+      channel_id: "2970164",
+      comment: "",
+      reseller_name: "",
+      company_name: "",
+      gst_number: gstNumber || "",
       // Billing information
       billing_customer_name:
         selectedBillingAddress?.firstName || selectedShippingAddress.firstName,
@@ -384,8 +430,8 @@ export default function CheckoutPage() {
       billing_address_2:
         selectedBillingAddress?.apartment ||
         selectedShippingAddress.apartment ||
-        '',
-      billing_isd_code: '+91', // Default ISD code for India
+        "",
+      billing_isd_code: "+91", // Default ISD code for India
       billing_city:
         selectedBillingAddress?.city || selectedShippingAddress.city,
       billing_pincode:
@@ -394,46 +440,46 @@ export default function CheckoutPage() {
         selectedBillingAddress?.state || selectedShippingAddress.state,
       billing_country:
         selectedBillingAddress?.country || selectedShippingAddress.country,
-      billing_email: currentUser?.email || '',
+      billing_email: currentUser?.email || "",
       billing_phone:
         selectedBillingAddress?.phone || selectedShippingAddress.phone,
-      billing_alternate_phone: '',
+      billing_alternate_phone: "",
 
       // Shipping information
       shipping_is_billing: useSameAddress ? true : false,
       shipping_customer_name: selectedShippingAddress.firstName,
       shipping_last_name: selectedShippingAddress.lastName,
       shipping_address: selectedShippingAddress.address1,
-      shipping_address_2: selectedShippingAddress.apartment || '',
+      shipping_address_2: selectedShippingAddress.apartment || "",
       shipping_city: selectedShippingAddress.city,
       shipping_pincode: selectedShippingAddress.postcode,
       shipping_country: selectedShippingAddress.country,
       shipping_state: selectedShippingAddress.state,
-      shipping_email: currentUser?.email || '',
+      shipping_email: currentUser?.email || "",
       shipping_phone: selectedShippingAddress.phone,
 
       // Order items
       order_items: orderItems,
 
       // Payment and pricing information
-      payment_method: paymentMethod === 'cod' ? 'COD' : 'Prepaid',
+      payment_method: paymentMethod === "cod" ? "COD" : "Prepaid",
       shipping_charges: shipping.toString(),
-      giftwrap_charges: '0',
-      transaction_charges: '0',
-      total_discount: '0',
+      giftwrap_charges: "0",
+      transaction_charges: "0",
+      total_discount: "0",
       sub_total: subtotal.toString(),
 
       // Package information
-      length: '',
-      breadth: '',
-      height: '',
-      weight: '',
+      length: "",
+      breadth: "",
+      height: "",
+      weight: "",
 
       // Additional information
-      ewaybill_no: '',
-      customer_gstin: '',
-      invoice_number: '',
-      order_type: 'ESSENTIALS',
+      ewaybill_no: "",
+      customer_gstin: "",
+      invoice_number: "",
+      order_type: "ESSENTIALS",
 
       // Reference to unprocessed order if exists
       // unprocessed_order_id: tempOrderId || null,
@@ -470,7 +516,7 @@ export default function CheckoutPage() {
       if (tempOrderId) {
         // await deleteUnprocessedOrder(tempOrderId);
         // Clear from sessionStorage
-        sessionStorage.removeItem('unprocessed_order_tempid');
+        sessionStorage.removeItem("unprocessed_order_tempid");
       }
 
       // if (typeof clearCart === 'function') {
@@ -485,18 +531,18 @@ export default function CheckoutPage() {
 
       // Show success message
       toast({
-        title: 'Order Placed Successfully',
+        title: "Order Placed Successfully",
         description: `Your order #${orderData.order_id} has been placed successfully.`,
-        variant: 'default',
+        variant: "default",
       });
     } catch (error) {
-      console.error('Error submitting order:', error);
+      console.error("Error submitting order:", error);
       // Show error message to user
       toast({
-        title: 'Error',
+        title: "Error",
         description:
-          'There was a problem processing your order. Please try again.',
-        variant: 'destructive',
+          "There was a problem processing your order. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
@@ -552,7 +598,7 @@ export default function CheckoutPage() {
           price: p.price,
           quantity: p.quantity,
           thumbnail: p.thumbnail,
-          sku: p.sku || '',
+          sku: p.sku || "",
         })),
         shippingAddress: {
           id: selectedShippingAddress.id,
@@ -583,7 +629,7 @@ export default function CheckoutPage() {
         subtotal,
         shipping,
         total,
-        reason: 'Process was not completed by the user.',
+        reason: "Process was not completed by the user.",
       };
 
       const result = await storeUnprocessedOrder(unprocessedOrderData);
@@ -593,14 +639,14 @@ export default function CheckoutPage() {
         if (!tempOrderId) {
           setTempOrderId(orderTempId);
           // Store in sessionStorage for persistence
-          sessionStorage.setItem('unprocessed_order_tempid', orderTempId);
+          sessionStorage.setItem("unprocessed_order_tempid", orderTempId);
         }
         return true;
       }
 
       return false;
     } catch (error) {
-      console.error('Error storing unprocessed order:', error);
+      console.error("Error storing unprocessed order:", error);
       return false;
     }
   };
@@ -609,9 +655,9 @@ export default function CheckoutPage() {
     // Validate shipping address selection
     if (!selectedShippingAddressId && !showNewShippingForm) {
       toast({
-        title: 'Error',
-        description: 'Please select a shipping address',
-        variant: 'destructive',
+        title: "Error",
+        description: "Please select a shipping address",
+        variant: "destructive",
       });
       return;
     }
@@ -619,13 +665,13 @@ export default function CheckoutPage() {
     // Validate new shipping address if shown
     if (showNewShippingForm) {
       const requiredFields = [
-        'firstName',
-        'lastName',
-        'address1',
-        'city',
-        'state',
-        'postcode',
-        'phone',
+        "firstName",
+        "lastName",
+        "address1",
+        "city",
+        "state",
+        "postcode",
+        "phone",
       ];
       const missingFields = requiredFields.filter(
         (field) => !newShippingAddress[field]
@@ -633,10 +679,10 @@ export default function CheckoutPage() {
 
       if (missingFields.length > 0) {
         toast({
-          title: 'Error',
+          title: "Error",
           description:
-            'Please fill all required fields in the shipping address form',
-          variant: 'destructive',
+            "Please fill all required fields in the shipping address form",
+          variant: "destructive",
         });
         return;
       }
@@ -646,7 +692,7 @@ export default function CheckoutPage() {
     const stored = await storeOrderAsUnprocessed();
     if (!stored) {
       console.warn(
-        'Failed to store unprocessed order, but continuing with checkout'
+        "Failed to store unprocessed order, but continuing with checkout"
       );
     }
 
@@ -724,7 +770,7 @@ export default function CheckoutPage() {
                             <div className="flex justify-between items-start mb-2">
                               <div>
                                 <p className="font-medium">
-                                  {selectedShippingAddress.firstName}{' '}
+                                  {selectedShippingAddress.firstName}{" "}
                                   {selectedShippingAddress.lastName}
                                 </p>
                                 <p>{selectedShippingAddress.address1}</p>
@@ -732,8 +778,8 @@ export default function CheckoutPage() {
                                   <p>{selectedShippingAddress.apartment}</p>
                                 )}
                                 <p>
-                                  {selectedShippingAddress.city},{' '}
-                                  {selectedShippingAddress.state}{' '}
+                                  {selectedShippingAddress.city},{" "}
+                                  {selectedShippingAddress.state}{" "}
                                   {selectedShippingAddress.postcode}
                                 </p>
                                 <p>{selectedShippingAddress.country}</p>
@@ -754,7 +800,7 @@ export default function CheckoutPage() {
                             <div className="flex justify-between items-start mb-2">
                               <div>
                                 <p className="font-medium">
-                                  {defaultShippingAddress.firstName}{' '}
+                                  {defaultShippingAddress.firstName}{" "}
                                   {defaultShippingAddress.lastName}
                                 </p>
                                 <p>{defaultShippingAddress.address1}</p>
@@ -762,8 +808,8 @@ export default function CheckoutPage() {
                                   <p>{defaultShippingAddress.apartment}</p>
                                 )}
                                 <p>
-                                  {defaultShippingAddress.city},{' '}
-                                  {defaultShippingAddress.state}{' '}
+                                  {defaultShippingAddress.city},{" "}
+                                  {defaultShippingAddress.state}{" "}
                                   {defaultShippingAddress.postcode}
                                 </p>
                                 <p>{defaultShippingAddress.country}</p>
@@ -816,14 +862,14 @@ export default function CheckoutPage() {
                         >
                           <div className="space-y-4">
                             {savedAddresses
-                              .filter((addr) => addr.type === 'shipping')
+                              .filter((addr) => addr.type === "shipping")
                               .map((address) => (
                                 <div
                                   key={address.id}
                                   className={`border rounded-lg p-4 ${
                                     selectedShippingAddressId === address.id
-                                      ? 'bg-amber-50'
-                                      : ''
+                                      ? "bg-amber-50"
+                                      : ""
                                   }`}
                                 >
                                   <div className="flex items-start gap-3">
@@ -848,7 +894,7 @@ export default function CheckoutPage() {
                                         </p>
                                       )}
                                       <p className="text-sm text-gray-600">
-                                        {address.city}, {address.state}{' '}
+                                        {address.city}, {address.state}{" "}
                                         {address.postcode}, {address.country}
                                       </p>
                                       <p className="text-sm text-gray-600">
@@ -910,12 +956,12 @@ export default function CheckoutPage() {
                             <Input
                               id="shipping_firstName"
                               name="firstName"
-                              value={newShippingAddress.firstName || ''}
+                              value={newShippingAddress.firstName || ""}
                               onChange={handleNewShippingAddressChange}
                               className={
                                 formErrors.shipping_firstName
-                                  ? 'border-red-500'
-                                  : ''
+                                  ? "border-red-500"
+                                  : ""
                               }
                               required
                             />
@@ -927,12 +973,12 @@ export default function CheckoutPage() {
                             <Input
                               id="shipping_lastName"
                               name="lastName"
-                              value={newShippingAddress.lastName || ''}
+                              value={newShippingAddress.lastName || ""}
                               onChange={handleNewShippingAddressChange}
                               className={
                                 formErrors.shipping_lastName
-                                  ? 'border-red-500'
-                                  : ''
+                                  ? "border-red-500"
+                                  : ""
                               }
                               required
                             />
@@ -946,7 +992,7 @@ export default function CheckoutPage() {
                           <Input
                             id="shipping_company"
                             name="company"
-                            value={newShippingAddress.company || ''}
+                            value={newShippingAddress.company || ""}
                             onChange={handleNewShippingAddressChange}
                           />
                         </div>
@@ -958,12 +1004,12 @@ export default function CheckoutPage() {
                           <Input
                             id="shipping_address1"
                             name="address1"
-                            value={newShippingAddress.address1 || ''}
+                            value={newShippingAddress.address1 || ""}
                             onChange={handleNewShippingAddressChange}
                             className={
                               formErrors.shipping_address1
-                                ? 'border-red-500'
-                                : ''
+                                ? "border-red-500"
+                                : ""
                             }
                             required
                           />
@@ -976,7 +1022,7 @@ export default function CheckoutPage() {
                           <Input
                             id="shipping_apartment"
                             name="apartment"
-                            value={newShippingAddress.apartment || ''}
+                            value={newShippingAddress.apartment || ""}
                             onChange={handleNewShippingAddressChange}
                           />
                         </div>
@@ -987,10 +1033,10 @@ export default function CheckoutPage() {
                             <Input
                               id="shipping_city"
                               name="city"
-                              value={newShippingAddress.city || ''}
+                              value={newShippingAddress.city || ""}
                               onChange={handleNewShippingAddressChange}
                               className={
-                                formErrors.shipping_city ? 'border-red-500' : ''
+                                formErrors.shipping_city ? "border-red-500" : ""
                               }
                               required
                             />
@@ -998,15 +1044,15 @@ export default function CheckoutPage() {
                           <div>
                             <Label htmlFor="shipping_state">State *</Label>
                             <Select
-                              value={newShippingAddress.state || ''}
+                              value={newShippingAddress.state || ""}
                               onValueChange={handleShippingStateChange}
                             >
                               <SelectTrigger
                                 id="shipping_state"
                                 className={
                                   formErrors.shipping_state
-                                    ? 'border-red-500'
-                                    : ''
+                                    ? "border-red-500"
+                                    : ""
                                 }
                               >
                                 <SelectValue placeholder="Select state" />
@@ -1027,12 +1073,12 @@ export default function CheckoutPage() {
                             <Input
                               id="shipping_postcode"
                               name="postcode"
-                              value={newShippingAddress.postcode || ''}
+                              value={newShippingAddress.postcode || ""}
                               onChange={handleNewShippingAddressChange}
                               className={
                                 formErrors.shipping_postcode
-                                  ? 'border-red-500'
-                                  : ''
+                                  ? "border-red-500"
+                                  : ""
                               }
                               required
                             />
@@ -1044,10 +1090,10 @@ export default function CheckoutPage() {
                           <Input
                             id="shipping_phone"
                             name="phone"
-                            value={newShippingAddress.phone || ''}
+                            value={newShippingAddress.phone || ""}
                             onChange={handleNewShippingAddressChange}
                             className={
-                              formErrors.shipping_phone ? 'border-red-500' : ''
+                              formErrors.shipping_phone ? "border-red-500" : ""
                             }
                             required
                           />
@@ -1076,7 +1122,7 @@ export default function CheckoutPage() {
                               setShowNewShippingForm(false);
                               if (
                                 savedAddresses.filter(
-                                  (a) => a.type === 'shipping'
+                                  (a) => a.type === "shipping"
                                 ).length > 0
                               ) {
                                 setShowAddressSelection(true);
@@ -1089,13 +1135,13 @@ export default function CheckoutPage() {
                             onClick={async () => {
                               // Validate form
                               const requiredFields = [
-                                'firstName',
-                                'lastName',
-                                'address1',
-                                'city',
-                                'state',
-                                'postcode',
-                                'phone',
+                                "firstName",
+                                "lastName",
+                                "address1",
+                                "city",
+                                "state",
+                                "postcode",
+                                "phone",
                               ];
                               const missingFields = requiredFields.filter(
                                 (field) => !newShippingAddress[field]
@@ -1118,7 +1164,7 @@ export default function CheckoutPage() {
                                   // Prepare address object for API
                                   const addressData = {
                                     ...newShippingAddress,
-                                    type: 'shipping' as const,
+                                    type: "shipping" as const,
                                     isDefault: true, // Make this the default shipping address
                                   };
 
@@ -1140,9 +1186,9 @@ export default function CheckoutPage() {
                                   setDefaultShippingAddress(savedAddress);
 
                                   toast({
-                                    title: 'Address Saved',
+                                    title: "Address Saved",
                                     description:
-                                      'Your new shipping address has been saved.',
+                                      "Your new shipping address has been saved.",
                                   });
                                 } else {
                                   // Just use this address for current checkout without saving
@@ -1150,7 +1196,7 @@ export default function CheckoutPage() {
                                   const tempAddress = {
                                     ...newShippingAddress,
                                     id: `temp-${Date.now()}`,
-                                    type: 'shipping' as const,
+                                    type: "shipping" as const,
                                     isDefault: false,
                                   };
 
@@ -1167,12 +1213,12 @@ export default function CheckoutPage() {
                                 // Close the form
                                 setShowNewShippingForm(false);
                               } catch (error) {
-                                console.error('Error saving address:', error);
+                                console.error("Error saving address:", error);
                                 toast({
-                                  title: 'Error',
+                                  title: "Error",
                                   description:
-                                    'Failed to save your address. Please try again.',
-                                  variant: 'destructive',
+                                    "Failed to save your address. Please try again.",
+                                  variant: "destructive",
                                 });
                               } finally {
                                 setIsSubmitting(false);
@@ -1203,7 +1249,7 @@ export default function CheckoutPage() {
                     </p>
                     <RadioGroup
                       value={paymentMethod}
-                      onValueChange={(value: 'phonepe' | 'cod') =>
+                      onValueChange={(value: "phonepe" | "cod") =>
                         setPaymentMethod(value)
                       }
                     >
@@ -1212,9 +1258,9 @@ export default function CheckoutPage() {
                           <RadioGroupItem value="phonepe" />
                           <span>PhonePe Payment Solutions</span>
                           <img
-                            src="/placeholder.svg"
+                            src={phonepe}
                             alt="PhonePe"
-                            width={80}
+                            width={50}
                             height={24}
                             className="ml-auto"
                           />
@@ -1239,10 +1285,10 @@ export default function CheckoutPage() {
                       method.
                     </p>
                     <RadioGroup
-                      value={useSameAddress ? 'same' : 'different'}
+                      value={useSameAddress ? "same" : "different"}
                       onValueChange={(value) => {
-                        setUseSameAddress(value === 'same');
-                        if (value === 'same') {
+                        setUseSameAddress(value === "same");
+                        if (value === "same") {
                           setShowBillingAddressSelection(false);
                           setShowNewBillingForm(false);
                         }
@@ -1269,7 +1315,7 @@ export default function CheckoutPage() {
                                         <div className="flex justify-between items-start mb-2">
                                           <div>
                                             <p className="font-medium">
-                                              {selectedBillingAddress.firstName}{' '}
+                                              {selectedBillingAddress.firstName}{" "}
                                               {selectedBillingAddress.lastName}
                                             </p>
                                             <p>
@@ -1283,15 +1329,15 @@ export default function CheckoutPage() {
                                               </p>
                                             )}
                                             <p>
-                                              {selectedBillingAddress.city},{' '}
-                                              {selectedBillingAddress.state}{' '}
+                                              {selectedBillingAddress.city},{" "}
+                                              {selectedBillingAddress.state}{" "}
                                               {selectedBillingAddress.postcode}
                                             </p>
                                             <p>
                                               {selectedBillingAddress.country}
                                             </p>
                                             <p>
-                                              Phone:{' '}
+                                              Phone:{" "}
                                               {selectedBillingAddress.phone}
                                             </p>
                                           </div>
@@ -1314,7 +1360,7 @@ export default function CheckoutPage() {
                                         <div className="flex justify-between items-start mb-2">
                                           <div>
                                             <p className="font-medium">
-                                              {defaultBillingAddress.firstName}{' '}
+                                              {defaultBillingAddress.firstName}{" "}
                                               {defaultBillingAddress.lastName}
                                             </p>
                                             <p>
@@ -1328,15 +1374,15 @@ export default function CheckoutPage() {
                                               </p>
                                             )}
                                             <p>
-                                              {defaultBillingAddress.city},{' '}
-                                              {defaultBillingAddress.state}{' '}
+                                              {defaultBillingAddress.city},{" "}
+                                              {defaultBillingAddress.state}{" "}
                                               {defaultBillingAddress.postcode}
                                             </p>
                                             <p>
                                               {defaultBillingAddress.country}
                                             </p>
                                             <p>
-                                              Phone:{' '}
+                                              Phone:{" "}
                                               {defaultBillingAddress.phone}
                                             </p>
                                           </div>
@@ -1399,7 +1445,7 @@ export default function CheckoutPage() {
                                     <div className="space-y-4">
                                       {savedAddresses
                                         .filter(
-                                          (addr) => addr.type === 'billing'
+                                          (addr) => addr.type === "billing"
                                         )
                                         .map((address) => (
                                           <div
@@ -1407,8 +1453,8 @@ export default function CheckoutPage() {
                                             className={`border rounded-lg p-4 ${
                                               selectedBillingAddressId ===
                                               address.id
-                                                ? 'bg-amber-50'
-                                                : ''
+                                                ? "bg-amber-50"
+                                                : ""
                                             }`}
                                           >
                                             <div className="flex items-start gap-3">
@@ -1422,7 +1468,7 @@ export default function CheckoutPage() {
                                                   htmlFor={`billing-address-${address.id}`}
                                                   className="font-medium"
                                                 >
-                                                  {address.firstName}{' '}
+                                                  {address.firstName}{" "}
                                                   {address.lastName}
                                                 </Label>
                                                 <p className="text-sm text-gray-600">
@@ -1434,9 +1480,9 @@ export default function CheckoutPage() {
                                                   </p>
                                                 )}
                                                 <p className="text-sm text-gray-600">
-                                                  {address.city},{' '}
-                                                  {address.state}{' '}
-                                                  {address.postcode},{' '}
+                                                  {address.city},{" "}
+                                                  {address.state}{" "}
+                                                  {address.postcode},{" "}
                                                   {address.country}
                                                 </p>
                                                 <p className="text-sm text-gray-600">
@@ -1505,13 +1551,13 @@ export default function CheckoutPage() {
                                         id="billing_firstName"
                                         name="firstName"
                                         value={
-                                          newBillingAddress.firstName || ''
+                                          newBillingAddress.firstName || ""
                                         }
                                         onChange={handleNewBillingAddressChange}
                                         className={
                                           formErrors.billing_firstName
-                                            ? 'border-red-500'
-                                            : ''
+                                            ? "border-red-500"
+                                            : ""
                                         }
                                         required
                                       />
@@ -1523,12 +1569,12 @@ export default function CheckoutPage() {
                                       <Input
                                         id="billing_lastName"
                                         name="lastName"
-                                        value={newBillingAddress.lastName || ''}
+                                        value={newBillingAddress.lastName || ""}
                                         onChange={handleNewBillingAddressChange}
                                         className={
                                           formErrors.billing_lastName
-                                            ? 'border-red-500'
-                                            : ''
+                                            ? "border-red-500"
+                                            : ""
                                         }
                                         required
                                       />
@@ -1542,7 +1588,7 @@ export default function CheckoutPage() {
                                     <Input
                                       id="billing_company"
                                       name="company"
-                                      value={newBillingAddress.company || ''}
+                                      value={newBillingAddress.company || ""}
                                       onChange={handleNewBillingAddressChange}
                                     />
                                   </div>
@@ -1554,12 +1600,12 @@ export default function CheckoutPage() {
                                     <Input
                                       id="billing_address1"
                                       name="address1"
-                                      value={newBillingAddress.address1 || ''}
+                                      value={newBillingAddress.address1 || ""}
                                       onChange={handleNewBillingAddressChange}
                                       className={
                                         formErrors.billing_address1
-                                          ? 'border-red-500'
-                                          : ''
+                                          ? "border-red-500"
+                                          : ""
                                       }
                                       required
                                     />
@@ -1572,7 +1618,7 @@ export default function CheckoutPage() {
                                     <Input
                                       id="billing_apartment"
                                       name="apartment"
-                                      value={newBillingAddress.apartment || ''}
+                                      value={newBillingAddress.apartment || ""}
                                       onChange={handleNewBillingAddressChange}
                                     />
                                   </div>
@@ -1585,12 +1631,12 @@ export default function CheckoutPage() {
                                       <Input
                                         id="billing_city"
                                         name="city"
-                                        value={newBillingAddress.city || ''}
+                                        value={newBillingAddress.city || ""}
                                         onChange={handleNewBillingAddressChange}
                                         className={
                                           formErrors.billing_city
-                                            ? 'border-red-500'
-                                            : ''
+                                            ? "border-red-500"
+                                            : ""
                                         }
                                         required
                                       />
@@ -1600,15 +1646,15 @@ export default function CheckoutPage() {
                                         State *
                                       </Label>
                                       <Select
-                                        value={newBillingAddress.state || ''}
+                                        value={newBillingAddress.state || ""}
                                         onValueChange={handleBillingStateChange}
                                       >
                                         <SelectTrigger
                                           id="billing_state"
                                           className={
                                             formErrors.billing_state
-                                              ? 'border-red-500'
-                                              : ''
+                                              ? "border-red-500"
+                                              : ""
                                           }
                                         >
                                           <SelectValue placeholder="Select state" />
@@ -1632,12 +1678,12 @@ export default function CheckoutPage() {
                                       <Input
                                         id="billing_postcode"
                                         name="postcode"
-                                        value={newBillingAddress.postcode || ''}
+                                        value={newBillingAddress.postcode || ""}
                                         onChange={handleNewBillingAddressChange}
                                         className={
                                           formErrors.billing_postcode
-                                            ? 'border-red-500'
-                                            : ''
+                                            ? "border-red-500"
+                                            : ""
                                         }
                                         required
                                       />
@@ -1651,12 +1697,12 @@ export default function CheckoutPage() {
                                     <Input
                                       id="billing_phone"
                                       name="phone"
-                                      value={newBillingAddress.phone || ''}
+                                      value={newBillingAddress.phone || ""}
                                       onChange={handleNewBillingAddressChange}
                                       className={
                                         formErrors.billing_phone
-                                          ? 'border-red-500'
-                                          : ''
+                                          ? "border-red-500"
+                                          : ""
                                       }
                                       required
                                     />
@@ -1685,7 +1731,7 @@ export default function CheckoutPage() {
                                         setShowNewBillingForm(false);
                                         if (
                                           savedAddresses.filter(
-                                            (a) => a.type === 'billing'
+                                            (a) => a.type === "billing"
                                           ).length > 0
                                         ) {
                                           setShowBillingAddressSelection(true);
@@ -1698,13 +1744,13 @@ export default function CheckoutPage() {
                                       onClick={async () => {
                                         // Validate form
                                         const requiredFields = [
-                                          'firstName',
-                                          'lastName',
-                                          'address1',
-                                          'city',
-                                          'state',
-                                          'postcode',
-                                          'phone',
+                                          "firstName",
+                                          "lastName",
+                                          "address1",
+                                          "city",
+                                          "state",
+                                          "postcode",
+                                          "phone",
                                         ];
                                         const missingFields =
                                           requiredFields.filter(
@@ -1728,7 +1774,7 @@ export default function CheckoutPage() {
                                             // Prepare address object for API
                                             const addressData = {
                                               ...newBillingAddress,
-                                              type: 'billing' as const,
+                                              type: "billing" as const,
                                               isDefault: true, // Make this the default billing address
                                             };
 
@@ -1753,9 +1799,9 @@ export default function CheckoutPage() {
                                             );
 
                                             toast({
-                                              title: 'Address Saved',
+                                              title: "Address Saved",
                                               description:
-                                                'Your new billing address has been saved.',
+                                                "Your new billing address has been saved.",
                                             });
                                           } else {
                                             // Just use this address for current checkout without saving
@@ -1763,7 +1809,7 @@ export default function CheckoutPage() {
                                             const tempAddress = {
                                               ...newBillingAddress,
                                               id: `temp-${Date.now()}`,
-                                              type: 'billing' as const,
+                                              type: "billing" as const,
                                               isDefault: false,
                                             };
 
@@ -1783,14 +1829,14 @@ export default function CheckoutPage() {
                                           setShowNewBillingForm(false);
                                         } catch (error) {
                                           console.error(
-                                            'Error saving address:',
+                                            "Error saving address:",
                                             error
                                           );
                                           toast({
-                                            title: 'Error',
+                                            title: "Error",
                                             description:
-                                              'Failed to save your address. Please try again.',
-                                            variant: 'destructive',
+                                              "Failed to save your address. Please try again.",
+                                            variant: "destructive",
                                           });
                                         } finally {
                                           setIsSubmitting(false);
@@ -1810,35 +1856,70 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                <div className="space-y-4">
-                  <Label className="flex items-center space-x-3">
-                    <Checkbox
-                      checked={acceptTerms}
-                      onCheckedChange={(checked) =>
-                        setAcceptTerms(checked as boolean)
-                      }
-                      required
-                    />
-                    <span className="text-sm">
-                      I have read and agree to the website{' '}
-                      <Link
-                        to="/terms-and-conditions"
-                        className="text-blue-600 hover:underline"
-                      >
-                        terms and conditions
-                      </Link>
-                    </span>
-                  </Label>
+                {showPaymentOptions && (
+                  <>
+                    <div className="flex items-center space-x-2 mt-4">
+                      <Checkbox
+                        id="includeGst"
+                        checked={includeGST}
+                        onCheckedChange={(checked) =>
+                          setIncludeGST(checked as boolean)
+                        }
+                      />
+                      <Label htmlFor="includeGst" className="text-sm">
+                        Do you want to enter your GST details for invoice?
+                      </Label>
+                    </div>
 
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={!acceptTerms}
-                    onClick={handleSubmit}
-                  >
-                    Complete Order
-                  </Button>
-                </div>
+                    {includeGST && (
+                      <div className="mt-2">
+                        <Label htmlFor="gstNumber">GST Number</Label>
+                        <Input
+                          id="gstNumber"
+                          name="gstNumber"
+                          value={gstNumber}
+                          onChange={(e) => setGstNumber(e.target.value)}
+                          placeholder="Enter GST Number"
+                          className={
+                            formErrors.gstNumber ? "border-red-500" : ""
+                          }
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {showPaymentOptions && (
+                  <div className="space-y-4">
+                    <Label className="flex items-center space-x-3">
+                      <Checkbox
+                        checked={acceptTerms}
+                        onCheckedChange={(checked) =>
+                          setAcceptTerms(checked as boolean)
+                        }
+                        required
+                      />
+                      <span className="text-sm">
+                        I have read and agree to the website{" "}
+                        <Link
+                          to="/terms-and-conditions"
+                          className="text-blue-600 hover:underline"
+                        >
+                          terms and conditions
+                        </Link>
+                      </span>
+                    </Label>
+
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      disabled={!acceptTerms}
+                      onClick={handleSubmit}
+                    >
+                      Complete Order
+                    </Button>
+                  </div>
+                )}
               </>
             ) : (
               <div className="text-center">
@@ -1860,7 +1941,7 @@ export default function CheckoutPage() {
                 <div key={product.id} className="flex items-center gap-4">
                   <div className="relative w-20 h-20">
                     <img
-                      src={product.thumbnail || '/placeholder.svg'}
+                      src={product.thumbnail || "/placeholder.svg"}
                       alt={product.title}
                       width={80}
                       height={80}
@@ -1927,7 +2008,7 @@ export default function CheckoutPage() {
         onLoginSuccess={() => {
           handleLoginSuccess();
           // Trigger storage event to update header
-          window.dispatchEvent(new Event('storage'));
+          window.dispatchEvent(new Event("storage"));
         }}
       />
     </MainLayout>
