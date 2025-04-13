@@ -1,43 +1,45 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import { ShopProvider } from './contexts/ShopContext';
-import HomePage from './pages/home';
-import CategoryPage from './pages/category/[slug]';
-import ProductPage from './pages/product/[id]';
-import CartPage from './pages/cart';
-import BlogPage from './pages/blog';
-import GoogleRegisterPage from './pages/register/google';
-import BlogPostPage from './pages/blog/[id]';
-import ContactPage from './pages/contact-us';
-import TermsAndConditionsPage from './pages/terms-and-condition';
-import ShippingAndReturnsPage from './pages/shipping-and-returns';
-import { NotFound } from './components/utils/NotFound';
-import { CheckoutProvider } from './contexts/CheckoutContext';
-import CheckoutPage from './pages/checkout';
-import AccountPage from './pages/account';
-import WishlistPage from './pages/wishlist';
-import VerifyOtpPage from './pages/verify-otp';
-import ForgotPasswordPage from './pages/forgot-password';
-import VerifyResetOtpPage from './pages/verify-reset-otp';
-import ResetPasswordPage from './pages/reset-password';
-import BestSellersPage from './pages/bestsellers';
-import AboutUs from './pages/about-us';
-import Login from './pages/login';
-import Register from './pages/register';
-import CategoriesPage from './pages/categoriesPage';
-import InnerBrandPage from './pages/brand/[slug]';
-import BrandsPage from './pages/brand';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { ShopProvider } from "./contexts/ShopContext";
+import HomePage from "./pages/home";
+import CategoryPage from "./pages/category/[slug]";
+import ProductPage from "./pages/product/[id]";
+import CartPage from "./pages/cart";
+import BlogPage from "./pages/blog";
+import GoogleRegisterPage from "./pages/register/google";
+import BlogPostPage from "./pages/blog/[id]";
+import ContactPage from "./pages/contact-us";
+import TermsAndConditionsPage from "./pages/terms-and-condition";
+import ShippingAndReturnsPage from "./pages/shipping-and-returns";
+import { NotFound } from "./components/utils/NotFound";
+import { CheckoutProvider } from "./contexts/CheckoutContext";
+import CheckoutPage from "./pages/checkout";
+import AccountPage from "./pages/account";
+import WishlistPage from "./pages/wishlist";
+import VerifyOtpPage from "./pages/verify-otp";
+import ForgotPasswordPage from "./pages/forgot-password";
+import VerifyResetOtpPage from "./pages/verify-reset-otp";
+import ResetPasswordPage from "./pages/reset-password";
+import BestSellersPage from "./pages/bestsellers";
+import AboutUs from "./pages/about-us";
+import Login from "./pages/login";
+import Register from "./pages/register";
+import CategoriesPage from "./pages/categoriesPage";
+import InnerBrandPage from "./pages/brand/[slug]";
+import BrandsPage from "./pages/brand";
+import PaymentCallback from "./pages/PaymentCallback";
+import OrderResultPage from "./pages/OrderResultPage";
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: 'AIzaSyACEOM0JvL7Z9MTX59oa-d8AKx0Q6aPL2c',
-  authDomain: 'industry-waala.firebaseapp.com',
-  projectId: 'industry-waala',
-  storageBucket: 'industry-waala.firebasestorage.app',
-  messagingSenderId: '393703824453',
-  appId: '1:393703824453:web:15ed444e96c6d7e971d72c',
-  measurementId: 'G-HD7K1RPETG',
+  apiKey: "AIzaSyACEOM0JvL7Z9MTX59oa-d8AKx0Q6aPL2c",
+  authDomain: "industry-waala.firebaseapp.com",
+  projectId: "industry-waala",
+  storageBucket: "industry-waala.firebasestorage.app",
+  messagingSenderId: "393703824453",
+  appId: "1:393703824453:web:15ed444e96c6d7e971d72c",
+  measurementId: "G-HD7K1RPETG",
 };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -81,6 +83,11 @@ function App() {
             <Route path="*" element={<NotFound />} />
             <Route path="/brands" element={<BrandsPage />} />
             <Route path="/brand/:slug" element={<InnerBrandPage />} />
+            <Route path="/payment/callback" element={<PaymentCallback />} />
+            <Route
+              path="/order-confirmation/:transactionId"
+              element={<OrderResultPage />}
+            />
           </Routes>
         </Router>
       </ShopProvider>

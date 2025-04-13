@@ -1,5 +1,5 @@
 import type React from "react";
-
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { MainLayout } from "../layouts/MainLayout";
 import { Input } from "../components/ui/input";
@@ -24,6 +24,7 @@ import { indianStates } from "../lib/constants";
 import {
   getUserAddresses,
   getDefaultAddresses,
+  getUserGst,
   addUserAddress,
   setDefaultAddress,
 } from "../services/userService";
@@ -81,6 +82,7 @@ export default function CheckoutPage() {
   const [showAddressSelection, setShowAddressSelection] = useState(false);
   const [showBillingAddressSelection, setShowBillingAddressSelection] =
     useState(false);
+  const navigate = useNavigate();
 
   // New address form states
   const [newShippingAddress, setNewShippingAddress] = useState<
@@ -160,6 +162,7 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     checkLoginStatus();
+    fetchUserGst();
     // Get tempId from sessionStorage if available
     const storedTempId = sessionStorage.getItem("unprocessed_order_tempid");
     if (storedTempId) {
@@ -182,6 +185,17 @@ export default function CheckoutPage() {
       } catch (error) {
         console.error("Error fetching current user:", error);
       }
+    }
+  };
+
+  const fetchUserGst = async () => {
+    try {
+      const cust_gst = await getUserGst();
+      if (cust_gst && includeGST) {
+        setGstNumber(cust_gst);
+      }
+    } catch (error) {
+      console.error("Error fetching user gst:", error);
     }
   };
 
@@ -467,7 +481,7 @@ export default function CheckoutPage() {
       giftwrap_charges: "0",
       transaction_charges: "0",
       total_discount: "0",
-      sub_total: subtotal.toString(),
+      sub_total: subtotal,
 
       // Package information
       length: "",
@@ -477,9 +491,15 @@ export default function CheckoutPage() {
 
       // Additional information
       ewaybill_no: "",
-      customer_gstin: "",
+      customer_gstin: gstNumber || "",
       invoice_number: "",
       order_type: "ESSENTIALS",
+
+      gateway: {
+        type: paymentMethod === "cod" ? "COD" : "PhonePe",
+        returnUrl: `${window.location.origin}/payment/callback`,
+      },
+      status: "pending",
 
       // Reference to unprocessed order if exists
       // unprocessed_order_id: tempOrderId || null,
@@ -508,11 +528,16 @@ export default function CheckoutPage() {
       setFinalOrderData(orderData);
 
       // Create the final order in the database
-      await createFinalOrder(orderData);
+      const result = await createFinalOrder(orderData);
 
-      // Set the order number from the response
-      setOrderNumber(orderData.order_id);
-      setOrderConfirmed(true);
+      // For COD, this runs (PhonePe is already redirected)
+      if (result.success && result.data) {
+        setOrderNumber(result.data.order_id);
+        setOrderConfirmed(true);
+        if (paymentMethod === "cod" && result?.data?.order_id) {
+          navigate(`/order-confirmation/${result.data.order_id}`);
+        }
+      }
       if (tempOrderId) {
         // await deleteUnprocessedOrder(tempOrderId);
         // Clear from sessionStorage
@@ -699,22 +724,22 @@ export default function CheckoutPage() {
     setShowPaymentOptions(true);
   };
 
-  if (orderConfirmed) {
-    return (
-      <MainLayout>
-        <OrderConfirmation
-          orderNumber={orderNumber}
-          orderDetails={{
-            items: products,
-            subtotal,
-            shipping,
-            total,
-            finalOrderData: finalOrderData,
-          }}
-        />
-      </MainLayout>
-    );
-  }
+  // if (orderConfirmed) {
+  //   return (
+  //     <MainLayout>
+  //       <OrderConfirmation
+  //         orderNumber={orderNumber}
+  //         orderDetails={{
+  //           items: products,
+  //           subtotal,
+  //           shipping,
+  //           total,
+  //           finalOrderData: finalOrderData,
+  //         }}
+  //       />
+  //     </MainLayout>
+  //   );
+  // }
 
   if (products.length === 0) {
     return (
@@ -902,7 +927,7 @@ export default function CheckoutPage() {
                                       </p>
                                       <div className="mt-2 text-sm">
                                         <Link
-                                          to={`/account?tab=addresses&edit=${address.id}`}
+                                          to={`/account?tab=addresses&edit=${address.id}#details`}
                                           className="text-blue-600 hover:underline"
                                         >
                                           Edit address

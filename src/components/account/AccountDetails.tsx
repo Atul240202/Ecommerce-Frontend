@@ -1,40 +1,40 @@
-import type React from 'react';
+import type React from "react";
 
-import { useState, useEffect } from 'react';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import { Checkbox } from '../../components/ui/checkbox';
+import { useState, useEffect } from "react";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Checkbox } from "../../components/ui/checkbox";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../components/ui/select';
+} from "../../components/ui/select";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '../../components/ui/card';
+} from "../../components/ui/card";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '../../components/ui/tabs';
-import { Plus, Trash2, Edit } from 'lucide-react';
-import { toast } from '../../components/ui/use-toast';
+} from "../../components/ui/tabs";
+import { Plus, Trash2, Edit } from "lucide-react";
+import { toast } from "../../components/ui/use-toast";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '../../components/ui/dialog';
-import { indianStates } from '../../lib/constants';
+} from "../../components/ui/dialog";
+import { indianStates } from "../../lib/constants";
 import {
   getUserProfile,
   updateUserProfile,
@@ -43,12 +43,12 @@ import {
   updateUserAddress,
   deleteUserAddress,
   setDefaultAddress,
-} from '../../services/userService';
-import Cookies from 'js-cookie';
+} from "../../services/userService";
+import Cookies from "js-cookie";
 
 interface Address {
   id: string;
-  type: 'shipping' | 'billing';
+  type: "shipping" | "billing";
   isDefault: boolean;
   firstName: string;
   lastName: string;
@@ -68,6 +68,7 @@ interface UserData {
   email: string;
   phone: string;
   addresses: Address[];
+  userGST?: string;
   subscribeToNewsletter?: boolean;
 }
 
@@ -81,33 +82,34 @@ interface AccountDetailsProps {
 
 export function AccountDetails({ user }: AccountDetailsProps) {
   const [userData, setUserData] = useState<UserData>({
-    fullName: user.fullName || '',
-    email: user.email || '',
-    phone: '',
+    fullName: user.fullName || "",
+    email: user.email || "",
+    phone: "",
+    userGST: "",
     addresses: [],
     subscribeToNewsletter: false,
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState({ type: '', text: '' });
+  const [message, setMessage] = useState({ type: "", text: "" });
 
   // Address management
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
   const [currentAddress, setCurrentAddress] = useState<Partial<Address> | null>(
     null
   );
-  const [addressType, setAddressType] = useState<'shipping' | 'billing'>(
-    'shipping'
+  const [addressType, setAddressType] = useState<"shipping" | "billing">(
+    "shipping"
   );
   const [isEditingAddress, setIsEditingAddress] = useState(false);
 
   useEffect(() => {
     // Check if user is authenticated
-    const authToken = Cookies.get('authToken');
+    const authToken = Cookies.get("authToken");
     if (!authToken) {
       setMessage({
-        type: 'error',
-        text: 'You must be logged in to view your profile.',
+        type: "error",
+        text: "You must be logged in to view your profile.",
       });
       return;
     }
@@ -129,11 +131,11 @@ export function AccountDetails({ user }: AccountDetailsProps) {
         addresses: addresses || [],
       });
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      console.error("Error fetching user data:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to load your profile data. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to load your profile data. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -154,7 +156,7 @@ export function AccountDetails({ user }: AccountDetailsProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setMessage({ type: '', text: '' });
+    setMessage({ type: "", text: "" });
 
     try {
       // Update user profile
@@ -162,28 +164,29 @@ export function AccountDetails({ user }: AccountDetailsProps) {
         fullName: userData.fullName,
         email: userData.email,
         phone: userData.phone,
+        userGST: userData.userGST,
         subscribeToNewsletter: userData.subscribeToNewsletter,
       });
 
       setMessage({
-        type: 'success',
-        text: 'Account details updated successfully!',
+        type: "success",
+        text: "Account details updated successfully!",
       });
 
       toast({
-        title: 'Success',
-        description: 'Your profile has been updated successfully.',
+        title: "Success",
+        description: "Your profile has been updated successfully.",
       });
     } catch (error: any) {
       setMessage({
-        type: 'error',
-        text: error.message || 'An error occurred while updating your account',
+        type: "error",
+        text: error.message || "An error occurred while updating your account",
       });
 
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to update your profile.',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to update your profile.",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -191,7 +194,7 @@ export function AccountDetails({ user }: AccountDetailsProps) {
   };
 
   // Address management functions
-  const openAddAddressDialog = (type: 'shipping' | 'billing') => {
+  const openAddAddressDialog = (type: "shipping" | "billing") => {
     setAddressType(type);
     setCurrentAddress(null);
     setIsEditingAddress(false);
@@ -211,7 +214,7 @@ export function AccountDetails({ user }: AccountDetailsProps) {
 
     try {
       if (!currentAddress) {
-        throw new Error('Address data is missing');
+        throw new Error("Address data is missing");
       }
 
       if (isEditingAddress && currentAddress.id) {
@@ -226,8 +229,8 @@ export function AccountDetails({ user }: AccountDetailsProps) {
         await fetchUserData();
 
         toast({
-          title: 'Success',
-          description: 'Address updated successfully.',
+          title: "Success",
+          description: "Address updated successfully.",
         });
       } else {
         // Add new address
@@ -239,14 +242,14 @@ export function AccountDetails({ user }: AccountDetailsProps) {
             0, // Make default if first of its type
         };
 
-        await addUserAddress(newAddress as Omit<Address, 'id'>);
+        await addUserAddress(newAddress as Omit<Address, "id">);
 
         // Refresh data to get updated addresses
         await fetchUserData();
 
         toast({
-          title: 'Success',
-          description: 'New address added successfully.',
+          title: "Success",
+          description: "New address added successfully.",
         });
       }
 
@@ -254,9 +257,9 @@ export function AccountDetails({ user }: AccountDetailsProps) {
       setIsAddressDialogOpen(false);
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to save address.',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to save address.",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -271,14 +274,14 @@ export function AccountDetails({ user }: AccountDetailsProps) {
       await fetchUserData();
 
       toast({
-        title: 'Success',
-        description: 'Address deleted successfully.',
+        title: "Success",
+        description: "Address deleted successfully.",
       });
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to delete address.',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to delete address.",
+        variant: "destructive",
       });
     }
   };
@@ -291,14 +294,14 @@ export function AccountDetails({ user }: AccountDetailsProps) {
       await fetchUserData();
 
       toast({
-        title: 'Success',
-        description: 'Default address updated successfully.',
+        title: "Success",
+        description: "Default address updated successfully.",
       });
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to set default address.',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to set default address.",
+        variant: "destructive",
       });
     }
   };
@@ -317,14 +320,14 @@ export function AccountDetails({ user }: AccountDetailsProps) {
       setCurrentAddress({
         type: addressType,
         isDefault: false,
-        firstName: '',
-        lastName: '',
-        address1: '',
-        city: '',
-        state: '',
-        postcode: '',
-        country: 'India',
-        phone: '',
+        firstName: "",
+        lastName: "",
+        address1: "",
+        city: "",
+        state: "",
+        postcode: "",
+        country: "India",
+        phone: "",
         [name]: value,
       });
     }
@@ -340,38 +343,38 @@ export function AccountDetails({ user }: AccountDetailsProps) {
       setCurrentAddress({
         type: addressType,
         isDefault: false,
-        firstName: '',
-        lastName: '',
-        address1: '',
-        city: '',
+        firstName: "",
+        lastName: "",
+        address1: "",
+        city: "",
         state: value,
-        postcode: '',
-        country: 'India',
-        phone: '',
+        postcode: "",
+        country: "India",
+        phone: "",
       });
     }
   };
 
   // Filter addresses by type
   const shippingAddresses = userData.addresses.filter(
-    (addr) => addr.type === 'shipping'
+    (addr) => addr.type === "shipping"
   );
   const billingAddresses = userData.addresses.filter(
-    (addr) => addr.type === 'billing'
+    (addr) => addr.type === "billing"
   );
 
   // Check if token exists
-  const authToken = Cookies.get('authToken') !== null;
+  const authToken = Cookies.get("authToken") !== null;
   // const isAuthenticated = localStorage.getItem('token') !== null;
 
   if (!authToken) {
     return (
-      <div className='text-center py-8'>
-        <h2 className='text-xl font-semibold mb-4'>Authentication Required</h2>
-        <p className='text-gray-600 mb-4'>
+      <div className="text-center py-8">
+        <h2 className="text-xl font-semibold mb-4">Authentication Required</h2>
+        <p className="text-gray-600 mb-4">
           You need to be logged in to view and manage your profile.
         </p>
-        <Button onClick={() => (window.location.href = '/login')}>
+        <Button onClick={() => (window.location.href = "/login")}>
           Go to Login
         </Button>
       </div>
@@ -379,35 +382,35 @@ export function AccountDetails({ user }: AccountDetailsProps) {
   }
 
   return (
-    <div className='space-y-8'>
+    <div className="space-y-8">
       {message.text && (
         <div
           className={`p-4 mb-6 rounded-md ${
-            message.type === 'success'
-              ? 'bg-green-100 text-green-800'
-              : 'bg-red-100 text-red-800'
+            message.type === "success"
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
           }`}
         >
           {message.text}
         </div>
       )}
 
-      <Tabs defaultValue='personal' className='w-full'>
-        <TabsList className='mb-6'>
-          <TabsTrigger value='personal'>Personal Information</TabsTrigger>
-          <TabsTrigger value='addresses'>Address Book</TabsTrigger>
+      <Tabs defaultValue="personal" className="w-full">
+        <TabsList className="mb-6">
+          <TabsTrigger value="personal">Personal Information</TabsTrigger>
+          <TabsTrigger value="addresses">Address Book</TabsTrigger>
         </TabsList>
 
-        <TabsContent value='personal'>
-          <form onSubmit={handleSubmit} className='space-y-8'>
+        <TabsContent value="personal">
+          <form onSubmit={handleSubmit} className="space-y-8">
             <div>
-              <h3 className='text-lg font-medium mb-4'>Contact Information</h3>
-              <div className='space-y-4'>
+              <h3 className="text-lg font-medium mb-4">Contact Information</h3>
+              <div className="space-y-4">
                 <div>
-                  <Label htmlFor='fullName'>Full Name *</Label>
+                  <Label htmlFor="fullName">Full Name *</Label>
                   <Input
-                    id='fullName'
-                    name='fullName'
+                    id="fullName"
+                    name="fullName"
                     value={userData.fullName}
                     onChange={handleChange}
                     required
@@ -415,11 +418,11 @@ export function AccountDetails({ user }: AccountDetailsProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor='phone'>Phone Number *</Label>
+                  <Label htmlFor="phone">Phone Number *</Label>
                   <Input
-                    id='phone'
-                    name='phone'
-                    type='tel'
+                    id="phone"
+                    name="phone"
+                    type="tel"
                     value={userData.phone}
                     onChange={handleChange}
                     required
@@ -427,11 +430,11 @@ export function AccountDetails({ user }: AccountDetailsProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor='email'>Email *</Label>
+                  <Label htmlFor="email">Email *</Label>
                   <Input
-                    id='email'
-                    name='email'
-                    type='email'
+                    id="email"
+                    name="email"
+                    type="email"
                     disabled
                     value={userData.email}
                     onChange={handleChange}
@@ -439,13 +442,24 @@ export function AccountDetails({ user }: AccountDetailsProps) {
                   />
                 </div>
 
-                <div className='flex items-center space-x-2'>
+                <div>
+                  <Label htmlFor="email">Your Business GST</Label>
+                  <Input
+                    id="userGST"
+                    name="userGST"
+                    type="userGST"
+                    value={userData.userGST}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <div className="flex items-center space-x-2">
                   <Checkbox
-                    id='newsletter'
+                    id="newsletter"
                     checked={userData.subscribeToNewsletter}
                     onCheckedChange={handleCheckboxChange}
                   />
-                  <Label htmlFor='newsletter' className='text-sm font-normal'>
+                  <Label htmlFor="newsletter" className="text-sm font-normal">
                     Keep me up to date on news and exclusive offers
                   </Label>
                 </div>
@@ -453,77 +467,77 @@ export function AccountDetails({ user }: AccountDetailsProps) {
             </div>
 
             <Button
-              type='submit'
+              type="submit"
               disabled={isLoading}
-              className='bg-[#4280ef] hover:bg-[#3a72d4]'
+              className="bg-[#4280ef] hover:bg-[#3a72d4]"
             >
-              {isLoading ? 'Updating...' : 'Update Changes'}
+              {isLoading ? "Updating..." : "Update Changes"}
             </Button>
           </form>
         </TabsContent>
 
-        <TabsContent value='addresses'>
-          <div className='space-y-6'>
+        <TabsContent value="addresses">
+          <div className="space-y-6">
             {/* Shipping Addresses */}
             <div>
-              <div className='flex justify-between items-center mb-4'>
-                <h3 className='text-lg font-medium'>Shipping Addresses</h3>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium">Shipping Addresses</h3>
                 <Button
-                  onClick={() => openAddAddressDialog('shipping')}
-                  variant='outline'
-                  className='flex items-center gap-2'
+                  onClick={() => openAddAddressDialog("shipping")}
+                  variant="outline"
+                  className="flex items-center gap-2"
                 >
-                  <Plus className='h-4 w-4' /> Add New Address
+                  <Plus className="h-4 w-4" /> Add New Address
                 </Button>
               </div>
 
               {shippingAddresses.length === 0 ? (
-                <div className='text-center py-8 border rounded-md bg-gray-50'>
-                  <p className='text-gray-500'>
+                <div className="text-center py-8 border rounded-md bg-gray-50">
+                  <p className="text-gray-500">
                     You haven't added any shipping addresses yet.
                   </p>
                 </div>
               ) : (
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {shippingAddresses.map((address) => (
                     <Card
                       key={address.id}
-                      className={address.isDefault ? 'border-blue-500' : ''}
+                      className={address.isDefault ? "border-blue-500" : ""}
                     >
-                      <CardHeader className='pb-2'>
-                        <div className='flex justify-between items-start'>
+                      <CardHeader className="pb-2">
+                        <div className="flex justify-between items-start">
                           <div>
-                            <CardTitle className='text-base'>
+                            <CardTitle className="text-base">
                               {address.firstName} {address.lastName}
                             </CardTitle>
                             {address.isDefault && (
-                              <span className='text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full'>
+                              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
                                 Default
                               </span>
                             )}
                           </div>
-                          <div className='flex gap-2'>
+                          <div className="flex gap-2">
                             <Button
-                              variant='ghost'
-                              size='icon'
+                              variant="ghost"
+                              size="icon"
                               onClick={() => openEditAddressDialog(address)}
-                              className='h-8 w-8'
+                              className="h-8 w-8"
                             >
-                              <Edit className='h-4 w-4' />
+                              <Edit className="h-4 w-4" />
                             </Button>
                             <Button
-                              variant='ghost'
-                              size='icon'
+                              variant="ghost"
+                              size="icon"
                               onClick={() => handleDeleteAddress(address.id)}
-                              className='h-8 w-8 text-red-500'
+                              className="h-8 w-8 text-red-500"
                             >
-                              <Trash2 className='h-4 w-4' />
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <div className='text-sm space-y-1 text-gray-600'>
+                        <div className="text-sm space-y-1 text-gray-600">
                           {address.companyName && <p>{address.companyName}</p>}
                           <p>{address.address1}</p>
                           {address.address2 && <p>{address.address2}</p>}
@@ -537,9 +551,9 @@ export function AccountDetails({ user }: AccountDetailsProps) {
                       <CardFooter>
                         {!address.isDefault && (
                           <Button
-                            variant='outline'
-                            size='sm'
-                            className='w-full'
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
                             onClick={() => handleSetDefaultAddress(address.id)}
                           >
                             Set as Default
@@ -554,64 +568,64 @@ export function AccountDetails({ user }: AccountDetailsProps) {
 
             {/* Billing Addresses */}
             <div>
-              <div className='flex justify-between items-center mb-4'>
-                <h3 className='text-lg font-medium'>Billing Addresses</h3>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-medium">Billing Addresses</h3>
                 <Button
-                  onClick={() => openAddAddressDialog('billing')}
-                  variant='outline'
-                  className='flex items-center gap-2'
+                  onClick={() => openAddAddressDialog("billing")}
+                  variant="outline"
+                  className="flex items-center gap-2"
                 >
-                  <Plus className='h-4 w-4' /> Add New Address
+                  <Plus className="h-4 w-4" /> Add New Address
                 </Button>
               </div>
 
               {billingAddresses.length === 0 ? (
-                <div className='text-center py-8 border rounded-md bg-gray-50'>
-                  <p className='text-gray-500'>
+                <div className="text-center py-8 border rounded-md bg-gray-50">
+                  <p className="text-gray-500">
                     You haven't added any billing addresses yet.
                   </p>
                 </div>
               ) : (
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {billingAddresses.map((address) => (
                     <Card
                       key={address.id}
-                      className={address.isDefault ? 'border-blue-500' : ''}
+                      className={address.isDefault ? "border-blue-500" : ""}
                     >
-                      <CardHeader className='pb-2'>
-                        <div className='flex justify-between items-start'>
+                      <CardHeader className="pb-2">
+                        <div className="flex justify-between items-start">
                           <div>
-                            <CardTitle className='text-base'>
+                            <CardTitle className="text-base">
                               {address.firstName} {address.lastName}
                             </CardTitle>
                             {address.isDefault && (
-                              <span className='text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full'>
+                              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
                                 Default
                               </span>
                             )}
                           </div>
-                          <div className='flex gap-2'>
+                          <div className="flex gap-2">
                             <Button
-                              variant='ghost'
-                              size='icon'
+                              variant="ghost"
+                              size="icon"
                               onClick={() => openEditAddressDialog(address)}
-                              className='h-8 w-8'
+                              className="h-8 w-8"
                             >
-                              <Edit className='h-4 w-4' />
+                              <Edit className="h-4 w-4" />
                             </Button>
                             <Button
-                              variant='ghost'
-                              size='icon'
+                              variant="ghost"
+                              size="icon"
                               onClick={() => handleDeleteAddress(address.id)}
-                              className='h-8 w-8 text-red-500'
+                              className="h-8 w-8 text-red-500"
                             >
-                              <Trash2 className='h-4 w-4' />
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <div className='text-sm space-y-1 text-gray-600'>
+                        <div className="text-sm space-y-1 text-gray-600">
                           {address.companyName && <p>{address.companyName}</p>}
                           <p>{address.address1}</p>
                           {address.address2 && <p>{address.address2}</p>}
@@ -625,9 +639,9 @@ export function AccountDetails({ user }: AccountDetailsProps) {
                       <CardFooter>
                         {!address.isDefault && (
                           <Button
-                            variant='outline'
-                            size='sm'
-                            className='w-full'
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
                             onClick={() => handleSetDefaultAddress(address.id)}
                           >
                             Set as Default
@@ -645,31 +659,31 @@ export function AccountDetails({ user }: AccountDetailsProps) {
 
       {/* Address Dialog */}
       <Dialog open={isAddressDialogOpen} onOpenChange={setIsAddressDialogOpen}>
-        <DialogContent className='sm:max-w-[500px]'>
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>
-              {isEditingAddress ? 'Edit Address' : 'Add New Address'}
+              {isEditingAddress ? "Edit Address" : "Add New Address"}
             </DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={handleAddressSubmit} className='space-y-4 py-4'>
-            <div className='grid grid-cols-2 gap-4'>
+          <form onSubmit={handleAddressSubmit} className="space-y-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor='firstName'>First Name *</Label>
+                <Label htmlFor="firstName">First Name *</Label>
                 <Input
-                  id='firstName'
-                  name='firstName'
-                  value={currentAddress?.firstName || ''}
+                  id="firstName"
+                  name="firstName"
+                  value={currentAddress?.firstName || ""}
                   onChange={handleAddressChange}
                   required
                 />
               </div>
               <div>
-                <Label htmlFor='lastName'>Last Name *</Label>
+                <Label htmlFor="lastName">Last Name *</Label>
                 <Input
-                  id='lastName'
-                  name='lastName'
-                  value={currentAddress?.lastName || ''}
+                  id="lastName"
+                  name="lastName"
+                  value={currentAddress?.lastName || ""}
                   onChange={handleAddressChange}
                   required
                 />
@@ -677,55 +691,55 @@ export function AccountDetails({ user }: AccountDetailsProps) {
             </div>
 
             <div>
-              <Label htmlFor='companyName'>Company Name (Optional)</Label>
+              <Label htmlFor="companyName">Company Name (Optional)</Label>
               <Input
-                id='companyName'
-                name='companyName'
-                value={currentAddress?.companyName || ''}
+                id="companyName"
+                name="companyName"
+                value={currentAddress?.companyName || ""}
                 onChange={handleAddressChange}
               />
             </div>
 
             <div>
-              <Label htmlFor='address1'>Address Line 1 *</Label>
+              <Label htmlFor="address1">Address Line 1 *</Label>
               <Input
-                id='address1'
-                name='address1'
-                value={currentAddress?.address1 || ''}
+                id="address1"
+                name="address1"
+                value={currentAddress?.address1 || ""}
                 onChange={handleAddressChange}
                 required
               />
             </div>
 
             <div>
-              <Label htmlFor='address2'>Address Line 2 (Optional)</Label>
+              <Label htmlFor="address2">Address Line 2 (Optional)</Label>
               <Input
-                id='address2'
-                name='address2'
-                value={currentAddress?.address2 || ''}
+                id="address2"
+                name="address2"
+                value={currentAddress?.address2 || ""}
                 onChange={handleAddressChange}
               />
             </div>
 
-            <div className='grid grid-cols-2 gap-4'>
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor='city'>City *</Label>
+                <Label htmlFor="city">City *</Label>
                 <Input
-                  id='city'
-                  name='city'
-                  value={currentAddress?.city || ''}
+                  id="city"
+                  name="city"
+                  value={currentAddress?.city || ""}
                   onChange={handleAddressChange}
                   required
                 />
               </div>
               <div>
-                <Label htmlFor='state'>State *</Label>
+                <Label htmlFor="state">State *</Label>
                 <Select
-                  value={currentAddress?.state || ''}
+                  value={currentAddress?.state || ""}
                   onValueChange={handleAddressStateChange}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder='Select state' />
+                    <SelectValue placeholder="Select state" />
                   </SelectTrigger>
                   <SelectContent>
                     {indianStates.map((state) => (
@@ -738,21 +752,21 @@ export function AccountDetails({ user }: AccountDetailsProps) {
               </div>
             </div>
 
-            <div className='grid grid-cols-2 gap-4'>
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor='postcode'>Postal Code *</Label>
+                <Label htmlFor="postcode">Postal Code *</Label>
                 <Input
-                  id='postcode'
-                  name='postcode'
-                  value={currentAddress?.postcode || ''}
+                  id="postcode"
+                  name="postcode"
+                  value={currentAddress?.postcode || ""}
                   onChange={handleAddressChange}
                   required
                 />
               </div>
               <div>
-                <Label htmlFor='country'>Country *</Label>
+                <Label htmlFor="country">Country *</Label>
                 <Select
-                  value={currentAddress?.country || 'India'}
+                  value={currentAddress?.country || "India"}
                   onValueChange={(value) => {
                     if (currentAddress) {
                       setCurrentAddress({ ...currentAddress, country: value });
@@ -760,54 +774,54 @@ export function AccountDetails({ user }: AccountDetailsProps) {
                       setCurrentAddress({
                         type: addressType,
                         isDefault: false,
-                        firstName: '',
-                        lastName: '',
-                        address1: '',
-                        city: '',
-                        state: '',
-                        postcode: '',
+                        firstName: "",
+                        lastName: "",
+                        address1: "",
+                        city: "",
+                        state: "",
+                        postcode: "",
                         country: value,
-                        phone: '',
+                        phone: "",
                       });
                     }
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder='Select country' />
+                    <SelectValue placeholder="Select country" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='India'>India</SelectItem>
+                    <SelectItem value="India">India</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
             <div>
-              <Label htmlFor='phone'>Phone Number *</Label>
+              <Label htmlFor="phone">Phone Number *</Label>
               <Input
-                id='phone'
-                name='phone'
-                type='tel'
-                value={currentAddress?.phone || ''}
+                id="phone"
+                name="phone"
+                type="tel"
+                value={currentAddress?.phone || ""}
                 onChange={handleAddressChange}
                 required
               />
             </div>
 
-            <DialogFooter className='pt-4'>
+            <DialogFooter className="pt-4">
               <Button
-                type='button'
-                variant='outline'
+                type="button"
+                variant="outline"
                 onClick={() => setIsAddressDialogOpen(false)}
               >
                 Cancel
               </Button>
-              <Button type='submit' disabled={isLoading}>
+              <Button type="submit" disabled={isLoading}>
                 {isLoading
-                  ? 'Saving...'
+                  ? "Saving..."
                   : isEditingAddress
-                  ? 'Update Address'
-                  : 'Add Address'}
+                  ? "Update Address"
+                  : "Add Address"}
               </Button>
             </DialogFooter>
           </form>
