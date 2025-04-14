@@ -258,14 +258,6 @@ export function AccountOrders() {
                     </div>
 
                     <div className="flex gap-2 mt-3">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-blue-500 border-blue-500 flex-1 text-xs py-1 h-8"
-                      >
-                        <Download className="h-3 w-3 mr-1" />
-                        Invoice
-                      </Button>
                       {finalOrder.trackingUrl && (
                         <Button
                           variant="outline"
@@ -292,12 +284,12 @@ export function AccountOrders() {
 
   // Desktop view
   return (
-    <div className="container py-8">
+    <div className="container pb-8">
       <h2 className="text-2xl font-bold mb-8">My Orders</h2>
 
       <div className="bg-white rounded-lg border overflow-hidden mb-6">
         <div className="p-4 border-b bg-gray-50">
-          <div className="grid grid-cols-12 gap-4">
+          <div className="grid grid-cols-10 gap-4">
             <div className="col-span-2">
               <h3 className="font-medium">Order #</h3>
             </div>
@@ -313,9 +305,6 @@ export function AccountOrders() {
             <div className="col-span-2 text-center">
               <h3 className="font-medium">Status</h3>
             </div>
-            <div className="col-span-2 text-right">
-              <h3 className="font-medium">Actions</h3>
-            </div>
           </div>
         </div>
 
@@ -323,7 +312,7 @@ export function AccountOrders() {
           <div key={finalOrder._id} className="border-b last:border-b-2">
             {finalOrder.order_items.map((item, index) => (
               <div key={`${finalOrder._id}-${index}`} className="p-4">
-                <div className="grid grid-cols-12 gap-4 items-center">
+                <div className="grid grid-cols-10 gap-4 items-center">
                   <div className="col-span-2">
                     {index === 0 && (
                       <span className="font-medium">{finalOrder.order_id}</span>
@@ -372,14 +361,6 @@ export function AccountOrders() {
                   <div className="col-span-2 text-right">
                     {index === 0 && (
                       <div className="flex justify-end gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-blue-500 border-blue-500"
-                        >
-                          <Download className="h-4 w-4 mr-2" />
-                          Invoice
-                        </Button>
                         {finalOrder.trackingUrl && (
                           <Button
                             variant="outline"

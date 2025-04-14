@@ -85,7 +85,11 @@ function App() {
             <Route path="/brand/:slug" element={<InnerBrandPage />} />
             <Route path="/payment/callback" element={<PaymentCallback />} />
             <Route
-              path="/order-confirmation/:transactionId"
+              path="/order-confirmation/online/:transactionId"
+              element={<OrderResultPage />}
+            />
+            <Route
+              path="/order-confirmation/cod/:transactionId"
               element={<OrderResultPage />}
             />
           </Routes>

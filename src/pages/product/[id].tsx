@@ -1,29 +1,29 @@
-import type React from 'react';
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Heart, Loader2, Minus, Plus } from 'lucide-react';
-import { MainLayout } from '../../layouts/MainLayout';
-import { Breadcrumb } from '../../components/Breadcrumb';
-import { ProductGallery } from '../../components/ProductPage/ProductGallery';
+import type React from "react";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Heart, Loader2, Minus, Plus } from "lucide-react";
+import { MainLayout } from "../../layouts/MainLayout";
+import { Breadcrumb } from "../../components/Breadcrumb";
+import { ProductGallery } from "../../components/ProductPage/ProductGallery";
 // import { ProductReviews } from '../../components/ProductPage/ProductReviews';
-import { RelatedProducts } from '../../components/ProductPage/RelatedProducts';
-import { Button } from '../../components/ui/button';
+import { RelatedProducts } from "../../components/ProductPage/RelatedProducts";
+import { Button } from "../../components/ui/button";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from '../../components/ui/tabs';
-import { Star } from 'lucide-react';
-import { useShop } from '../../contexts/ShopContext';
-import { useCheckout } from '../../contexts/CheckoutContext';
-import { fetchProductById, submitProductReview } from '../../services/api';
-import { toast } from '../../components/ui/use-toast';
-import LoginPopup from '../../components/utils/LoginPopup';
-import { isLoggedIn } from '../../services/auth';
-import { Features } from '../../components/utils/Features';
-import { ReviewForm } from '../../components/ProductPage/ReviewForm';
-import { ProductReviews } from '../../components/ProductPage/ProductReviews';
+} from "../../components/ui/tabs";
+import { Star } from "lucide-react";
+import { useShop } from "../../contexts/ShopContext";
+import { useCheckout } from "../../contexts/CheckoutContext";
+import { fetchProductById, submitProductReview } from "../../services/api";
+import { toast } from "../../components/ui/use-toast";
+import LoginPopup from "../../components/utils/LoginPopup";
+import { isLoggedIn } from "../../services/auth";
+import { Features } from "../../components/utils/Features";
+import { ReviewForm } from "../../components/ProductPage/ReviewForm";
+import { ProductReviews } from "../../components/ProductPage/ProductReviews";
 
 interface ProductImage {
   id: number;
@@ -50,6 +50,7 @@ interface Product {
   name: string;
   description: string;
   price: string;
+  brand: string;
   regular_price: string;
   sale_price: string;
   on_sale: boolean;
@@ -103,8 +104,8 @@ export default function ProductPage() {
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   // Review form state
-  const [reviewName, setReviewName] = useState('');
-  const [reviewComment, setReviewComment] = useState('');
+  const [reviewName, setReviewName] = useState("");
+  const [reviewComment, setReviewComment] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
   const [isMobile, setIsMobile] = useState(false);
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
@@ -116,8 +117,8 @@ export default function ProductPage() {
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -128,10 +129,10 @@ export default function ProductPage() {
       setError(null);
       try {
         // const productData = await fetchProductById(Number.parseInt(id));
-        const productId = id.split('-').pop() || id;
+        const productId = id.split("-").pop() || id;
 
         const productData = await fetchProductById(productId);
-        console.log('Specific product', productData);
+        console.log("Specific product", productData);
         // Transform the API data to match our UI needs
         const transformedProduct: Product = {
           ...productData,
@@ -144,8 +145,8 @@ export default function ProductPage() {
           setIsWishlisted(isInWishlist(Number.parseInt(productId)));
         }
       } catch (err) {
-        console.error('Error fetching product:', err);
-        setError('Failed to load product details. Please try again later.');
+        console.error("Error fetching product:", err);
+        setError("Failed to load product details. Please try again later.");
       } finally {
         setIsLoading(false);
       }
@@ -209,17 +210,17 @@ export default function ProductPage() {
     addProduct({
       id: product.id,
       title: product.name,
-      thumbnail: product.images[0]?.src || '/placeholder.svg',
+      thumbnail: product.images[0]?.src || "/placeholder.svg",
       price: discountedPrice,
       quantity: quantity,
-      sku: product.sku || '',
+      sku: product.sku || "",
     });
 
-    navigate('/checkout');
+    navigate("/checkout");
   };
 
   const handleContactForNull = () => {
-    navigate('/contact');
+    navigate("/contact");
   };
 
   const handleSubmitReview = async (e: React.FormEvent) => {
@@ -229,18 +230,18 @@ export default function ProductPage() {
 
     if (!reviewName.trim()) {
       toast({
-        title: 'Error',
-        description: 'Please enter your name',
-        variant: 'destructive',
+        title: "Error",
+        description: "Please enter your name",
+        variant: "destructive",
       });
       return;
     }
 
     if (!reviewComment.trim()) {
       toast({
-        title: 'Error',
-        description: 'Please enter your review',
-        variant: 'destructive',
+        title: "Error",
+        description: "Please enter your review",
+        variant: "destructive",
       });
       return;
     }
@@ -276,20 +277,20 @@ export default function ProductPage() {
       });
 
       // Reset form
-      setReviewName('');
-      setReviewComment('');
+      setReviewName("");
+      setReviewComment("");
       setReviewRating(5);
 
       toast({
-        title: 'Success',
-        description: 'Your review has been submitted',
+        title: "Success",
+        description: "Your review has been submitted",
       });
     } catch (err) {
-      console.error('Error submitting review:', err);
+      console.error("Error submitting review:", err);
       toast({
-        title: 'Error',
-        description: 'Failed to submit your review. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to submit your review. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsSubmittingReview(false);
@@ -354,42 +355,42 @@ export default function ProductPage() {
 
   return (
     <MainLayout>
-      <div className={`container mx-auto  py-8 ${isMobile ? 'px-2' : 'px-8'}`}>
+      <div className={`container mx-auto  py-8 ${isMobile ? "px-2" : "px-8"}`}>
         <Breadcrumb
           items={[
-            { label: 'Home', href: '/' },
-            { label: 'Categories', href: '/categories' },
+            { label: "Home", href: "/" },
+            { label: "Categories", href: "/categories" },
             {
-              label: product.categories[0]?.name || 'Products',
-              href: `/categories/${product.categories[0]?.slug || 'all'}`,
+              label: product.categories[0]?.name || "Products",
+              href: `/categories/${product.categories[0]?.slug || "all"}`,
             },
-            { label: product.name, href: '#' },
+            { label: product.name, href: "#" },
           ]}
         />
 
         {/* Product Overview */}
         <div
           className={`grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12  ${
-            isMobile ? 'px-2' : 'px-12'
+            isMobile ? "px-2" : "px-12"
           }`}
         >
           <ProductGallery
             images={product.images.map((img) => img.src)}
-            thumbnail={product.images[0]?.src || '/placeholder.svg'}
+            thumbnail={product.images[0]?.src || "/placeholder.svg"}
           />
 
           <div className="space-y-6">
             <div>
               <h1
                 className={` font-bold mb-2 ${
-                  isMobile ? 'text-xl' : 'text-3xl'
+                  isMobile ? "text-xl" : "text-3xl"
                 }`}
               >
                 {product.name}
               </h1>
-              {/* {product.brand && (
-                <p className='text-gray-500 mb-4'>Brand: {product.brand}</p>
-              )} */}
+              {product.brand && (
+                <p className="text-gray-500 mb-4">Brand: {product.brand}</p>
+              )}
 
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex gap-1">
@@ -399,8 +400,8 @@ export default function ProductPage() {
                       className={`h-5 w-5 ${
                         i <
                         Math.round(Number.parseFloat(product.average_rating))
-                          ? 'text-yellow-400 fill-current'
-                          : 'text-gray-300'
+                          ? "text-yellow-400 fill-current"
+                          : "text-gray-300"
                       }`}
                     />
                   ))}
@@ -412,7 +413,7 @@ export default function ProductPage() {
 
               <div className="mb-4">
                 <span
-                  className={` font-bold ${isMobile ? 'text-xl' : 'text-3xl'}`}
+                  className={` font-bold ${isMobile ? "text-xl" : "text-3xl"}`}
                 >
                   Rs. {discountedPrice.toFixed(2)}
                 </span>
@@ -457,43 +458,43 @@ export default function ProductPage() {
               >
                 <Heart
                   className={`h-5 w-5 ${
-                    isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-500'
+                    isWishlisted ? "fill-red-500 text-red-500" : "text-gray-500"
                   }`}
                 />
               </Button>
             </div>
 
             <div className="space-y-4">
-              <div className={`  gap-2 ${isMobile ? 'flex-col ' : 'flex'}`}>
+              <div className={`  gap-2 ${isMobile ? "flex-col " : "flex"}`}>
                 <Button
-                  className={`flex-grow-[7] ${isMobile ? 'mb-4 w-full' : ''}`}
+                  className={`flex-grow-[7] ${isMobile ? "mb-4 w-full" : ""}`}
                   size="lg"
                   onClick={handleAddToCart}
                   disabled={
-                    product.stock_status !== 'instock' ||
+                    product.stock_status !== "instock" ||
                     isAddingToCart ||
-                    product.regular_price == '0'
+                    product.regular_price == "0"
                   }
                 >
-                  {product.stock_status === 'instock'
+                  {product.stock_status === "instock"
                     ? isAddingToCart
-                      ? 'Adding to Cart...'
-                      : 'Add to Cart'
-                    : 'Out of Stock'}
+                      ? "Adding to Cart..."
+                      : "Add to Cart"
+                    : "Out of Stock"}
                 </Button>
                 <Button
-                  variant={isWishlisted ? 'default' : 'outline'}
+                  variant={isWishlisted ? "default" : "outline"}
                   className={`flex-grow-[3] ${
-                    isWishlisted ? 'bg-red-500 hover:bg-red-600' : ''
-                  } ${isMobile ? 'w-full' : ''}`}
+                    isWishlisted ? "bg-red-500 hover:bg-red-600" : ""
+                  } ${isMobile ? "w-full" : ""}`}
                   size="lg"
                   onClick={handleWishlistClick}
                 >
                   <Heart
-                    className={`h-5 w-5 ${isWishlisted ? 'fill-white' : ''}`}
+                    className={`h-5 w-5 ${isWishlisted ? "fill-white" : ""}`}
                   />
                   <span className="ml-2">
-                    {isWishlisted ? 'Wishlisted' : 'Add to Wishlist'}
+                    {isWishlisted ? "Wishlisted" : "Add to Wishlist"}
                   </span>
                 </Button>
               </div>
@@ -504,19 +505,19 @@ export default function ProductPage() {
                 size="lg"
                 onClick={handleBuyNow}
                 disabled={
-                  product.stock_status !== 'instock' ||
-                  product.regular_price == '0'
+                  product.stock_status !== "instock" ||
+                  product.regular_price == "0"
                 }
               >
                 Buy Now
               </Button>
-              {product.regular_price === '0' && (
+              {product.regular_price === "0" && (
                 <Button
                   variant="secondary"
                   className="w-full hover:bg-[#D2EEFF]"
                   size="lg"
                   onClick={handleContactForNull}
-                  disabled={product.stock_status !== 'instock'}
+                  disabled={product.stock_status !== "instock"}
                 >
                   Ask for Quote
                 </Button>
@@ -525,9 +526,9 @@ export default function ProductPage() {
 
             <div className="border-t pt-4">
               <p className="text-sm text-gray-500">
-                Availability:{' '}
+                Availability:{" "}
                 <span className="font-medium">
-                  {product.availabilityStatus}
+                  {product.stock_status ? "In Stock" : "Not Available"}
                 </span>
               </p>
               {product.sku && (
@@ -541,7 +542,7 @@ export default function ProductPage() {
 
         {/* Related Products */}
         <RelatedProducts
-          category={product.categories[0]?.slug || ''}
+          category={product.categories[0]?.slug || ""}
           currentProductId={product.id}
         />
         <Features />
@@ -564,12 +565,12 @@ export default function ProductPage() {
               <div>
                 <h3 className="font-semibold mb-4">Product Information</h3>
                 <dl className="space-y-2">
-                  {/* {product.brand && (
-                    <div className='flex'>
-                      <dt className='w-1/3 text-gray-500'>Brand</dt>
-                      <dd className='w-2/3'>{product.brand}</dd>
+                  {product.brand && (
+                    <div className="flex">
+                      <dt className="w-1/3 text-gray-500">Brand</dt>
+                      <dd className="w-2/3">{product.brand}</dd>
                     </div>
-                  )} */}
+                  )}
                   {product.weight && (
                     <div className="flex">
                       <dt className="w-1/3 text-gray-500">Weight</dt>
@@ -580,7 +581,7 @@ export default function ProductPage() {
                     <div className="flex">
                       <dt className="w-1/3 text-gray-500">Dimensions</dt>
                       <dd className="w-2/3">
-                        {product.dimensions.height} x{' '}
+                        {product.dimensions.height} x{" "}
                         {product.dimensions.length} x {product.dimensions.width}
                       </dd>
                     </div>
@@ -620,16 +621,16 @@ export default function ProductPage() {
                     setProduct({
                       ...productData,
                       reviews: productData.reviews || [],
-                      warrantyInformation: '1 Year Manufacturer Warranty',
-                      shippingInformation: 'Free shipping on orders over $50',
+                      warrantyInformation: "1 Year Manufacturer Warranty",
+                      shippingInformation: "Free shipping on orders over $50",
                       availabilityStatus:
-                        productData.stock_status === 'instock'
-                          ? 'In Stock'
-                          : 'Out of Stock',
-                      returnPolicy: '30-day return policy',
+                        productData.stock_status === "instock"
+                          ? "In Stock"
+                          : "Out of Stock",
+                      returnPolicy: "30-day return policy",
                     });
                   } catch (err) {
-                    console.error('Error refreshing product:', err);
+                    console.error("Error refreshing product:", err);
                   }
                 };
                 getProduct();
@@ -649,16 +650,16 @@ export default function ProductPage() {
                     setProduct({
                       ...productData,
                       reviews: productData.reviews || [],
-                      warrantyInformation: '1 Year Manufacturer Warranty',
-                      shippingInformation: 'Free shipping on orders over $50',
+                      warrantyInformation: "1 Year Manufacturer Warranty",
+                      shippingInformation: "Free shipping on orders over $50",
                       availabilityStatus:
-                        productData.stock_status === 'instock'
-                          ? 'In Stock'
-                          : 'Out of Stock',
-                      returnPolicy: '30-day return policy',
+                        productData.stock_status === "instock"
+                          ? "In Stock"
+                          : "Out of Stock",
+                      returnPolicy: "30-day return policy",
                     });
                   } catch (err) {
-                    console.error('Error refreshing product:', err);
+                    console.error("Error refreshing product:", err);
                   }
                 };
                 getProduct();

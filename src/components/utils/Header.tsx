@@ -1,18 +1,18 @@
-import { Link } from 'react-router-dom';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
-import Cookies from 'js-cookie';
-import { useState, useEffect, useRef } from 'react';
-import { SearchResults } from './SearchResults';
-import { fetchProducts } from '../../services/api';
-import { useShop } from '../../contexts/ShopContext';
-import logo from '/headerLogo.png';
-import { useDebounce } from 'use-debounce';
-import { Search } from 'lucide-react';
+import { Link } from "react-router-dom";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import Cookies from "js-cookie";
+import { useState, useEffect, useRef } from "react";
+import { SearchResults } from "./SearchResults";
+import { fetchProducts } from "../../services/api";
+import { useShop } from "../../contexts/ShopContext";
+import logo from "/headerLogo.png";
+import { useDebounce } from "use-debounce";
+import { Search } from "lucide-react";
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -26,17 +26,17 @@ export function Header() {
 
   useEffect(() => {
     const checkLoginStatus = () => {
-      const authToken = Cookies.get('authToken');
-      const loggedIn = Cookies.get('isLoggedIn') === 'true';
+      const authToken = Cookies.get("authToken");
+      const loggedIn = Cookies.get("isLoggedIn") === "true";
       setIsLoggedIn(authToken != null && loggedIn);
     };
 
     checkLoginStatus();
     // Listen for login status changes
-    window.addEventListener('storage', checkLoginStatus);
+    window.addEventListener("storage", checkLoginStatus);
 
     return () => {
-      window.removeEventListener('storage', checkLoginStatus);
+      window.removeEventListener("storage", checkLoginStatus);
     };
   }, []);
 
@@ -51,9 +51,9 @@ export function Header() {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -131,7 +131,7 @@ export function Header() {
         const data = await fetchProducts(1, 5, debouncedQuery); // Limit to 5 results
         setSearchResults(data.products);
       } catch (error) {
-        console.error('Error fetching search results:', error);
+        console.error("Error fetching search results:", error);
         setSearchResults([]);
       } finally {
         setSearchLoading(false);
@@ -144,8 +144,8 @@ export function Header() {
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
@@ -207,7 +207,10 @@ export function Header() {
                   <span className="hidden md:inline">Cart</span>
                 </Link>
                 {isLoggedIn ? (
-                  <Link to="/account" className="flex items-center gap-1">
+                  <Link
+                    to="/account#orders"
+                    className="flex items-center gap-1"
+                  >
                     <svg
                       className="h-6 w-6"
                       fill="none"
@@ -337,7 +340,7 @@ export function Header() {
                 <span className="hidden md:inline">Cart</span>
               </Link>
               {isLoggedIn ? (
-                <Link to="/account" className="flex items-center gap-1">
+                <Link to="/account#orders" className="flex items-center gap-1">
                   <svg
                     className="h-6 w-6"
                     fill="none"

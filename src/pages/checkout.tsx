@@ -535,7 +535,7 @@ export default function CheckoutPage() {
         setOrderNumber(result.data.order_id);
         setOrderConfirmed(true);
         if (paymentMethod === "cod" && result?.data?.order_id) {
-          navigate(`/order-confirmation/${result.data.order_id}`);
+          navigate(`/order-confirmation/cod/${result.data.order_id}`);
         }
       }
       if (tempOrderId) {

@@ -6,6 +6,7 @@ import { MainLayout } from "../layouts/MainLayout";
 
 export default function OrderResultPage() {
   const { transactionId } = useParams();
+  const isCOD = window.location.pathname.includes("/cod/");
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,10 +15,12 @@ export default function OrderResultPage() {
     const fetchOrder = async () => {
       try {
         const { data: orders } = await getUserFinalOrders();
-        const matchedOrder = orders.find(
-          (o) => o.phonepeTransactionId === transactionId
+        const matchedOrder = orders.find((o) =>
+          isCOD
+            ? o.order_id === transactionId
+            : o.phonepeTransactionId === transactionId
         );
-        if (!matchedOrder) throw new Error("Order not found");
+        if (!matchedOrder) throw new Error("Transaction not found");
         setOrder(matchedOrder);
       } catch (err) {
         console.error(err);

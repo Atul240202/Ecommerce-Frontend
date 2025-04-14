@@ -139,10 +139,10 @@ export default function AccountPage() {
             {/* Desktop Tabs */}
             <div className="hidden md:flex">
               <TabsList className="border-b w-full justify-start mb-8">
-                <TabsTrigger value="notification">Notification</TabsTrigger>
+                {/* <TabsTrigger value="notification">Notification</TabsTrigger> */}
                 <TabsTrigger value="wishlist">Wishlist</TabsTrigger>
                 <TabsTrigger value="orders">Orders</TabsTrigger>
-                {/* <TabsTrigger value='tracking'>Order Tracking</TabsTrigger> */}
+                <TabsTrigger value="tracking">Order Tracking</TabsTrigger>
                 <TabsTrigger value="details">Account Details</TabsTrigger>
               </TabsList>
             </div>
@@ -160,20 +160,20 @@ export default function AccountPage() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-full">
-                  <DropdownMenuItem
+                  {/* <DropdownMenuItem
                     onClick={() => setActiveTab("notification")}
                   >
                     Notification
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   <DropdownMenuItem onClick={() => setActiveTab("wishlist")}>
                     Wishlist
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setActiveTab("orders")}>
                     Orders
                   </DropdownMenuItem>
-                  {/* <DropdownMenuItem onClick={() => setActiveTab('tracking')}>
+                  <DropdownMenuItem onClick={() => setActiveTab("tracking")}>
                     Order Tracking
-                  </DropdownMenuItem> */}
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setActiveTab("details")}>
                     Account Details
                   </DropdownMenuItem>

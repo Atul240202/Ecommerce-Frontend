@@ -24,7 +24,7 @@ export default function PaymentCallback() {
         console.log("payment confirmation data", data);
 
         if (data.success) {
-          navigate(`/order-confirmation/${data.transactionId}`);
+          navigate(`/order-confirmation/online/${data.transactionId}`);
         } else {
           toast({
             title: "Payment Failed",
@@ -32,7 +32,7 @@ export default function PaymentCallback() {
               "Transaction could not be completed. Try another method.",
             variant: "destructive",
           });
-          navigate("/order-confirmation/failed");
+          navigate("/order-confirmation/online/failed");
         }
       } catch (err) {
         console.error("Error verifying payment", err);
@@ -41,7 +41,7 @@ export default function PaymentCallback() {
           description: "Something went wrong during payment verification.",
           variant: "destructive",
         });
-        navigate("/order-confirmation/failed");
+        navigate("/order-confirmation/online/failed");
       } finally {
         setVerifying(false);
       }
