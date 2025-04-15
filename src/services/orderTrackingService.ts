@@ -54,6 +54,25 @@ export const cancelShipmentByOrderId = async (ids: string) => {
   return await response.json();
 };
 
+export const fetchOrderTaxInvoice = async (orderId: string) => {
+  const id = typeof orderId === "string" ? parseInt(orderId, 10) : orderId;
+
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/shiprocket/user/generate-invoice`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("authToken")}`,
+      },
+      body: JSON.stringify({ ids: [id] }),
+    }
+  );
+
+  if (!response.ok) throw new Error("Failed to fetch order invoice");
+  return await response.json();
+};
+
 export const fetchOrderInvoice = async (orderId: string) => {
   const response = await fetch(
     `${import.meta.env.VITE_API_URL}/final-orders/user/invoice/${orderId}`,

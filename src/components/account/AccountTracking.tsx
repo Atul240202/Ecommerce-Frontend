@@ -7,6 +7,7 @@ import {
   cancelShipmentByOrderId,
   trackOrder,
   fetchOrderInvoice,
+  fetchOrderTaxInvoice,
 } from "../../services/orderTrackingService";
 import { Button } from "../ui/button";
 import {
@@ -18,6 +19,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "react-hot-toast";
 
 interface OrderItem {
   id: string;
@@ -125,10 +127,29 @@ export function AccountTracking() {
   const handleCancelOrder = async (shipRocketOrderId: string) => {
     try {
       await cancelShipmentByOrderId(shipRocketOrderId);
-      alert("Order cancellation requested");
+      window.location.reload();
     } catch (err) {
       console.error("Error cancelling order:", err);
-      alert("Failed to cancel order. Please try again.");
+    }
+  };
+
+  const handleTaxInvoice = async (orderId: string) => {
+    try {
+      const res = await fetchOrderTaxInvoice(orderId);
+      if (res.success && res.is_invoice_created) {
+        window.open(res.invoice_url, "_blank");
+      } else {
+        toast("Invoice is not generated yet", {
+          duration: 30000, // 30 seconds
+          style: {
+            background: "#333",
+            color: "#fff",
+          },
+        });
+      }
+    } catch (err) {
+      console.error("Error fetching invoice:", err);
+      alert("Failed to fetch invoice. Please try again.");
     }
   };
 
@@ -319,6 +340,17 @@ export function AccountTracking() {
                       <Button
                         variant="outline"
                         size="sm"
+                        className="text-blue-500 border-blue-500 text-xs py-1 h-8 flex-1"
+                        onClick={() =>
+                          handleTaxInvoice(finalOrder.shipRocketOrderId)
+                        }
+                      >
+                        <Download className="h-3 w-3 mr-1" />
+                        Tax Invoice
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
                         className="text-green-500 border-green-500 text-xs py-1 h-8 flex-1"
                         onClick={() => handleTrackOrder(finalOrder.order_id)}
                       >
@@ -471,36 +503,53 @@ export function AccountTracking() {
                   </div>
                   <div className="col-span-3 text-right">
                     {index === 0 && (
-                      <div className="flex justify-end gap-2">
+                      <div className="flex flex-col items-end gap-2">
                         <Button
                           variant="outline"
                           size="sm"
-                          className="text-blue-500 border-blue-500"
+                          className="text-blue-500 w-[8vw] border-blue-500"
                           onClick={() => handleViewInvoice(finalOrder.order_id)}
                         >
                           <Download className="h-4 w-4 mr-1" />
-                          Invoice
+                          Order Invoice
                         </Button>
                         <Button
                           variant="outline"
                           size="sm"
-                          className="text-green-500 border-green-500"
-                          onClick={() => handleTrackOrder(finalOrder.order_id)}
-                        >
-                          <Truck className="h-4 w-4 mr-1" />
-                          Track
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-red-500 border-red-500"
+                          className="text-yellow-500 w-[8vw] border-yellow-500"
                           onClick={() =>
-                            handleCancelOrder(finalOrder.shipRocketOrderId)
+                            handleTaxInvoice(finalOrder.shipRocketOrderId)
                           }
                         >
-                          <XCircle className="h-4 w-4 mr-1" />
-                          Cancel
+                          <Download className="h-4 w-4 mr-1" />
+                          Tax Invoice
                         </Button>
+                        {finalOrder.status !== "cancelled" && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-green-500 w-[7vw] border-green-500"
+                            onClick={() =>
+                              handleTrackOrder(finalOrder.order_id)
+                            }
+                          >
+                            <Truck className="h-4 w-4 mr-1" />
+                            Track
+                          </Button>
+                        )}
+                        {finalOrder.status !== "cancelled" && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-red-500 w-[7vw] border-red-500"
+                            onClick={() =>
+                              handleCancelOrder(finalOrder.shipRocketOrderId)
+                            }
+                          >
+                            <XCircle className="h-4 w-4 mr-1" />
+                            Cancel
+                          </Button>
+                        )}
                       </div>
                     )}
                   </div>

@@ -31,6 +31,7 @@ import InnerBrandPage from "./pages/brand/[slug]";
 import BrandsPage from "./pages/brand";
 import PaymentCallback from "./pages/PaymentCallback";
 import OrderResultPage from "./pages/OrderResultPage";
+import { Toaster } from "react-hot-toast";
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyACEOM0JvL7Z9MTX59oa-d8AKx0Q6aPL2c",
@@ -51,6 +52,7 @@ function App() {
     <CheckoutProvider>
       <ShopProvider>
         <Router>
+          <Toaster position="top-center" reverseOrder={false} />
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
