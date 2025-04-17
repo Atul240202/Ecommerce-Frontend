@@ -1,10 +1,10 @@
-import type React from 'react';
-import { useState, useEffect } from 'react';
-import { Star } from 'lucide-react';
-import { Button } from '../../components/ui/button';
-import { Link } from 'react-router-dom';
-import { useShop } from '../../contexts/ShopContext';
-import LoginPopup from '../utils/LoginPopup';
+import type React from "react";
+import { useState, useEffect } from "react";
+import { Star } from "lucide-react";
+import { Button } from "../../components/ui/button";
+import { Link } from "react-router-dom";
+import { useShop } from "../../contexts/ShopContext";
+import LoginPopup from "../utils/LoginPopup";
 
 interface Product {
   id: number;
@@ -67,26 +67,26 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
   return (
     <>
       <Link
         to={`/product/${
-          product.slug || product.title.toLowerCase().replace(/\s+/g, '-')
+          product.slug || product.title.toLowerCase().replace(/\s+/g, "-")
         }-${product.id}`}
         className="block"
       >
         <div
           className={`bg-white rounded-lg  border border-gray-200 hover:border-blue-500 transition-colors flex flex-col ${
-            isMobile ? 'p-2 h-[375px] ' : 'p-4 h-[450px] '
+            isMobile ? "p-2 h-[375px] " : "p-4 h-[450px] "
           }`}
         >
           {/* Product Image and Badge */}
-          <div className={`relative ${isMobile ? 'mb-2 h-40' : 'mb-4 h-48'}`}>
+          <div className={`relative ${isMobile ? "mb-2 h-40" : "mb-4 h-48"}`}>
             <img
-              src={product.thumbnail || '/placeholder.svg'}
+              src={product.thumbnail || "/placeholder.svg"}
               alt={product.title}
               // layout='fill'
               // objectFit='contain'
@@ -119,8 +119,8 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
                     key={i}
                     className={`h-4 w-4 ${
                       i < Math.round(product.rating)
-                        ? 'text-yellow-400 fill-current'
-                        : 'text-gray-300'
+                        ? "text-yellow-400 fill-current"
+                        : "text-gray-300"
                     }`}
                   />
                 ))}
@@ -131,7 +131,7 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
                 <div className="flex items-baseline gap-2">
                   <span
                     className={`text-lg font-bold text-[#1a2030] ${
-                      isMobile ? 'text-sm' : 'text-lg'
+                      isMobile ? "text-sm" : "text-lg"
                     }`}
                   >
                     Rs. {discountedPrice.toFixed(2)}
@@ -150,14 +150,23 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
             </div>
 
             {/* Add to Cart Button */}
-            {product.variations?.length > 0 && product.type === 'variable' ? (
+            {product.variations?.length > 0 && product.type === "variable" ? (
+              // <div className="mt-auto">
+              //   <Button
+              //     className="w-full hover:bg-white hover:text-blue-500 border-2 border-blue-500 bg-blue-500 text-white transition-colors"
+              //     onClick={handleAddToCart}
+              //     disabled={isAddingToCart}
+              //   >
+              //     {isAddingToCart ? "Selecting...." : "Select Options"}
+              //   </Button>
+              // </div>
               <div className="mt-auto">
                 <Button
-                  className="w-full hover:bg-white hover:text-blue-500 border-2 border-blue-500 bg-blue-500 text-white transition-colors"
+                  className="w-full bg-white text-blue-500 border-2 border-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
                   onClick={handleAddToCart}
                   disabled={isAddingToCart}
                 >
-                  {isAddingToCart ? 'Selecting....' : 'Select Options'}
+                  {isAddingToCart ? "Adding..." : "Add To Cart"}
                 </Button>
               </div>
             ) : (
@@ -167,7 +176,7 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
                   onClick={handleAddToCart}
                   disabled={isAddingToCart}
                 >
-                  {isAddingToCart ? 'Adding...' : 'Add To Cart'}
+                  {isAddingToCart ? "Adding..." : "Add To Cart"}
                 </Button>
               </div>
             )}
