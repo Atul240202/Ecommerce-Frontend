@@ -1,8 +1,8 @@
-import type React from 'react';
+import type React from "react";
 
-import { createContext, useContext, useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
-import { toast } from '../components/ui/use-toast';
+import { createContext, useContext, useState, useEffect } from "react";
+import Cookies from "js-cookie";
+import { toast } from "../components/ui/use-toast";
 
 interface CartItem {
   productId: number;
@@ -11,6 +11,7 @@ interface CartItem {
   price: number;
   image: string;
   sku: string;
+  shipping_amount?: number;
 }
 
 interface WishlistItem {
@@ -21,6 +22,7 @@ interface WishlistItem {
   stock_status: string;
   addedAt: string;
   sku: string;
+  shipping_amount?: number;
 }
 
 interface ShopContextType {
@@ -68,8 +70,8 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const isLoggedIn = () => {
-    const authToken = Cookies.get('authToken');
-    const loggedIn = Cookies.get('isLoggedIn') === 'true';
+    const authToken = Cookies.get("authToken");
+    const loggedIn = Cookies.get("isLoggedIn") === "true";
     return authToken != null && loggedIn;
   };
 
@@ -81,7 +83,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
     setIsCartLoading(true);
     try {
-      const authToken = Cookies.get('authToken');
+      const authToken = Cookies.get("authToken");
       const response = await fetch(`${import.meta.env.VITE_API_URL}/cart`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -89,17 +91,17 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch cart');
+        throw new Error("Failed to fetch cart");
       }
 
       const data = await response.json();
       setCart(data.cart.items || []);
     } catch (error) {
-      console.error('Error fetching cart:', error);
+      console.error("Error fetching cart:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to load your cart. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to load your cart. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsCartLoading(false);
@@ -114,7 +116,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
     setIsWishlistLoading(true);
     try {
-      const authToken = Cookies.get('authToken');
+      const authToken = Cookies.get("authToken");
       const response = await fetch(`${import.meta.env.VITE_API_URL}/wishlist`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -122,17 +124,17 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch wishlist');
+        throw new Error("Failed to fetch wishlist");
       }
 
       const data = await response.json();
       setWishlist(data.wishlist.items || []);
     } catch (error) {
-      console.error('Error fetching wishlist:', error);
+      console.error("Error fetching wishlist:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to load your wishlist. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to load your wishlist. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsWishlistLoading(false);
@@ -150,18 +152,18 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
     setIsCartLoading(true);
     try {
-      const authToken = Cookies.get('authToken');
+      const authToken = Cookies.get("authToken");
       const response = await fetch(`${import.meta.env.VITE_API_URL}/cart`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${authToken}`,
         },
         body: JSON.stringify({ productId, quantity }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to add item to cart');
+        throw new Error("Failed to add item to cart");
       }
 
       const data = await response.json();
@@ -178,11 +180,11 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
         // Show a "moved to cart" toast instead
         toast({
-          title: 'Moved to Cart',
+          title: "Moved to Cart",
           description: (
             <div>
-              {productName || 'Product'} has been moved from wishlist to cart.{' '}
-              <a href='/cart' className='text-blue-500 hover:underline'>
+              {productName || "Product"} has been moved from wishlist to cart.{" "}
+              <a href="/cart" className="text-blue-500 hover:underline">
                 View Cart
               </a>
             </div>
@@ -190,11 +192,11 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
         });
       } else {
         toast({
-          title: 'Added to Cart',
+          title: "Added to Cart",
           description: (
             <div>
-              {productName || 'Product'} has been added to your cart.{' '}
-              <a href='/cart' className='text-blue-500 hover:underline'>
+              {productName || "Product"} has been added to your cart.{" "}
+              <a href="/cart" className="text-blue-500 hover:underline">
                 View Cart
               </a>
             </div>
@@ -203,11 +205,11 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
       }
       return true;
     } catch (error) {
-      console.error('Error adding to cart:', error);
+      console.error("Error adding to cart:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to add item to cart. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to add item to cart. Please try again.",
+        variant: "destructive",
       });
       return false;
     } finally {
@@ -220,11 +222,11 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
     setIsCartLoading(true);
     try {
-      const authToken = Cookies.get('authToken');
+      const authToken = Cookies.get("authToken");
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/cart/${productId}`,
         {
-          method: 'DELETE',
+          method: "DELETE",
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
@@ -232,22 +234,22 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
       );
 
       if (!response.ok) {
-        throw new Error('Failed to remove item from cart');
+        throw new Error("Failed to remove item from cart");
       }
 
       const data = await response.json();
       setCart(data.cart.items || []);
 
       toast({
-        title: 'Removed from Cart',
-        description: 'Item has been removed from your cart.',
+        title: "Removed from Cart",
+        description: "Item has been removed from your cart.",
       });
     } catch (error) {
-      console.error('Error removing from cart:', error);
+      console.error("Error removing from cart:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to remove item from cart. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to remove item from cart. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsCartLoading(false);
@@ -264,13 +266,13 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
     setIsCartLoading(true);
     try {
-      const authToken = Cookies.get('authToken');
+      const authToken = Cookies.get("authToken");
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/cart/${productId}`,
         {
-          method: 'PUT',
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${authToken}`,
           },
           body: JSON.stringify({ quantity }),
@@ -278,17 +280,17 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
       );
 
       if (!response.ok) {
-        throw new Error('Failed to update cart');
+        throw new Error("Failed to update cart");
       }
 
       const data = await response.json();
       setCart(data.cart.items || []);
     } catch (error) {
-      console.error('Error updating cart:', error);
+      console.error("Error updating cart:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to update cart. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to update cart. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsCartLoading(false);
@@ -300,30 +302,30 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
     setIsCartLoading(true);
     try {
-      const authToken = Cookies.get('authToken');
+      const authToken = Cookies.get("authToken");
       const response = await fetch(`${import.meta.env.VITE_API_URL}/cart`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to clear cart');
+        throw new Error("Failed to clear cart");
       }
 
       setCart([]);
 
       toast({
-        title: 'Cart Cleared',
-        description: 'Your cart has been cleared.',
+        title: "Cart Cleared",
+        description: "Your cart has been cleared.",
       });
     } catch (error) {
-      console.error('Error clearing cart:', error);
+      console.error("Error clearing cart:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to clear your cart. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to clear your cart. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsCartLoading(false);
@@ -340,37 +342,37 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
     setIsWishlistLoading(true);
     try {
-      const authToken = Cookies.get('authToken');
+      const authToken = Cookies.get("authToken");
       const response = await fetch(`${import.meta.env.VITE_API_URL}/wishlist`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${authToken}`,
         },
         body: JSON.stringify({ productId }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to add item to wishlist');
+        throw new Error("Failed to add item to wishlist");
       }
 
       const data = await response.json();
       setWishlist(data.wishlist.items || []);
 
       toast({
-        title: 'Added to Wishlist',
+        title: "Added to Wishlist",
         description: `${
-          productName || 'Product'
+          productName || "Product"
         } has been added to your wishlist.`,
       });
 
       return true;
     } catch (error) {
-      console.error('Error adding to wishlist:', error);
+      console.error("Error adding to wishlist:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to add item to wishlist. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to add item to wishlist. Please try again.",
+        variant: "destructive",
       });
       return false;
     } finally {
@@ -383,11 +385,11 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
     setIsWishlistLoading(true);
     try {
-      const authToken = Cookies.get('authToken');
+      const authToken = Cookies.get("authToken");
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/wishlist/${productId}`,
         {
-          method: 'DELETE',
+          method: "DELETE",
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
@@ -395,23 +397,23 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
       );
 
       if (!response.ok) {
-        throw new Error('Failed to remove item from wishlist');
+        throw new Error("Failed to remove item from wishlist");
       }
 
       const data = await response.json();
       setWishlist(data.wishlist.items || []);
       if (showToast) {
         toast({
-          title: 'Removed from Wishlist',
-          description: 'Item has been removed from your wishlist.',
+          title: "Removed from Wishlist",
+          description: "Item has been removed from your wishlist.",
         });
       }
     } catch (error) {
-      console.error('Error removing from wishlist:', error);
+      console.error("Error removing from wishlist:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to remove item from wishlist. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to remove item from wishlist. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsWishlistLoading(false);
@@ -423,30 +425,30 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 
     setIsWishlistLoading(true);
     try {
-      const authToken = Cookies.get('authToken');
+      const authToken = Cookies.get("authToken");
       const response = await fetch(`${import.meta.env.VITE_API_URL}/wishlist`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to clear wishlist');
+        throw new Error("Failed to clear wishlist");
       }
 
       setWishlist([]);
 
       toast({
-        title: 'Wishlist Cleared',
-        description: 'Your wishlist has been cleared.',
+        title: "Wishlist Cleared",
+        description: "Your wishlist has been cleared.",
       });
     } catch (error) {
-      console.error('Error clearing wishlist:', error);
+      console.error("Error clearing wishlist:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to clear your wishlist. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to clear your wishlist. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsWishlistLoading(false);
@@ -485,7 +487,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
 export function useShop() {
   const context = useContext(ShopContext);
   if (context === undefined) {
-    throw new Error('useShop must be used within a ShopProvider');
+    throw new Error("useShop must be used within a ShopProvider");
   }
   return context;
 }

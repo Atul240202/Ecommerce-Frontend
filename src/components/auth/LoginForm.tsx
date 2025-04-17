@@ -1,22 +1,22 @@
-import type React from 'react';
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import { Checkbox } from '../../components/ui/checkbox';
-import { toast } from '../../components/ui/use-toast';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import Cookies from 'js-cookie';
-import { Separator } from '../ui/separator';
+import type React from "react";
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Checkbox } from "../../components/ui/checkbox";
+import { toast } from "../../components/ui/use-toast";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import Cookies from "js-cookie";
+import { Separator } from "../ui/separator";
 
 export default function LoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const [formData, setFormData] = useState({
-    email: location.state?.email || '',
-    password: '',
+    email: location.state?.email || "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -41,8 +41,8 @@ export default function LoginForm() {
   useEffect(() => {
     // Initialize Google Sign-In
     const loadGoogleScript = () => {
-      const script = document.createElement('script');
-      script.src = 'https://accounts.google.com/gsi/client';
+      const script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
       script.async = true;
       script.defer = true;
       document.body.appendChild(script);
@@ -63,12 +63,12 @@ export default function LoginForm() {
 
     // Validate email
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     }
 
     // Validate password
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     }
 
     setErrors(newErrors);
@@ -88,9 +88,9 @@ export default function LoginForm() {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/auth/login`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             email: formData.email,
@@ -102,17 +102,17 @@ export default function LoginForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.message || "Login failed");
       }
 
       // Store auth token in cookies
       const tokenExpiry = rememberMe ? 30 : 1; // 30 days or 1 day
-      Cookies.set('authToken', data.token, { expires: tokenExpiry });
-      Cookies.set('isLoggedIn', 'true', { expires: tokenExpiry });
+      Cookies.set("authToken", data.token, { expires: tokenExpiry });
+      Cookies.set("isLoggedIn", "true", { expires: tokenExpiry });
 
       // Store user info in localStorage for easy access
       localStorage.setItem(
-        'user',
+        "user",
         JSON.stringify({
           id: data.user.id,
           fullName: data.user.fullName,
@@ -121,20 +121,20 @@ export default function LoginForm() {
       );
 
       // Trigger storage event to update header
-      window.dispatchEvent(new Event('storage'));
+      window.dispatchEvent(new Event("storage"));
 
       toast({
-        title: 'Login Successful',
-        description: 'You have been successfully logged in.',
+        title: "Login Successful",
+        description: "You have been successfully logged in.",
       });
 
       // Navigate to home page or previous page
-      navigate('/');
+      navigate("/");
     } catch (error: any) {
       toast({
-        title: 'Login Failed',
+        title: "Login Failed",
         description: error.message,
-        variant: 'destructive',
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -155,33 +155,35 @@ export default function LoginForm() {
           client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
           callback: handleGoogleCredentialResponse,
           use_fedcm_for_prompt: true,
+          context: "use", // ✅ required for FedCM
+          ux_mode: "popup",
         });
 
         // Use renderButton instead of prompt
         window.google.accounts.id.renderButton(
-          document.getElementById('google-signin-button'), // Add this div to your component
+          document.getElementById("google-signin-button"), // Add this div to your component
           {
-            type: 'standard',
-            theme: 'outline',
-            size: 'large',
-            text: 'signin_with',
-            shape: 'rectangular',
-            logo_alignment: 'left',
-            width: '100%',
+            type: "standard",
+            theme: "outline",
+            size: "large",
+            text: "signin_with",
+            shape: "rectangular",
+            logo_alignment: "left",
+            width: "100%",
           }
         );
         window.google.accounts.id.prompt((notification) => {
           // Don't check isNotDisplayed or isSkippedMoment as they're deprecated
-          console.log('Prompt notification', notification);
+          console.log("Prompt notification", notification);
         });
       } else {
-        throw new Error('Google Sign-In not loaded. Please try again later.');
+        throw new Error("Google Sign-In not loaded. Please try again later.");
       }
     } catch (error: any) {
       toast({
-        title: 'Google Sign-In Failed',
-        description: error.message || 'Failed to initialize Google Sign-In',
-        variant: 'destructive',
+        title: "Google Sign-In Failed",
+        description: error.message || "Failed to initialize Google Sign-In",
+        variant: "destructive",
       });
       setIsGoogleLoading(false);
     }
@@ -193,7 +195,7 @@ export default function LoginForm() {
       const { credential } = response;
 
       // Decode the JWT token to get user info
-      const payload = JSON.parse(atob(credential.split('.')[1]));
+      const payload = JSON.parse(atob(credential.split(".")[1]));
 
       const googleUser = {
         email: payload.email,
@@ -208,9 +210,9 @@ export default function LoginForm() {
       const apiResponse = await fetch(
         `${import.meta.env.VITE_API_URL}/auth/google`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(googleUser),
         }
@@ -220,7 +222,7 @@ export default function LoginForm() {
 
       if (apiResponse.status === 202 && data.needsPhone) {
         // User needs to provide phone number
-        navigate('/register/google', {
+        navigate("/register/google", {
           state: {
             googleData: data.tempData,
           },
@@ -229,17 +231,17 @@ export default function LoginForm() {
       }
 
       if (!apiResponse.ok) {
-        throw new Error(data.message || 'Google authentication failed');
+        throw new Error(data.message || "Google authentication failed");
       }
 
       // Store auth token in cookies
       const tokenExpiry = rememberMe ? 30 : 1; // 30 days or 1 day
-      Cookies.set('authToken', data.token, { expires: tokenExpiry });
-      Cookies.set('isLoggedIn', 'true', { expires: tokenExpiry });
+      Cookies.set("authToken", data.token, { expires: tokenExpiry });
+      Cookies.set("isLoggedIn", "true", { expires: tokenExpiry });
 
       // Store user info in localStorage for easy access
       localStorage.setItem(
-        'user',
+        "user",
         JSON.stringify({
           id: data.user.id,
           fullName: data.user.fullName,
@@ -248,20 +250,20 @@ export default function LoginForm() {
       );
 
       // Trigger storage event to update header
-      window.dispatchEvent(new Event('storage'));
+      window.dispatchEvent(new Event("storage"));
 
       toast({
-        title: 'Login Successful',
-        description: 'You have been successfully logged in with Google.',
+        title: "Login Successful",
+        description: "You have been successfully logged in with Google.",
       });
 
       // Navigate to home page
-      navigate('/');
+      navigate("/");
     } catch (error: any) {
       toast({
-        title: 'Google Sign-In Failed',
+        title: "Google Sign-In Failed",
         description: error.message,
-        variant: 'destructive',
+        variant: "destructive",
       });
     } finally {
       setIsGoogleLoading(false);
@@ -281,7 +283,7 @@ export default function LoginForm() {
             type="email"
             value={formData.email}
             onChange={handleChange}
-            className={errors.email ? 'border-red-500' : ''}
+            className={errors.email ? "border-red-500" : ""}
           />
           {errors.email && (
             <p className="text-red-500 text-xs mt-1">{errors.email}</p>
@@ -302,10 +304,10 @@ export default function LoginForm() {
             <Input
               id="password"
               name="password"
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               value={formData.password}
               onChange={handleChange}
-              className={errors.password ? 'border-red-500 pr-10' : 'pr-10'}
+              className={errors.password ? "border-red-500 pr-10" : "pr-10"}
             />
             <button
               type="button"
@@ -338,7 +340,7 @@ export default function LoginForm() {
               Signing In...
             </>
           ) : (
-            'Sign In'
+            "Sign In"
           )}
         </Button>
 
@@ -387,7 +389,7 @@ export default function LoginForm() {
         </Button>
 
         <p className="text-center text-sm">
-          Don't have an account?{' '}
+          Don't have an account?{" "}
           <Link href="/register" className="text-blue-600 hover:underline">
             Create an account
           </Link>

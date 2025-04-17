@@ -126,6 +126,7 @@ export default function CartPage() {
         price: item.price,
         quantity: item.quantity,
         sku: item.sku || '',
+        shipping_amount: item.shipping_amount ?? 200,
       }));
 
       // Add to checkout context
@@ -160,7 +161,13 @@ export default function CartPage() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const shipping = cart.length > 0 ? 200 : 0; // ₹200 flat rate shipping
+  const shipping = cart.length > 0
+  ? cart.reduce((sum, item) => {
+      const productShipping = item.shipping_amount ?? 200;
+      return sum + productShipping * item.quantity;
+    }, 0)
+  : 0;
+
   const total = subtotal + shipping;
 
   if (isCartLoading || isProcessing) {

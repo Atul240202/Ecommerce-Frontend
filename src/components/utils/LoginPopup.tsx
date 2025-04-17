@@ -54,6 +54,8 @@ export default function LoginPopup({
           client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
           callback: handleGoogleCredentialResponse,
           use_fedcm_for_prompt: true,
+          context: "use", // ✅ required for FedCM
+          ux_mode: "popup",
         });
       }
     };

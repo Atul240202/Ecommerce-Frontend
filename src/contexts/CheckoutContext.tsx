@@ -1,6 +1,6 @@
-import type React from 'react';
+import type React from "react";
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState } from "react";
 
 interface CheckoutProduct {
   id: number;
@@ -9,6 +9,7 @@ interface CheckoutProduct {
   price: number;
   quantity: number;
   sku: string;
+  shipping_amount?: number;
 }
 
 interface CheckoutContextType {
@@ -29,13 +30,22 @@ const CheckoutContext = createContext<CheckoutContextType | undefined>(
 
 export function CheckoutProvider({ children }: { children: React.ReactNode }) {
   const [products, setProducts] = useState<CheckoutProduct[]>([]);
-  const shippingRate = 200; // ₹200 flat rate shipping
+  // const shippingRate = 200; // ₹200 flat rate shipping
 
   const subtotal = products.reduce(
     (sum, product) => sum + product.price * product.quantity,
     0
   );
-  const shipping = products.length > 0 ? shippingRate : 0;
+  const shipping =
+    products.length > 0
+      ? (() => {
+          const shippingValues = products
+            .map((p) => (p as any).shipping_amount)
+            .filter((v) => typeof v === "number");
+          return shippingValues.length > 0 ? Math.max(...shippingValues) : 200;
+        })()
+      : 0;
+
   const total = subtotal + shipping;
 
   const addProduct = (product: CheckoutProduct) => {
@@ -82,7 +92,7 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
 export function useCheckout() {
   const context = useContext(CheckoutContext);
   if (context === undefined) {
-    throw new Error('useCheckout must be used within a CheckoutProvider');
+    throw new Error("useCheckout must be used within a CheckoutProvider");
   }
   return context;
 }

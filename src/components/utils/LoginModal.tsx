@@ -56,6 +56,7 @@ export function LoginModal({
         window.google.accounts.id.initialize({
           client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
           callback: handleGoogleCredentialResponse,
+          context: "use",
           use_fedcm_for_prompt: true,
         });
       }

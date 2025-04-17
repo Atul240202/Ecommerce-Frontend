@@ -1,23 +1,23 @@
-import type React from 'react';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import { Checkbox } from '../../components/ui/checkbox';
-import { toast } from '../../components/ui/use-toast';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { Separator } from '../ui/separator';
-import Cookies from 'js-cookie';
+import type React from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Checkbox } from "../../components/ui/checkbox";
+import { toast } from "../../components/ui/use-toast";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Separator } from "../ui/separator";
+import Cookies from "js-cookie";
 
 export default function RegisterForm() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
+    fullName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -43,8 +43,8 @@ export default function RegisterForm() {
   useEffect(() => {
     // Initialize Google Sign-In
     const loadGoogleScript = () => {
-      const script = document.createElement('script');
-      script.src = 'https://accounts.google.com/gsi/client';
+      const script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
       script.async = true;
       script.defer = true;
       document.body.appendChild(script);
@@ -66,40 +66,40 @@ export default function RegisterForm() {
 
     // Validate full name
     if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
+      newErrors.fullName = "Full name is required";
     }
 
     // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = "Please enter a valid email";
     }
 
     // Validate phone
     const phoneRegex = /^\d{10}$/;
     if (!formData.phone.trim()) {
-      newErrors.phone = 'Phone number is required';
+      newErrors.phone = "Phone number is required";
     } else if (!phoneRegex.test(formData.phone)) {
-      newErrors.phone = 'Please enter a valid 10-digit phone number';
+      newErrors.phone = "Please enter a valid 10-digit phone number";
     }
 
     // Validate password
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+      newErrors.password = "Password must be at least 8 characters";
     }
 
     // Validate confirm password
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
     // Validate terms agreement
     if (!agreeTerms) {
-      newErrors.terms = 'You must agree to the terms and conditions';
+      newErrors.terms = "You must agree to the terms and conditions";
     }
 
     setErrors(newErrors);
@@ -119,9 +119,9 @@ export default function RegisterForm() {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/auth/register`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             fullName: formData.fullName,
@@ -135,14 +135,14 @@ export default function RegisterForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
+        throw new Error(data.message || "Registration failed");
       }
 
       // Store the token in localStorage for OTP verification
-      localStorage.setItem('registrationToken', data.token);
+      localStorage.setItem("registrationToken", data.token);
 
       // Navigate to OTP verification page
-      navigate('/verify-otp', {
+      navigate("/verify-otp", {
         state: {
           email: formData.email,
           phone: formData.phone,
@@ -150,9 +150,9 @@ export default function RegisterForm() {
       });
     } catch (error: any) {
       toast({
-        title: 'Registration Failed',
+        title: "Registration Failed",
         description: error.message,
-        variant: 'destructive',
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -172,6 +172,8 @@ export default function RegisterForm() {
         window.google.accounts.id.initialize({
           client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
           callback: handleGoogleCredentialResponse,
+          context: "use", // ✅ required for FedCM
+          ux_mode: "popup",
         });
 
         window.google.accounts.id.prompt((notification) => {
@@ -181,13 +183,13 @@ export default function RegisterForm() {
           }
         });
       } else {
-        throw new Error('Google Sign-In not loaded. Please try again later.');
+        throw new Error("Google Sign-In not loaded. Please try again later.");
       }
     } catch (error: any) {
       toast({
-        title: 'Google Sign-Up Failed',
-        description: error.message || 'Failed to initialize Google Sign-In',
-        variant: 'destructive',
+        title: "Google Sign-Up Failed",
+        description: error.message || "Failed to initialize Google Sign-In",
+        variant: "destructive",
       });
       setIsGoogleLoading(false);
     }
@@ -199,7 +201,7 @@ export default function RegisterForm() {
       const { credential } = response;
 
       // Decode the JWT token to get user info
-      const payload = JSON.parse(atob(credential.split('.')[1]));
+      const payload = JSON.parse(atob(credential.split(".")[1]));
 
       const googleUser = {
         email: payload.email,
@@ -214,9 +216,9 @@ export default function RegisterForm() {
       const apiResponse = await fetch(
         `${import.meta.env.VITE_API_URL}/auth/google`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(googleUser),
         }
@@ -226,7 +228,7 @@ export default function RegisterForm() {
 
       if (apiResponse.status === 202 && data.needsPhone) {
         // User needs to provide phone number
-        navigate('/register/google', {
+        navigate("/register/google", {
           state: {
             googleData: data.tempData,
           },
@@ -235,16 +237,16 @@ export default function RegisterForm() {
       }
 
       if (!apiResponse.ok) {
-        throw new Error(data.message || 'Google authentication failed');
+        throw new Error(data.message || "Google authentication failed");
       }
 
       // Store auth token in cookies
-      Cookies.set('authToken', data.token, { expires: 1 });
-      Cookies.set('isLoggedIn', 'true', { expires: 1 });
+      Cookies.set("authToken", data.token, { expires: 1 });
+      Cookies.set("isLoggedIn", "true", { expires: 1 });
 
       // Store user info in localStorage for easy access
       localStorage.setItem(
-        'user',
+        "user",
         JSON.stringify({
           id: data.user.id,
           fullName: data.user.fullName,
@@ -253,20 +255,20 @@ export default function RegisterForm() {
       );
 
       // Trigger storage event to update header
-      window.dispatchEvent(new Event('storage'));
+      window.dispatchEvent(new Event("storage"));
 
       toast({
-        title: 'Registration Successful',
-        description: 'You have been successfully registered with Google.',
+        title: "Registration Successful",
+        description: "You have been successfully registered with Google.",
       });
 
       // Navigate to home page
-      navigate('/');
+      navigate("/");
     } catch (error: any) {
       toast({
-        title: 'Google Sign-Up Failed',
+        title: "Google Sign-Up Failed",
         description: error.message,
-        variant: 'destructive',
+        variant: "destructive",
       });
     } finally {
       setIsGoogleLoading(false);
@@ -285,7 +287,7 @@ export default function RegisterForm() {
             name="fullName"
             value={formData.fullName}
             onChange={handleChange}
-            className={errors.fullName ? 'border-red-500' : ''}
+            className={errors.fullName ? "border-red-500" : ""}
           />
           {errors.fullName && (
             <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>
@@ -300,7 +302,7 @@ export default function RegisterForm() {
             type="email"
             value={formData.email}
             onChange={handleChange}
-            className={errors.email ? 'border-red-500' : ''}
+            className={errors.email ? "border-red-500" : ""}
           />
           {errors.email && (
             <p className="text-red-500 text-xs mt-1">{errors.email}</p>
@@ -315,7 +317,7 @@ export default function RegisterForm() {
             type="tel"
             value={formData.phone}
             onChange={handleChange}
-            className={errors.phone ? 'border-red-500' : ''}
+            className={errors.phone ? "border-red-500" : ""}
           />
           {errors.phone && (
             <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
@@ -328,10 +330,10 @@ export default function RegisterForm() {
             <Input
               id="password"
               name="password"
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               value={formData.password}
               onChange={handleChange}
-              className={errors.password ? 'border-red-500 pr-10' : 'pr-10'}
+              className={errors.password ? "border-red-500 pr-10" : "pr-10"}
             />
             <button
               type="button"
@@ -352,11 +354,11 @@ export default function RegisterForm() {
             <Input
               id="confirmPassword"
               name="confirmPassword"
-              type={showConfirmPassword ? 'text' : 'password'}
+              type={showConfirmPassword ? "text" : "password"}
               value={formData.confirmPassword}
               onChange={handleChange}
               className={
-                errors.confirmPassword ? 'border-red-500 pr-10' : 'pr-10'
+                errors.confirmPassword ? "border-red-500 pr-10" : "pr-10"
               }
             />
             <button
@@ -381,7 +383,7 @@ export default function RegisterForm() {
             onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
           />
           <Label htmlFor="terms" className="text-sm font-normal">
-            I agree to the{' '}
+            I agree to the{" "}
             <a
               href="/terms-and-conditions"
               className="text-blue-600 hover:underline"
@@ -399,7 +401,7 @@ export default function RegisterForm() {
               Creating Account...
             </>
           ) : (
-            'Create Account'
+            "Create Account"
           )}
         </Button>
 
@@ -448,7 +450,7 @@ export default function RegisterForm() {
         </Button>
 
         <p className="text-center text-sm">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <a href="/login" className="text-blue-600 hover:underline">
             Sign in
           </a>

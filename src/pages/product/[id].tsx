@@ -88,6 +88,7 @@ interface Product {
   shippingInformation: string;
   availabilityStatus: string;
   returnPolicy: string;
+  shipping_amount?: number;
 }
 
 export default function ProductPage() {
@@ -214,6 +215,7 @@ export default function ProductPage() {
       price: discountedPrice,
       quantity: quantity,
       sku: product.sku || "",
+      shipping_amount: product.shipping_amount ?? 200,
     });
 
     navigate("/checkout");

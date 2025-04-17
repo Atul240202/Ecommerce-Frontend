@@ -1,6 +1,6 @@
 // Base API URL - will use the environment variable
 const API_URL = import.meta.env.VITE_API_URL;
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 // Product interfaces
 export interface ProductResponse {
@@ -60,7 +60,7 @@ export const fetchProductCategories = async () => {
   try {
     const response = await fetch(`${API_URL}/categories`);
     if (!response.ok) {
-      throw new Error('Failed to fetch product categories');
+      throw new Error("Failed to fetch product categories");
     }
     const data = await response.json();
 
@@ -68,14 +68,14 @@ export const fetchProductCategories = async () => {
 
     return data;
   } catch (error) {
-    console.error('Error fetching product categories:', error);
+    console.error("Error fetching product categories:", error);
     // Return empty array instead of throwing to prevent component crashes
     return [];
   }
 };
 
 // API functions
-export const fetchProducts = async (page = 1, limit = 10, query = '') => {
+export const fetchProducts = async (page = 1, limit = 10, query = "") => {
   try {
     let url = `${API_URL}/products?page=${page}&limit=${limit}`;
     if (query) {
@@ -83,11 +83,11 @@ export const fetchProducts = async (page = 1, limit = 10, query = '') => {
     }
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error('Failed to fetch products');
+      throw new Error("Failed to fetch products");
     }
     return await response.json();
   } catch (error) {
-    console.error('Error fetching products:', error);
+    console.error("Error fetching products:", error);
     throw error;
   }
 };
@@ -97,11 +97,11 @@ export const fetchProductById = async (
   try {
     const response = await fetch(`${API_URL}/products/${id}`);
     if (!response.ok) {
-      throw new Error('Failed to fetch product');
+      throw new Error("Failed to fetch product");
     }
     return await response.json();
   } catch (error) {
-    console.error('Error fetching product:', error);
+    console.error("Error fetching product:", error);
     throw error;
   }
 };
@@ -115,11 +115,11 @@ export const fetchProductsByCategory = async (
       `${API_URL}/products/category/${slug}?pageNumber=${page}`
     );
     if (!response.ok) {
-      throw new Error('Failed to fetch products by category');
+      throw new Error("Failed to fetch products by category");
     }
     return await response.json();
   } catch (error) {
-    console.error('Error fetching products by category:', error);
+    console.error("Error fetching products by category:", error);
     throw error;
   }
 };
@@ -128,11 +128,11 @@ export const fetchFeaturedProducts = async (limit = 8): Promise<Product[]> => {
   try {
     const response = await fetch(`${API_URL}/products/featured?limit=${limit}`);
     if (!response.ok) {
-      throw new Error('Failed to fetch featured products');
+      throw new Error("Failed to fetch featured products");
     }
     return await response.json();
   } catch (error) {
-    console.error('Error fetching featured products:', error);
+    console.error("Error fetching featured products:", error);
     throw error;
   }
 };
@@ -145,11 +145,11 @@ export const fetchBestSellerProducts = async (
       `${API_URL}/products/bestsellers?limit=${limit}`
     );
     if (!response.ok) {
-      throw new Error('Failed to fetch bestseller products');
+      throw new Error("Failed to fetch bestseller products");
     }
     return await response.json();
   } catch (error) {
-    console.error('Error fetching bestseller products:', error);
+    console.error("Error fetching bestseller products:", error);
     throw error;
   }
 };
@@ -158,11 +158,11 @@ export const fetchVariableProducts = async () => {
   try {
     const response = await fetch(`${API_URL}/products/type/variable`);
     if (!response.ok) {
-      throw new Error('Failed to fetch bestseller products');
+      throw new Error("Failed to fetch bestseller products");
     }
     return await response.json();
   } catch (error) {
-    console.error('Error fetching variable products:', error);
+    console.error("Error fetching variable products:", error);
     throw error;
   }
 };
@@ -177,11 +177,11 @@ export const fetchRelatedProducts = async (
       `${API_URL}/products/category/${categorySlug}`
     );
     if (!response.ok) {
-      throw new Error('Failed to fetch related products');
+      throw new Error("Failed to fetch related products");
     }
     return await response.json();
   } catch (error) {
-    console.error('Error fetching related products:', error);
+    console.error("Error fetching related products:", error);
     throw error;
   }
 };
@@ -211,20 +211,20 @@ export const fetchProductReviews = async (
     const response = await fetch(
       `${API_URL}/products/${productId}/reviews?page=${page}&limit=${limit}`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       }
     );
 
     if (!response.ok) {
-      throw new Error('Failed to fetch reviews');
+      throw new Error("Failed to fetch reviews");
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Error fetching product reviews:', error);
+    console.error("Error fetching product reviews:", error);
     throw error;
   }
 };
@@ -232,7 +232,7 @@ export const fetchProductReviews = async (
 // Check if user has purchased the product
 export const verifyProductPurchase = async (productId: number) => {
   try {
-    const token = Cookies.get('authToken');
+    const token = Cookies.get("authToken");
     if (!token) {
       return { verified: false };
     }
@@ -240,21 +240,21 @@ export const verifyProductPurchase = async (productId: number) => {
     const response = await fetch(
       `${API_URL}/products/${productId}/purchase-verification`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       }
     );
 
     if (!response.ok) {
-      throw new Error('Failed to verify purchase');
+      throw new Error("Failed to verify purchase");
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Error verifying product purchase:', error);
+    console.error("Error verifying product purchase:", error);
     return { verified: false };
   }
 };
@@ -265,15 +265,15 @@ export const submitProductReview = async (
   reviewData: { rating: number; comment: string }
 ) => {
   try {
-    const token = Cookies.get('authToken');
+    const token = Cookies.get("authToken");
     if (!token) {
-      throw new Error('User not authenticated');
+      throw new Error("User not authenticated");
     }
 
     const response = await fetch(`${API_URL}/products/${productId}/reviews`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(reviewData),
@@ -281,12 +281,12 @@ export const submitProductReview = async (
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to submit review');
+      throw new Error(errorData.message || "Failed to submit review");
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Error submitting product review:', error);
+    console.error("Error submitting product review:", error);
     throw error;
   }
 };
@@ -297,15 +297,15 @@ export const updateProductReview = async (
   reviewData: { rating?: number; comment?: string }
 ) => {
   try {
-    const token = Cookies.get('authToken');
+    const token = Cookies.get("authToken");
     if (!token) {
-      throw new Error('User not authenticated');
+      throw new Error("User not authenticated");
     }
 
     const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(reviewData),
@@ -313,12 +313,12 @@ export const updateProductReview = async (
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to update review');
+      throw new Error(errorData.message || "Failed to update review");
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Error updating product review:', error);
+    console.error("Error updating product review:", error);
     throw error;
   }
 };
@@ -326,27 +326,27 @@ export const updateProductReview = async (
 // Delete a review
 export const deleteProductReview = async (reviewId: string) => {
   try {
-    const token = Cookies.get('authToken');
+    const token = Cookies.get("authToken");
     if (!token) {
-      throw new Error('User not authenticated');
+      throw new Error("User not authenticated");
     }
 
     const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to delete review');
+      throw new Error(errorData.message || "Failed to delete review");
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Error deleting product review:', error);
+    console.error("Error deleting product review:", error);
     throw error;
   }
 };
@@ -354,29 +354,29 @@ export const deleteProductReview = async (reviewId: string) => {
 // Get user's reviews
 export const fetchUserReviews = async (page = 1, limit = 10) => {
   try {
-    const token = Cookies.get('authToken');
+    const token = Cookies.get("authToken");
     if (!token) {
-      throw new Error('User not authenticated');
+      throw new Error("User not authenticated");
     }
 
     const response = await fetch(
       `${API_URL}/users/reviews?page=${page}&limit=${limit}`,
       {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       }
     );
 
     if (!response.ok) {
-      throw new Error('Failed to fetch user reviews');
+      throw new Error("Failed to fetch user reviews");
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Error fetching user reviews:', error);
+    console.error("Error fetching user reviews:", error);
     throw error;
   }
 };
@@ -393,7 +393,7 @@ export const searchBrandedProducts = async (
       )}&page=${page}&limit=${limit}`
     );
     if (!response.ok) {
-      throw new Error('Failed to search products');
+      throw new Error("Failed to search products");
     }
     return await response.json();
   } catch (error) {
@@ -404,7 +404,7 @@ export const searchBrandedProducts = async (
 };
 
 export const searchProducts = async (keyword: string, limit = 10) => {
-  if (!keyword || keyword.trim() === '') {
+  if (!keyword || keyword.trim() === "") {
     return { products: [], total: 0 };
   }
 
@@ -415,11 +415,11 @@ export const searchProducts = async (keyword: string, limit = 10) => {
       )}&limit=${limit}`
     );
     if (!response.ok) {
-      throw new Error('Failed to search products');
+      throw new Error("Failed to search products");
     }
     return await response.json();
   } catch (error) {
-    console.error('Error searching products:', error);
+    console.error("Error searching products:", error);
     // Return empty array instead of throwing to prevent component crashes
     return { products: [], total: 0 };
   }
