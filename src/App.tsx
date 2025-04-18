@@ -32,6 +32,7 @@ import BrandsPage from "./pages/brand";
 import PaymentCallback from "./pages/PaymentCallback";
 import OrderResultPage from "./pages/OrderResultPage";
 import { Toaster } from "react-hot-toast";
+import GoogleCallback from "./pages/auth/GoogleCallback";
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyACEOM0JvL7Z9MTX59oa-d8AKx0Q6aPL2c",
@@ -94,6 +95,7 @@ function App() {
               path="/order-confirmation/cod/:transactionId"
               element={<OrderResultPage />}
             />
+            <Route path="/auth/callback" element={<GoogleCallback />} />
           </Routes>
         </Router>
       </ShopProvider>

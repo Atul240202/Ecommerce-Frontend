@@ -38,26 +38,6 @@ export default function LoginForm() {
     }
   };
 
-  useEffect(() => {
-    // Initialize Google Sign-In
-    const loadGoogleScript = () => {
-      const script = document.createElement("script");
-      script.src = "https://accounts.google.com/gsi/client";
-      script.async = true;
-      script.defer = true;
-      document.body.appendChild(script);
-
-      return () => {
-        document.body.removeChild(script);
-      };
-    };
-    const cleanup = loadGoogleScript();
-
-    return () => {
-      cleanup();
-    };
-  }, []);
-
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
@@ -141,133 +121,49 @@ export default function LoginForm() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    setIsGoogleLoading(true);
+  const handleGoogleOAuthLogin = () => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const redirectUri =
+      import.meta.env.MODE === "development"
+        ? "http://localhost:5173/auth/callback"
+        : "https://www.industrywaala.com/auth/callback";
 
-    try {
-      // Initialize Google Sign-In
-      if (
-        window.google &&
-        window.google.accounts &&
-        window.google.accounts.id
-      ) {
-        window.google.accounts.id.initialize({
-          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-          callback: handleGoogleCredentialResponse,
-          use_fedcm_for_prompt: true,
-          context: "use", // ✅ required for FedCM
-          ux_mode: "popup",
-        });
+    const scope = encodeURIComponent("openid email profile");
+    const responseType = "id_token";
+    const nonce = Date.now().toString(); // required for id_token
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}&nonce=${nonce}&prompt=select_account`;
 
-        // Use renderButton instead of prompt
-        window.google.accounts.id.renderButton(
-          document.getElementById("google-signin-button"), // Add this div to your component
-          {
-            type: "standard",
-            theme: "outline",
-            size: "large",
-            text: "signin_with",
-            shape: "rectangular",
-            logo_alignment: "left",
-            width: "100%",
-          }
-        );
-        window.google.accounts.id.prompt((notification) => {
-          // Don't check isNotDisplayed or isSkippedMoment as they're deprecated
-          console.log("Prompt notification", notification);
-        });
-      } else {
-        throw new Error("Google Sign-In not loaded. Please try again later.");
-      }
-    } catch (error: any) {
-      toast({
-        title: "Google Sign-In Failed",
-        description: error.message || "Failed to initialize Google Sign-In",
-        variant: "destructive",
-      });
-      setIsGoogleLoading(false);
-    }
-  };
+    const popup = window.open(url, "_blank", "width=500,height=600");
 
-  const handleGoogleCredentialResponse = async (response: any) => {
-    try {
-      // Get user info from Google token
-      const { credential } = response;
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type === "oauth_callback") {
+        window.removeEventListener("message", handleMessage);
 
-      // Decode the JWT token to get user info
-      const payload = JSON.parse(atob(credential.split(".")[1]));
-
-      const googleUser = {
-        email: payload.email,
-        firstName: payload.given_name,
-        lastName: payload.family_name,
-        fullName: payload.name,
-        googleId: payload.sub,
-        idToken: credential,
-      };
-
-      // Send to backend
-      const apiResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/auth/google`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(googleUser),
+        if (event.data.redirectTo) {
+          navigate(event.data.redirectTo, {
+            state: { googleData: event.data.tempData },
+          });
+          return;
         }
-      );
 
-      const data = await apiResponse.json();
+        const { token, user } = event.data;
 
-      if (apiResponse.status === 202 && data.needsPhone) {
-        // User needs to provide phone number
-        navigate("/register/google", {
-          state: {
-            googleData: data.tempData,
-          },
+        Cookies.set("authToken", token, { expires: 1 });
+        Cookies.set("isLoggedIn", "true", { expires: 1 });
+        localStorage.setItem("user", JSON.stringify(user));
+        window.dispatchEvent(new Event("storage"));
+
+        toast({
+          title: "Login Successful",
+          description: "You have been successfully logged in with Google.",
         });
-        return;
+
+        navigate("/");
       }
+    };
 
-      if (!apiResponse.ok) {
-        throw new Error(data.message || "Google authentication failed");
-      }
-
-      // Store auth token in cookies
-      const tokenExpiry = rememberMe ? 30 : 1; // 30 days or 1 day
-      Cookies.set("authToken", data.token, { expires: tokenExpiry });
-      Cookies.set("isLoggedIn", "true", { expires: tokenExpiry });
-
-      // Store user info in localStorage for easy access
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          id: data.user.id,
-          fullName: data.user.fullName,
-          email: data.user.email,
-        })
-      );
-
-      // Trigger storage event to update header
-      window.dispatchEvent(new Event("storage"));
-
-      toast({
-        title: "Login Successful",
-        description: "You have been successfully logged in with Google.",
-      });
-
-      // Navigate to home page
-      navigate("/");
-    } catch (error: any) {
-      toast({
-        title: "Google Sign-In Failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setIsGoogleLoading(false);
-    }
+    window.addEventListener("message", handleMessage);
   };
 
   return (
@@ -350,7 +246,7 @@ export default function LoginForm() {
           type="button"
           variant="outline"
           className="w-full flex items-center justify-center gap-2"
-          onClick={handleGoogleSignIn}
+          onClick={handleGoogleOAuthLogin}
           disabled={isGoogleLoading}
         >
           {isGoogleLoading ? (

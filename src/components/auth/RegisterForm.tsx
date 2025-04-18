@@ -159,120 +159,65 @@ export default function RegisterForm() {
     }
   };
 
-  const handleGoogleSignUp = async () => {
+  const handleGoogleOAuthLogin = () => {
     setIsGoogleLoading(true);
 
     try {
-      // Initialize Google Sign-In
-      if (
-        window.google &&
-        window.google.accounts &&
-        window.google.accounts.id
-      ) {
-        window.google.accounts.id.initialize({
-          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-          callback: handleGoogleCredentialResponse,
-          context: "use", // ✅ required for FedCM
-          ux_mode: "popup",
-        });
+      const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+      const redirectUri =
+        import.meta.env.MODE === "development"
+          ? "http://localhost:5173/auth/callback"
+          : "https://www.industrywaala.com/auth/callback";
 
-        window.google.accounts.id.prompt((notification) => {
-          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            // Try to display the Google One Tap dialog
-            window.google.accounts.id.prompt();
+      const scope = encodeURIComponent("openid email profile");
+      const responseType = "id_token";
+      const nonce = Date.now().toString(); // required for id_token
+      const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}&nonce=${nonce}&prompt=select_account`;
+
+      // Open the OAuth window
+      window.open(url, "_blank", "width=500,height=600");
+
+      // Listen for the OAuth callback message
+      const handleOAuthCallback = (event: MessageEvent) => {
+        if (event.origin !== window.location.origin) return;
+
+        if (event.data?.type === "oauth_callback") {
+          if (event.data.redirectTo === "/register/google") {
+            navigate("/register/google", {
+              state: {
+                googleData: event.data.tempData,
+              },
+            });
+          } else {
+            const { token, user } = event.data;
+
+            Cookies.set("authToken", token, { expires: 1 });
+            Cookies.set("isLoggedIn", "true", { expires: 1 });
+            localStorage.setItem("user", JSON.stringify(user));
+            window.dispatchEvent(new Event("storage"));
+            navigate("/");
           }
-        });
-      } else {
-        throw new Error("Google Sign-In not loaded. Please try again later.");
-      }
-    } catch (error: any) {
-      toast({
-        title: "Google Sign-Up Failed",
-        description: error.message || "Failed to initialize Google Sign-In",
-        variant: "destructive",
-      });
-      setIsGoogleLoading(false);
-    }
-  };
 
-  const handleGoogleCredentialResponse = async (response: any) => {
-    try {
-      // Get user info from Google token
-      const { credential } = response;
-
-      // Decode the JWT token to get user info
-      const payload = JSON.parse(atob(credential.split(".")[1]));
-
-      const googleUser = {
-        email: payload.email,
-        firstName: payload.given_name,
-        lastName: payload.family_name,
-        fullName: payload.name,
-        googleId: payload.sub,
-        idToken: credential,
+          window.removeEventListener("message", handleOAuthCallback);
+        }
       };
 
-      // Send to backend
-      const apiResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/auth/google`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(googleUser),
-        }
-      );
-
-      const data = await apiResponse.json();
-
-      if (apiResponse.status === 202 && data.needsPhone) {
-        // User needs to provide phone number
-        navigate("/register/google", {
-          state: {
-            googleData: data.tempData,
-          },
-        });
-        return;
-      }
-
-      if (!apiResponse.ok) {
-        throw new Error(data.message || "Google authentication failed");
-      }
-
-      // Store auth token in cookies
-      Cookies.set("authToken", data.token, { expires: 1 });
-      Cookies.set("isLoggedIn", "true", { expires: 1 });
-
-      // Store user info in localStorage for easy access
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          id: data.user.id,
-          fullName: data.user.fullName,
-          email: data.user.email,
-        })
-      );
-
-      // Trigger storage event to update header
-      window.dispatchEvent(new Event("storage"));
-
-      toast({
-        title: "Registration Successful",
-        description: "You have been successfully registered with Google.",
-      });
-
-      // Navigate to home page
-      navigate("/");
+      window.addEventListener("message", handleOAuthCallback);
     } catch (error: any) {
+      console.error("Error with Google OAuth:", error);
       toast({
         title: "Google Sign-Up Failed",
-        description: error.message,
+        description: "Failed to sign up with Google. Please try again.",
         variant: "destructive",
       });
     } finally {
       setIsGoogleLoading(false);
     }
+  };
+
+  const handleGoogleSignUp = async () => {
+    // Use the OAuth approach
+    handleGoogleOAuthLogin();
   };
 
   return (

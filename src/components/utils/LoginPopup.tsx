@@ -41,88 +41,6 @@ export default function LoginPopup({
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://accounts.google.com/gsi/client";
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
-
-    script.onload = () => {
-      if (window.google?.accounts?.id) {
-        window.google.accounts.id.initialize({
-          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-          callback: handleGoogleCredentialResponse,
-          use_fedcm_for_prompt: true,
-          context: "use", // ✅ required for FedCM
-          ux_mode: "popup",
-        });
-      }
-    };
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
-  const handleGoogleCredentialResponse = async (response: any) => {
-    try {
-      const credential = response.credential;
-      const payload = JSON.parse(atob(credential.split(".")[1]));
-      const googleUser = {
-        email: payload.email,
-        firstName: payload.given_name,
-        lastName: payload.family_name,
-        fullName: payload.name,
-        googleId: payload.sub,
-        idToken: credential,
-      };
-
-      const apiResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/auth/google`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(googleUser),
-        }
-      );
-
-      const data = await apiResponse.json();
-
-      if (apiResponse.status === 202 && data.needsPhone) {
-        navigate("/register/google", { state: { googleData: data.tempData } });
-        return;
-      }
-
-      if (!apiResponse.ok)
-        throw new Error(data.message || "Google login failed");
-
-      Cookies.set("authToken", data.token, { expires: 1 });
-      Cookies.set("isLoggedIn", "true", { expires: 1 });
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          id: data.user.id,
-          fullName: data.user.fullName,
-          email: data.user.email,
-        })
-      );
-      window.dispatchEvent(new Event("storage"));
-
-      toast({
-        title: "Login Successful",
-        description: "You have been successfully logged in with Google.",
-      });
-      onLoginSuccess();
-    } catch (error: any) {
-      toast({
-        title: "Login Failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -191,6 +109,51 @@ export default function LoginPopup({
   const handleRegisterClick = () => {
     onClose();
     navigate("/register");
+  };
+
+  const handleGoogleOAuthLogin = () => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const redirectUri =
+      import.meta.env.MODE === "development"
+        ? "http://localhost:5173/auth/callback"
+        : "https://www.industrywaala.com/auth/callback";
+
+    const scope = encodeURIComponent("openid email profile");
+    const responseType = "id_token";
+    const nonce = Date.now().toString(); // required for id_token
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}&nonce=${nonce}&prompt=select_account`;
+
+    const popup = window.open(url, "_blank", "width=500,height=600");
+
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type === "oauth_callback") {
+        window.removeEventListener("message", handleMessage);
+
+        if (event.data.redirectTo) {
+          navigate(event.data.redirectTo, {
+            state: { googleData: event.data.tempData },
+          });
+          return;
+        }
+
+        const { token, user } = event.data;
+
+        Cookies.set("authToken", token, { expires: 1 });
+        Cookies.set("isLoggedIn", "true", { expires: 1 });
+        localStorage.setItem("user", JSON.stringify(user));
+        window.dispatchEvent(new Event("storage"));
+
+        toast({
+          title: "Login Successful",
+          description: "You have been successfully logged in with Google.",
+        });
+
+        onLoginSuccess();
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
   };
 
   return (
@@ -288,18 +251,7 @@ export default function LoginPopup({
           type="button"
           variant="outline"
           className="w-full flex items-center justify-center gap-2 mt-4"
-          onClick={() => {
-            if (window.google?.accounts?.id) {
-              window.google.accounts.id.prompt();
-            } else {
-              toast({
-                title: "Google Sign-In Failed",
-                description:
-                  "Google sign-in could not be initialized. Please try again.",
-                variant: "destructive",
-              });
-            }
-          }}
+          onClick={handleGoogleOAuthLogin}
         >
           <img
             src="https://developers.google.com/identity/images/g-logo.png"
