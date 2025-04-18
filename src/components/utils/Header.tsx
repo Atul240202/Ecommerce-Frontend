@@ -9,6 +9,7 @@ import { useShop } from "../../contexts/ShopContext";
 import logo from "/headerLogo.png";
 import { useDebounce } from "use-debounce";
 import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,6 +24,16 @@ export function Header() {
   const wishlistCount = wishlist.length;
   const [isMobile, setIsMobile] = useState(false);
   const [debouncedQuery] = useDebounce(searchQuery, 500);
+  const navigate = useNavigate();
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    console.log("handle search submit triggered", e);
+    e.preventDefault();
+    if (searchQuery.length >= 3) {
+      navigate(`/categories/search?q=${encodeURIComponent(searchQuery)}`);
+      setShowResults(false);
+    }
+  };
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -56,65 +67,6 @@ export function Header() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  // useEffect(() => {
-  //   // Clear any existing timeout
-  //   if (searchTimeout.current) {
-  //     clearTimeout(searchTimeout.current);
-  //   }
-
-  //   if (searchTerm.trim() === '') {
-  //     setSearchResults([]);
-  //     setIsSearching(false);
-  //     return;
-  //   }
-
-  //   setIsSearching(true);
-
-  //   // Set a new timeout for debouncing
-  //   searchTimeout.current = setTimeout(async () => {
-  //     try {
-  //       const data = await searchProducts(searchTerm);
-  //       setSearchResults(data.products || []);
-  //     } catch (error) {
-  //       console.error('Error searching products:', error);
-  //       setSearchResults([]);
-  //     } finally {
-  //       setIsSearching(false);
-  //     }
-  //   }, 300); // 300ms debounce
-
-  //   return () => {
-  //     if (searchTimeout.current) {
-  //       clearTimeout(searchTimeout.current);
-  //     }
-  //   };
-  // }, [searchTerm]);
-
-  // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setSearchTerm(e.target.value);
-  //   setShowResults(true);
-  // };
-
-  // const handleSearchSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (searchTerm.trim()) {
-  //     setSearchRedirect(`/search?q=${encodeURIComponent(searchTerm)}`);
-  //     setShowResults(false);
-  //   }
-  // };
-
-  // const handleResultClick = () => {
-  //   setShowResults(false);
-  //   setSearchTerm('');
-  // };
-
-  // const handleAccountClick = (e: React.MouseEvent) => {
-  //   if (!isLoggedIn) {
-  //     e.preventDefault();
-  //     navigate('/login');
-  //   }
-  // };
 
   // Fetch search results when debounced query changes
   useEffect(() => {
@@ -158,8 +110,8 @@ export function Header() {
                 <img
                   src={logo}
                   alt="Industrywaala Logo"
-                  width={150}
-                  className="h-8 w-auto"
+                  width={180}
+                  className="h-10"
                 />
               </Link>
 
@@ -237,15 +189,19 @@ export function Header() {
             </div>
             <div className="mt-4">
               <div className="relative" ref={searchRef}>
-                <form>
-                  <Input
-                    type="search"
-                    placeholder="Search for products"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onFocus={() => setShowResults(true)}
-                  />
-                </form>
+                <Input
+                  type="search"
+                  placeholder="Search for products"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setShowResults(true)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSearchSubmit(e);
+                    }
+                  }}
+                />
                 {showResults && (
                   <SearchResults
                     query={debouncedQuery}
@@ -280,7 +236,12 @@ export function Header() {
                     className="w-full pl-4 pr-10"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    // onFocus={() => setShowResults(true)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleSearchSubmit(e);
+                      }
+                    }}
                   />
                   <div className="absolute inset-y-0 right-3 pl-3 flex items-center pointer-events-none">
                     <Search className="h-5 w-5 text-gray-400" />

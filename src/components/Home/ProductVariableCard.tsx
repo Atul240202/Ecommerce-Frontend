@@ -1,6 +1,6 @@
-import { Heart } from 'lucide-react';
-import Link from 'next/link';
-import { useShop } from '../../contexts/ShopContext';
+import { Heart } from "lucide-react";
+import Link from "next/link";
+import { useShop } from "../../contexts/ShopContext";
 interface ProductVariableCardProps {
   product: {
     id: number;
@@ -14,12 +14,12 @@ interface ProductVariableCardProps {
 }
 
 export function ProductVariableCard({ product }: ProductVariableCardProps) {
-  const { addToWishlist, isInWishlist } = useShopContext();
+  const { addToWishlist, isInWishlist } = useShop();
   const isWishlisted = isInWishlist(product.id);
 
   // Format price with Indian Rupee symbol and thousands separator
   const formatPrice = (price: number) => {
-    return `₹${price.toLocaleString('en-IN')}`;
+    return `₹${price.toLocaleString("en-IN")}`;
   };
 
   return (
@@ -27,7 +27,7 @@ export function ProductVariableCard({ product }: ProductVariableCardProps) {
       <div className="relative aspect-square overflow-hidden">
         <Link href={`/product/${product.id}`}>
           <img
-            src={product.thumbnail || '/placeholder.svg'}
+            src={product.thumbnail || "/placeholder.svg"}
             alt={product.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
@@ -36,12 +36,12 @@ export function ProductVariableCard({ product }: ProductVariableCardProps) {
           onClick={() => addToWishlist(product)}
           className={`absolute top-2 right-2 p-1.5 rounded-full ${
             isWishlisted
-              ? 'bg-red-500 text-white'
-              : 'bg-white text-gray-700 hover:bg-gray-100'
+              ? "bg-red-500 text-white"
+              : "bg-white text-gray-700 hover:bg-gray-100"
           }`}
-          aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
-          <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-white' : ''}`} />
+          <Heart className={`h-5 w-5 ${isWishlisted ? "fill-white" : ""}`} />
         </button>
       </div>
       <div className="p-4">

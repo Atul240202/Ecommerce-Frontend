@@ -1,16 +1,23 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { MainLayout } from '../../layouts/MainLayout';
-import { Breadcrumb } from '../../components/Breadcrumb';
-import { ProductCardFeatured } from '../../components/Home/ProductCardFeatured';
-import { ProductFilter } from '../../components/ProductPage/ProductFilter';
-import { ProductSort } from '../../components/ProductPage/ProductSort';
-import { fetchProductsByCategory, type Product } from '../../services/api';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { MainLayout } from "../../layouts/MainLayout";
+import { Breadcrumb } from "../../components/Breadcrumb";
+import { ProductCardFeatured } from "../../components/Home/ProductCardFeatured";
+import { ProductFilter } from "../../components/ProductPage/ProductFilter";
+import { ProductSort } from "../../components/ProductPage/ProductSort";
+import {
+  fetchProducts,
+  fetchProductsByCategory,
+  type Product,
+} from "../../services/api";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 export default function CategoryPage() {
   const { slug } = useParams<{ slug: string }>();
-
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const query = searchParams.get("q");
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,13 +35,18 @@ export default function CategoryPage() {
       setLoading(true);
       setError(null);
       try {
-        const data = await fetchProductsByCategory(slug, currentPage);
+        let data;
+        if (slug === "search" && query) {
+          data = await fetchProducts(1, 100, query);
+        } else {
+          data = await fetchProductsByCategory(slug, currentPage);
+        }
         setProducts(data.products);
         setFilteredProducts(data.products);
         setTotalPages(data.pages);
       } catch (err) {
-        console.error('Failed to fetch products:', err);
-        setError('Failed to load products. Please try again later.');
+        console.error("Failed to fetch products:", err);
+        setError("Failed to load products. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -67,15 +79,15 @@ export default function CategoryPage() {
     // Sort filtered products
     const sorted = [...filteredProducts].sort((a, b) => {
       switch (sortOption) {
-        case 'name-asc':
+        case "name-asc":
           return a.name.localeCompare(b.name);
-        case 'name-desc':
+        case "name-desc":
           return b.name.localeCompare(a.name);
-        case 'price-asc':
+        case "price-asc":
           return Number.parseFloat(a.price) - Number.parseFloat(b.price);
-        case 'price-desc':
+        case "price-desc":
           return Number.parseFloat(b.price) - Number.parseFloat(a.price);
-        case 'rating-desc':
+        case "rating-desc":
           return (
             Number.parseFloat(b.average_rating) -
             Number.parseFloat(a.average_rating)
@@ -100,8 +112,8 @@ export default function CategoryPage() {
         onClick={() => setCurrentPage(1)}
         className={`w-10 h-10 flex items-center justify-center border ${
           currentPage === 1
-            ? 'bg-[#4280ef] text-white'
-            : 'bg-white text-gray-700'
+            ? "bg-[#4280ef] text-white"
+            : "bg-white text-gray-700"
         }`}
       >
         1
@@ -136,8 +148,8 @@ export default function CategoryPage() {
           onClick={() => setCurrentPage(i)}
           className={`w-10 h-10 flex items-center justify-center border ${
             currentPage === i
-              ? 'bg-[#4280ef] text-white'
-              : 'bg-white text-gray-700'
+              ? "bg-[#4280ef] text-white"
+              : "bg-white text-gray-700"
           }`}
         >
           {i}
@@ -165,8 +177,8 @@ export default function CategoryPage() {
           onClick={() => setCurrentPage(totalPages)}
           className={`w-10 h-10 flex items-center justify-center border ${
             currentPage === totalPages
-              ? 'bg-[#4280ef] text-white'
-              : 'bg-white text-gray-700'
+              ? "bg-[#4280ef] text-white"
+              : "bg-white text-gray-700"
           }`}
         >
           {totalPages}
@@ -179,11 +191,11 @@ export default function CategoryPage() {
 
   // Format category name for display
   const formatCategoryName = (slug: string) => {
-    if (slug === 'all') return 'All Products';
+    if (slug === "all") return "All Products";
     return slug
-      .split('-')
+      .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+      .join(" ");
   };
 
   if (loading) {
@@ -221,14 +233,15 @@ export default function CategoryPage() {
       <div className="container mx-auto px-4 py-8">
         <Breadcrumb
           items={[
-            { label: 'Home', href: '/' },
-            { label: 'Categories', href: '/categories' },
-            { label: formatCategoryName(slug || ''), href: '#' },
+            { label: "Home", href: "/" },
+            { label: "Categories", href: "/categories" },
+            { label: formatCategoryName(slug || ""), href: "#" },
           ]}
         />
         {/* 
         <h1 className='text-3xl font-bold mb-8'>
-          {formatCategoryName(slug || '')}
+          {slug === "search" && query ? `Search results for "${query}"` : formatCategoryName(slug || '')}
+
         </h1> */}
 
         {filteredProducts.length === 0 ? (
@@ -256,7 +269,7 @@ export default function CategoryPage() {
                       id: product.id,
                       title: product.name,
                       description: product.description,
-                      thumbnail: product.images[0]?.src || '/placeholder.svg',
+                      thumbnail: product.images[0]?.src || "/placeholder.svg",
                       price: Number.parseFloat(
                         product.regular_price || product.price
                       ),
@@ -275,7 +288,7 @@ export default function CategoryPage() {
                           )
                         : 0,
                       rating: Number.parseFloat(product.average_rating),
-                      stock: product.stock_status === 'instock' ? 100 : 0,
+                      stock: product.stock_status === "instock" ? 100 : 0,
                       slug: product.slug,
                       type: product.type,
                       variations:
