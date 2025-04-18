@@ -172,7 +172,9 @@ export default function RegisterForm() {
       const scope = encodeURIComponent("openid email profile");
       const responseType = "id_token";
       const nonce = Date.now().toString(); // required for id_token
-      const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}&nonce=${nonce}&prompt=select_account`;
+      const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+        redirectUri
+      )}&response_type=${responseType}&scope=${scope}&nonce=${nonce}&prompt=select_account`;
 
       // Open the OAuth window
       window.open(url, "_blank", "width=500,height=600");
