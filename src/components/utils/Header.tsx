@@ -29,7 +29,7 @@ export function Header() {
   const handleSearchSubmit = (e: React.FormEvent) => {
     console.log("handle search submit triggered", e);
     e.preventDefault();
-    if (searchQuery.length >= 3) {
+    if (searchQuery.length >= 2) {
       navigate(`/categories/search?q=${encodeURIComponent(searchQuery)}`);
       setShowResults(false);
     }

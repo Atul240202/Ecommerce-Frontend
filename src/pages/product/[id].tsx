@@ -157,8 +157,16 @@ export default function ProductPage() {
   }, [id, isInWishlist]);
 
   const handleQuantityChange = (change: number) => {
+    console.log("handleQuantityChange");
     const newQuantity = quantity + change;
-    if (newQuantity >= 1 && newQuantity <= (product?.stock_quantity || 1)) {
+
+    const isStockLimited =
+      product?.stock_quantity !== null && product?.stock_quantity !== undefined;
+
+    if (
+      newQuantity >= 1 &&
+      (!isStockLimited || newQuantity <= product.stock_quantity)
+    ) {
       setQuantity(newQuantity);
     }
   };
@@ -222,7 +230,10 @@ export default function ProductPage() {
   };
 
   const handleContactForNull = () => {
-    navigate("/contact");
+    const url = window.location.href;
+    navigate(
+      `/contact?product=${encodeURIComponent(url)}&quantity=${quantity}`
+    );
   };
 
   const handleSubmitReview = async (e: React.FormEvent) => {
@@ -448,7 +459,11 @@ export default function ProductPage() {
                   variant="ghost"
                   size="icon"
                   onClick={() => handleQuantityChange(1)}
-                  disabled={quantity >= (product.stock_quantity || 1)}
+                  disabled={
+                    product.stock_quantity !== null &&
+                    product.stock_quantity !== undefined &&
+                    quantity >= product.stock_quantity
+                  }
                 >
                   <Plus className="h-4 w-4" />
                 </Button>

@@ -82,7 +82,12 @@ export default function LoginForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Login failed");
+        if (response.status === 401 || response.status === 403) {
+          // Invalid credentials
+          alert("Please enter correct credentials.");
+        } else {
+          alert(data.message || "Login failed");
+        }
       }
 
       // Store auth token in cookies
