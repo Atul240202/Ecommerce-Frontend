@@ -84,7 +84,7 @@ function App() {
             <Route path="/verify-reset-otp" element={<VerifyResetOtpPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="*" element={<NotFound />} />
-            <Route path="/brands" element={<BrandsPage />} />
+            <Route path="/brand" element={<BrandsPage />} />
             <Route path="/brand/:slug" element={<InnerBrandPage />} />
             <Route path="/payment/callback" element={<PaymentCallback />} />
             <Route

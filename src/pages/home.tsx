@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { MainLayout } from '../layouts/MainLayout';
-import { HeroSlider } from '../components/Home/HeroSlider';
-import { ProductGrid } from '../components/Home/ProductGrid';
-import { FeaturedProducts } from '../components/Home/FeaturedProducts';
-import { FeaturedSection } from '../components/Home/FeaturedSection';
-import { BlogCard } from '../components/Blogs/BlogCard';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { MainLayout } from "../layouts/MainLayout";
+import { HeroSlider } from "../components/Home/HeroSlider";
+import { ProductGrid } from "../components/Home/ProductGrid";
+import { FeaturedProducts } from "../components/Home/FeaturedProducts";
+import { FeaturedSection } from "../components/Home/FeaturedSection";
+import { BlogCard } from "../components/Blogs/BlogCard";
 import {
   fetchFeaturedProducts,
   fetchBestSellerProducts,
   fetchVariableProducts,
   type Product,
-} from '../services/api';
-import { BrandSlider } from '../components/Home/BrandSlider';
+} from "../services/api";
+import { BrandSlider } from "../components/Home/BrandSlider";
 interface Blog {
   id: number;
   title: string;
@@ -20,7 +20,7 @@ interface Blog {
   subTitle: string;
   content: string[];
   tags: string[];
-  priorityStatus: 'High' | 'Medium' | 'Low';
+  priorityStatus: "High" | "Medium" | "Low";
   createdDateTime: string;
   insidePageImage: string;
 }
@@ -35,17 +35,17 @@ export default function HomePage() {
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
   useEffect(() => {
     // Fetch promotions
-    fetch('/tempData/promotion.json')
+    fetch("/tempData/promotion.json")
       .then((res) => res.json())
       .then((data) => setPromotions(data.promotion));
 
     // Fetch categories
-    fetch('/tempData/categories.json')
+    fetch("/tempData/categories.json")
       .then((res) => res.json())
       .then((data) => setCategories(data.categories));
     // Fetch products
@@ -66,13 +66,13 @@ export default function HomePage() {
         const bestsellers = await fetchBestSellerProducts(10);
         setBestSellerProducts(bestsellers);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error("Error fetching products:", error);
       }
     };
 
     fetchProducts();
     // Fetch blogs
-    fetch('/tempData/blog.json')
+    fetch("/tempData/blog.json")
       .then((res) => res.json())
       .then((data) => {
         // Sort blogs by createdDateTime, newest first
@@ -107,13 +107,13 @@ export default function HomePage() {
           {promotions.mid_banner && promotions.mid_banner.length > 0 && (
             <div
               className={`flex gap-4 justify-center  ${
-                isMobile ? 'my-2' : 'my-8'
+                isMobile ? "my-2" : "my-8"
               }`}
             >
               {promotions.mid_banner.map((banner: any, index: number) => (
                 <Link key={index} href={banner.href}>
                   <img
-                    src={banner.image || '/placeholder.svg'}
+                    src={banner.image || "/placeholder.svg"}
                     alt={`Mid Banner ${index + 1}`}
                     className="max-w-[45vw] max-h-[30vh]"
                   />
@@ -134,7 +134,7 @@ export default function HomePage() {
               className="flex justify-center my-8"
             >
               <img
-                src={promotions.mini_banner.image || '/placeholder.svg'}
+                src={promotions.mini_banner.image || "/placeholder.svg"}
                 alt="Promotional banner"
                 className="w-full max-w-[70vw] max-h-[20vh]"
               />
@@ -164,7 +164,7 @@ export default function HomePage() {
               {promotions.footer_banner.map((banner: any, index: number) => (
                 <Link key={index} href={banner.href}>
                   <img
-                    src={banner.image || '/placeholder.svg'}
+                    src={banner.image || "/placeholder.svg"}
                     alt={`Footer Banner ${index + 1}`}
                     className="max-w-[35vw] max-h-[30vh] h-fit"
                   />

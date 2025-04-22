@@ -1,27 +1,28 @@
-import type React from 'react';
-import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { ToastProvider } from '../components/ui/toast';
-import { Header } from '../components/utils/Header';
-import { SubHeader } from '../components/Home/SubHeader';
-import { Footer } from '../components/utils/Footer';
-import CategorySubheader from '../components/Home/CategorySubheader';
+import type React from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { ToastProvider } from "../components/ui/toast";
+import { Header } from "../components/utils/Header";
+import { SubHeader } from "../components/Home/SubHeader";
+import { Footer } from "../components/utils/Footer";
+import CategorySubheader from "../components/Home/CategorySubheader";
+import BrandSubheader from "../components/Home/BrandSubheader";
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
 export function MainLayout({ children }: MainLayoutProps) {
   const location = useLocation();
-  const isLoginPage = location.pathname === '/login';
-  const isRegisterPage = location.pathname === '/register';
-  const isHomePage = location.pathname === '/';
+  const isLoginPage = location.pathname === "/login";
+  const isRegisterPage = location.pathname === "/register";
+  const isHomePage = location.pathname === "/";
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
@@ -31,10 +32,10 @@ export function MainLayout({ children }: MainLayoutProps) {
           <Header />
         </div>
 
-        <div className={`flex-1 ${isMobile ? 'mt-[105px]' : 'mt-[85px]'}`}>
+        <div className={`flex-1 ${isMobile ? "mt-[110px]" : "mt-[85px]"}`}>
           {!isLoginPage && !isRegisterPage && <SubHeader />}
           <div className={``}>{isHomePage && <CategorySubheader />}</div>
-
+          <div className={``}>{isHomePage && <BrandSubheader />}</div>
           <main className="flex-1">{children}</main>
         </div>
 

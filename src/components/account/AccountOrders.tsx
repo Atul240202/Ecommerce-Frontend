@@ -178,7 +178,9 @@ export function AccountOrders() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">
-                      ₹{finalOrder.sub_total}
+                      ₹
+                      {Number(finalOrder.sub_total) +
+                        Number(finalOrder.shipping_charges)}
                     </span>
                     <span
                       className={`px-1.5 py-0.5 rounded-full text-xs ${getStatusColor(
@@ -397,7 +399,11 @@ export function AccountOrders() {
                 </div>
                 <div className="text-right">
                   <h5 className="font-medium text-sm">Total Amount:</h5>
-                  <p className="text-lg font-bold">₹{finalOrder.sub_total}</p>
+                  <p className="text-lg font-bold">
+                    ₹
+                    {Number(finalOrder.sub_total) +
+                      Number(finalOrder.shipping_charges)}
+                  </p>
                 </div>
               </div>
             </div>

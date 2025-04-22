@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { ChevronDown, ChevronRight, Menu, X } from 'lucide-react';
-import { Button } from '../../components/ui/button';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
+import { Button } from "../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../components/ui/dropdown-menu';
+} from "../../components/ui/dropdown-menu";
 import {
   fetchProductCategories,
   type ProductCategory,
-} from '../../services/api';
+} from "../../services/api";
 
 interface CategoryGroup {
   name: string;
@@ -56,7 +56,7 @@ export function SubHeader() {
 
         setCategoryGroups(groups);
       } catch (error) {
-        console.error('Failed to fetch categories:', error);
+        console.error("Failed to fetch categories:", error);
       } finally {
         setLoading(false);
       }
@@ -68,8 +68,8 @@ export function SubHeader() {
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // 🔹 Split categories into 6 columns
@@ -115,7 +115,7 @@ export function SubHeader() {
                   <Link to="/" className="py-2 hover:text-[#4280ef]">
                     Home
                   </Link>
-                  <Link to="/brands" className="py-2 hover:text-[#4280ef]">
+                  <Link to="/brand" className="py-2 hover:text-[#4280ef]">
                     Shop by Brand
                   </Link>
                   <Link to="/bestseller" className="py-2 hover:text-[#4280ef]">
@@ -187,7 +187,7 @@ export function SubHeader() {
                                     to={`/categories/${group.slug}`}
                                     className="flex items-center"
                                   >
-                                    View All{' '}
+                                    View All{" "}
                                     <ChevronRight className="h-4 w-4 ml-1" />
                                   </Link>
                                 </DropdownMenuItem>
@@ -219,7 +219,7 @@ export function SubHeader() {
               Home
             </Link>
             <Link
-              to="/brands"
+              to="/brand"
               className="h-12 flex items-center hover:text-[#4280ef]"
             >
               Shop by Brand

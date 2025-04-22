@@ -1,0 +1,42 @@
+[
+  {
+    "name": "3M",
+    "image": "https://res.cloudinary.com/da3r1iagy/image/upload/c_thumb,w_200,g_face/v1745354132/Trifecta_3M_001_Logo_CMYK_y3ajil.jpg",
+    "keyword": "3m"
+  },
+  {
+    "name": "StanleyBlack & Decker",
+    "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745354089/logo_diwo5b.svg",
+    "keyword": "stanleyblack"
+  },
+  {
+    "name": "Fevicol",
+    "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745354089/Group-328_on12r8.webp",
+    "keyword": "fevicol"
+  },
+  {
+    "name": "Pidilite",
+    "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743811511/Industrywaala%20brand/otpoqugvgfcivvjngyie.webp",
+    "keyword": "pidilite"
+  },
+  {
+    "name": "DeWalt",
+    "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745354089/dewalt-logo_brandlogos.net_whugt_yr7jvg.png",
+    "keyword": "dewalt"
+  },
+  {
+    "name": "Totem",
+    "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745354089/20fc88bc768d2bd2d0480e5a0b7ebd8b_mmkico.png",
+    "keyword": "totem"
+  },
+  {
+    "name": "Rajco",
+    "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745354089/Group-369_c4tamf.webp",
+    "keyword": "rajco"
+  },
+  {
+    "name": "Daikin",
+    "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743810942/Industrywaala%20brand/ac3ygowh8hzdmziniu6u.png",
+    "keyword": "daikin"
+  }
+]

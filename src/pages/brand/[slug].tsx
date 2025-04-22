@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { searchBrandedProducts } from '../../services/api';
-import { MainLayout } from '../../layouts/MainLayout';
-import { Breadcrumb } from '../../components/Breadcrumb';
-import { ProductCardFeatured } from '../../components/Home/ProductCardFeatured';
-import { ProductFilter } from '../../components/ProductPage/ProductFilter';
-import { ProductSort } from '../../components/ProductPage/ProductSort';
-import { ChevronLeft, ChevronRight, Filter, X } from 'lucide-react';
-import { Button } from '../../components/ui/button';
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { searchBrandedProducts } from "../../services/api";
+import { MainLayout } from "../../layouts/MainLayout";
+import { Breadcrumb } from "../../components/Breadcrumb";
+import { ProductCardFeatured } from "../../components/Home/ProductCardFeatured";
+import { ProductFilter } from "../../components/ProductPage/ProductFilter";
+import { ProductSort } from "../../components/ProductPage/ProductSort";
+import { ChevronLeft, ChevronRight, Filter, X } from "lucide-react";
+import { Button } from "../../components/ui/button";
 
 interface Brand {
   name: string;
@@ -33,17 +33,17 @@ export default function BrandPage() {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Fetch brand info
   useEffect(() => {
     const fetchBrandInfo = async () => {
       try {
-        const response = await fetch('/tempData/brand.json');
+        const response = await fetch("/tempData/brand.json");
         if (!response.ok) {
-          throw new Error('Failed to fetch brands');
+          throw new Error("Failed to fetch brands");
         }
         const brands = await response.json();
         const brand = brands.find((b: Brand) => b.keyword === slug);
@@ -51,11 +51,11 @@ export default function BrandPage() {
           setBrand(brand);
           document.title = `${brand.name} Products | IndustryWaala`;
         } else {
-          navigate('/brands');
+          navigate("/brand");
         }
       } catch (err) {
-        console.error('Error fetching brand info:', err);
-        navigate('/brands');
+        console.error("Error fetching brand info:", err);
+        navigate("/brand");
       }
     };
 
@@ -77,8 +77,8 @@ export default function BrandPage() {
         setFilteredProducts(data.products || []);
         setTotalPages(data.pages || 1);
       } catch (err) {
-        console.error('Failed to fetch products:', err);
-        setError('Failed to load products. Please try again later.');
+        console.error("Failed to fetch products:", err);
+        setError("Failed to load products. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -115,15 +115,15 @@ export default function BrandPage() {
     // Sort filtered products
     const sorted = [...filteredProducts].sort((a, b) => {
       switch (sortOption) {
-        case 'name-asc':
+        case "name-asc":
           return a.name.localeCompare(b.name);
-        case 'name-desc':
+        case "name-desc":
           return b.name.localeCompare(a.name);
-        case 'price-asc':
+        case "price-asc":
           return Number.parseFloat(a.price) - Number.parseFloat(b.price);
-        case 'price-desc':
+        case "price-desc":
           return Number.parseFloat(b.price) - Number.parseFloat(a.price);
-        case 'rating-desc':
+        case "rating-desc":
           return (
             Number.parseFloat(b.average_rating) -
             Number.parseFloat(a.average_rating)
@@ -148,8 +148,8 @@ export default function BrandPage() {
         onClick={() => setCurrentPage(1)}
         className={`w-10 h-10 flex items-center justify-center border ${
           currentPage === 1
-            ? 'bg-[#4280ef] text-white'
-            : 'bg-white text-gray-700'
+            ? "bg-[#4280ef] text-white"
+            : "bg-white text-gray-700"
         }`}
       >
         1
@@ -184,8 +184,8 @@ export default function BrandPage() {
           onClick={() => setCurrentPage(i)}
           className={`w-10 h-10 flex items-center justify-center border ${
             currentPage === i
-              ? 'bg-[#4280ef] text-white'
-              : 'bg-white text-gray-700'
+              ? "bg-[#4280ef] text-white"
+              : "bg-white text-gray-700"
           }`}
         >
           {i}
@@ -213,8 +213,8 @@ export default function BrandPage() {
           onClick={() => setCurrentPage(totalPages)}
           className={`w-10 h-10 flex items-center justify-center border ${
             currentPage === totalPages
-              ? 'bg-[#4280ef] text-white'
-              : 'bg-white text-gray-700'
+              ? "bg-[#4280ef] text-white"
+              : "bg-white text-gray-700"
           }`}
         >
           {totalPages}
@@ -234,9 +234,9 @@ export default function BrandPage() {
       <div className="container mx-auto px-4 py-8">
         <Breadcrumb
           items={[
-            { label: 'Home', href: '/' },
-            { label: 'Brands', href: '/brands' },
-            { label: brand?.name || slug || '', href: '#' },
+            { label: "Home", href: "/" },
+            { label: "Brands", href: "/brand" },
+            { label: brand?.name || slug || "", href: "#" },
           ]}
         />
 
@@ -275,7 +275,7 @@ export default function BrandPage() {
             <p className="text-lg text-gray-600">
               No products found for this brand.
             </p>
-            <Button className="mt-4" onClick={() => navigate('/brands')}>
+            <Button className="mt-4" onClick={() => navigate("/brand")}>
               Browse All Brands
             </Button>
           </div>
@@ -284,7 +284,7 @@ export default function BrandPage() {
             {/* Sidebar filter - mobile */}
             <div
               className={`md:hidden fixed inset-0 z-50 bg-white transform ${
-                filterOpen ? 'translate-x-0' : '-translate-x-full'
+                filterOpen ? "translate-x-0" : "-translate-x-full"
               } transition-transform duration-300 ease-in-out overflow-y-auto`}
             >
               <div className="p-4">
@@ -327,7 +327,7 @@ export default function BrandPage() {
                       //   product.categories?.find(
                       //     (cat: any) => cat.name === 'Brand'
                       //   )?.name || 'Unknown',
-                      thumbnail: product.images?.[0]?.src || '/placeholder.svg',
+                      thumbnail: product.images?.[0]?.src || "/placeholder.svg",
                       price: Number.parseFloat(
                         product.regular_price || product.price
                       ),
@@ -346,7 +346,7 @@ export default function BrandPage() {
                           )
                         : 0,
                       rating: Number.parseFloat(product.average_rating),
-                      stock: product.stock_status === 'instock' ? 100 : 0,
+                      stock: product.stock_status === "instock" ? 100 : 0,
                     }}
                   />
                 ))}

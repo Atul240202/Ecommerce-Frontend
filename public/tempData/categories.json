@@ -135,12 +135,6 @@
       "href": "/categories/pump",
       "icon": "https://res.cloudinary.com/da3r1iagy/image/upload/v1744037914/8_quhitg.png",
       "subcategories": []
-    },
-    {
-      "name": "Shop by Categories",
-      "href": "/categories",
-      "icon": "https://res.cloudinary.com/da3r1iagy/image/upload/v1744037914/9_ubpa0p.png",
-      "subcategories": []
     }
   ]
 }

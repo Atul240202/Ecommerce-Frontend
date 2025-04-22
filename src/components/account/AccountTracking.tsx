@@ -136,7 +136,8 @@ export function AccountTracking() {
   const handleTaxInvoice = async (orderId: string) => {
     try {
       const res = await fetchOrderTaxInvoice(orderId);
-      if (res.success && res.is_invoice_created) {
+      console.log("response");
+      if (res.is_invoice_created) {
         window.open(res.invoice_url, "_blank");
       } else {
         toast("Invoice is not generated yet", {
@@ -340,7 +341,7 @@ export function AccountTracking() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="text-blue-500 border-blue-500 text-xs py-1 h-8 flex-1"
+                        className="text-yellow-500 border-yellow-500 text-xs py-1 h-8 flex-1"
                         onClick={() =>
                           handleTaxInvoice(finalOrder.shipRocketOrderId)
                         }
@@ -348,26 +349,30 @@ export function AccountTracking() {
                         <Download className="h-3 w-3 mr-1" />
                         Tax Invoice
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-green-500 border-green-500 text-xs py-1 h-8 flex-1"
-                        onClick={() => handleTrackOrder(finalOrder.order_id)}
-                      >
-                        <Truck className="h-3 w-3 mr-1" />
-                        Track
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-red-500 border-red-500 text-xs py-1 h-8 flex-1"
-                        onClick={() =>
-                          handleCancelOrder(finalOrder.shipRocketOrderId)
-                        }
-                      >
-                        <XCircle className="h-3 w-3 mr-1" />
-                        Cancel
-                      </Button>
+                      {finalOrder.status !== "cancelled" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-green-500 border-green-500 text-xs py-1 h-8 flex-1"
+                          onClick={() => handleTrackOrder(finalOrder.order_id)}
+                        >
+                          <Truck className="h-3 w-3 mr-1" />
+                          Track
+                        </Button>
+                      )}
+                      {finalOrder.status !== "cancelled" && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-red-500 border-red-500 text-xs py-1 h-8 flex-1"
+                          onClick={() =>
+                            handleCancelOrder(finalOrder.shipRocketOrderId)
+                          }
+                        >
+                          <XCircle className="h-3 w-3 mr-1" />
+                          Cancel
+                        </Button>
+                      )}
                     </div>
 
                     {/* Tracking Details - Mobile */}

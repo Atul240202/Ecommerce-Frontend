@@ -69,6 +69,8 @@ interface Product {
   shipping_taxable: boolean;
   shipping_class: string;
   reviews_allowed: boolean;
+  tax_class: string;
+  tax_status: string;
   categories: ProductCategory[];
   tags: Array<{
     id: number;
@@ -88,6 +90,8 @@ interface Product {
   shippingInformation: string;
   availabilityStatus: string;
   returnPolicy: string;
+  youtube_vid?: string;
+  youtubeId?: string;
   shipping_amount?: number;
 }
 
@@ -359,6 +363,17 @@ export default function ProductPage() {
     ? Number.parseFloat(product.sale_price)
     : Number.parseFloat(product.price);
 
+  let exclusiveOfGST: number | null = null;
+
+  if (product.tax_status === "taxable" && product.tax_class?.trim() !== "") {
+    const taxPercentage = Number(product.tax_class);
+    if (!isNaN(taxPercentage) && taxPercentage > 0) {
+      const taxAmount =
+        (discountedPrice * taxPercentage) / (100 + taxPercentage);
+      exclusiveOfGST = discountedPrice - taxAmount;
+    }
+  }
+
   const regularPrice = Number.parseFloat(
     product.regular_price || product.price
   );
@@ -390,6 +405,8 @@ export default function ProductPage() {
           <ProductGallery
             images={product.images.map((img) => img.src)}
             thumbnail={product.images[0]?.src || "/placeholder.svg"}
+            youtubeVid={product.youtube_vid}
+            youtubeId={product.youtubeId}
           />
 
           <div className="space-y-6">
@@ -423,7 +440,18 @@ export default function ProductPage() {
                   ({product.rating_count} reviews)
                 </span>
               </div>
-
+              {exclusiveOfGST && (
+                <>
+                  <span
+                    className={`line-through ${
+                      isMobile ? "text-xl" : "text-2xl"
+                    }`}
+                  >
+                    ₹{exclusiveOfGST.toFixed(2)}
+                  </span>
+                  <p className="text-sm text-gray-500 mt-1">Exclusive of GST</p>
+                </>
+              )}
               <div className="mb-4">
                 <span
                   className={` font-bold ${isMobile ? "text-xl" : "text-3xl"}`}
