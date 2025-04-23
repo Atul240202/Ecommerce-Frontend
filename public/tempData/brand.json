@@ -30,9 +30,14 @@
     "keyword": "abro"
   },
   {
-    "name": "StanleyBlack & Decker",
-    "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745354089/logo_diwo5b.svg",
-    "keyword": "stanleyblack"
+    "name": "Stanley",
+    "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745424357/2_yowujk.png",
+    "keyword": "stanley"
+  },
+  {
+    "name": "Black & Decker",
+    "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745424357/3_pfxgma.png",
+    "keyword": "black&decker"
   },
   {
     "name": "3M",
@@ -98,11 +103,6 @@
     "name": "Tiemme",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743809378/Industrywaala%20brand/gcdmfmwouxpwcfifir8f.png",
     "keyword": "tiemme"
-  },
-  {
-    "name": "StanleyBlack & Decker",
-    "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745354089/logo_diwo5b.svg",
-    "keyword": "stanleyblack"
   },
   {
     "name": "DeWalt",
