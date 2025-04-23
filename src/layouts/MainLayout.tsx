@@ -34,8 +34,8 @@ export function MainLayout({ children }: MainLayoutProps) {
 
         <div className={`flex-1 ${isMobile ? "mt-[110px]" : "mt-[85px]"}`}>
           {!isLoginPage && !isRegisterPage && <SubHeader />}
-          <div className={``}>{isHomePage && <CategorySubheader />}</div>
           <div className={``}>{isHomePage && <BrandSubheader />}</div>
+          <div className={``}>{isHomePage && <CategorySubheader />}</div>
           <main className="flex-1">{children}</main>
         </div>
 
