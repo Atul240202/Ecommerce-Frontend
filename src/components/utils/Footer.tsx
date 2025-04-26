@@ -1,19 +1,19 @@
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { Facebook, Instagram, Youtube } from 'lucide-react';
-import { Features } from './Features';
-import logo from '../../assets/logo.webp';
-import { useLocation } from 'react-router-dom';
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Facebook, Instagram, Youtube } from "lucide-react";
+import { Features } from "./Features";
+import logo from "../../assets/logo.webp";
+import { useLocation } from "react-router-dom";
 
 export function Footer() {
   const location = useLocation();
-  const isProduct = location.pathname.startsWith('/product/');
+  const isProduct = location.pathname.startsWith("/product/");
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
@@ -28,7 +28,7 @@ export function Footer() {
             {/* Company Info Column */}
             <div className="space-y-4">
               <div
-                className={`flex  m-auto ${isMobile ? 'justify-center' : ''}`}
+                className={`flex  m-auto ${isMobile ? "justify-center" : ""}`}
               >
                 <Link href="/" className="flex-shrink-0">
                   <img
@@ -72,7 +72,7 @@ export function Footer() {
 
             <div
               className={`flex  ${
-                isMobile ? 'text-sm justify-between' : 'justify-around'
+                isMobile ? "text-sm justify-between" : "justify-around"
               }`}
             >
               {/* About Column */}
@@ -157,12 +157,12 @@ export function Footer() {
             {/* Contact Column */}
             <div
               className={`flex  ${
-                isMobile ? 'text-sm justify-between' : 'justify-around'
+                isMobile ? "text-sm justify-between" : "justify-around"
               }`}
             >
               <div>
                 <h3 className="font-bold text-lg text-gray-800">MAIL US</h3>
-                <p className="text-gray-600">info@industrywaala.com</p>
+                <p className="text-gray-600">sales@industrywaala.com</p>
                 <p className="text-gray-600 mt-2">Want to place an order?</p>
                 <p className="text-gray-600">Call: +91 7377 01 7377</p>
               </div>
