@@ -93,6 +93,7 @@ interface Product {
   youtube_vid?: string;
   youtubeId?: string;
   shipping_amount?: number;
+  short_description?: string;
 }
 
 export default function ProductPage() {
@@ -594,12 +595,23 @@ export default function ProductPage() {
         {/* Product Details Tabs */}
         <Tabs defaultValue="description" className="mb-12 ">
           <TabsList>
+            <TabsTrigger value="about">About the item</TabsTrigger>
             <TabsTrigger value="description">Description</TabsTrigger>
             <TabsTrigger value="specifications">Specifications</TabsTrigger>
             <TabsTrigger value="reviews">
               Reviews ({product.rating_count})
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="about" className="prose max-w-none px-4">
+            {product.short_description && (
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: product.short_description,
+                }}
+              />
+            )}
+          </TabsContent>
 
           <TabsContent value="description" className="prose max-w-none px-4">
             <div dangerouslySetInnerHTML={{ __html: product.description }} />
