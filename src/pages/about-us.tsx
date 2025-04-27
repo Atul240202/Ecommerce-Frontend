@@ -204,17 +204,17 @@ export default function AboutUs() {
               <p className="text-[#4c6290]">
                 Monday - Saturday from 10am to 7pm
               </p>
-              <p className="text-[#0e224d] font-medium">+91 </p>
+              <p className="text-[#0e224d] font-medium">+91 7377017377</p>
             </div>
             <div className="text-center">
               <h3 className="text-[#0e224d] text-2xl font-bold mb-2">
-                Visit us
+                Visit our office
               </h3>
-              <p className="text-[#4c6290]">Visit our office</p>
+              <p className="text-[#4c6290]">B-80, Sector - 5</p>
               <p className="text-[#4c6290]">
-                205 North Michigan Avenue, Suite 810
+                Gautam Budh Nagar, Noida
                 <br />
-                Chicago, 60601, USA
+                Uttar Pradesh - 201301
               </p>
             </div>
           </div>
