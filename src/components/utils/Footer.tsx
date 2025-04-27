@@ -63,9 +63,12 @@ export function Footer() {
                   >
                     <Instagram className="h-5 w-5" />
                   </Link>
-                  {/* <Link href="#" className="text-gray-600 hover:text-gray-800">
+                  <Link
+                    href="https://www.youtube.com/@Industrywaala"
+                    className="text-gray-600 hover:text-gray-800"
+                  >
                     <Youtube className="h-5 w-5" />
-                  </Link> */}
+                  </Link>
                 </div>
               </div>
             </div>
