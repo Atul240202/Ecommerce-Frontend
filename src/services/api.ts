@@ -424,3 +424,28 @@ export const searchProducts = async (keyword: string, limit = 10) => {
     return { products: [], total: 0 };
   }
 };
+
+export const checkDeliveryAvailability = async (pincode: string) => {
+  try {
+    const response = await fetch(`${API_URL}/shiprocket/check-delivery`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ deliveryPostcode: pincode }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData?.message || "Failed to check delivery availability"
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error("Error in checkDeliveryAvailability():", error.message);
+    throw new Error(error.message || "Failed to check delivery availability");
+  }
+};

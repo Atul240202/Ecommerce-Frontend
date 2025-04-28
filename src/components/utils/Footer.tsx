@@ -168,6 +168,7 @@ export function Footer() {
                 <p className="text-gray-600">sales@industrywaala.com</p>
                 <p className="text-gray-600 mt-2">Want to place an order?</p>
                 <p className="text-gray-600">Call: +91 7377 01 7377</p>
+                <p className="text-gray-600">GSTIN- 09ACUPT6154G1ZV</p>
               </div>
 
               <div>
@@ -181,14 +182,22 @@ export function Footer() {
                 <div className="flex items-start gap-2">
                   <div className="">
                     <p className="text-gray-600 font-semibold">SARATECH</p>
-                    <p className="text-gray-600">B -80,</p>
-                    <p className="text-gray-600">Sector- 5,</p>
-                    <p className="text-gray-600">Noida- 201301</p>
-                    <p className="text-gray-600">Gautam Budh Nagar</p>
-                    <p className="text-gray-600">Uttar Pradesh 201301</p>
-                    <p className="text-gray-600">GSTIN- 09ACUPT6154G1ZV</p>
+                    <p className="text-gray-600">B -80, Sector- 5,</p>
+                    <p className="text-gray-600"></p>
+                    <p className="text-gray-600">Noida - Gautam Budh Nagar</p>
+                    <p className="text-gray-600">Uttar Pradesh, 201301</p>
                   </div>
                 </div>
+
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3503.3221178506546!2d77.31936527495522!3d28.59011188600672!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce52bdffd3635%3A0x52ca46b16e63fb2a!2sIndustrywaala!5e0!3m2!1sen!2sin!4v1745867546254!5m2!1sen!2sin"
+                  width="200"
+                  height="150"
+                  className="border-1"
+                  allowfullscreen=""
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                ></iframe>
               </div>
             </div>
 
@@ -214,7 +223,8 @@ export function Footer() {
         <div className="border-t">
           <div className="container mx-auto px-4 py-4">
             <p className="text-sm text-center text-gray-600">
-              COPYRIGHT Saratech | ALL RIGHTS RESERVED
+              COPYRIGHT Saratech - ALL RIGHTS RESERVED || Crafted with 💙 Just
+              Charge
             </p>
           </div>
         </div>
