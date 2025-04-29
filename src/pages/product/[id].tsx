@@ -423,7 +423,11 @@ export default function ProductPage() {
 
   return (
     <MainLayout>
-      <div className={`container mx-auto  py-8 ${isMobile ? "px-2" : "px-8"}`}>
+      <div
+        className={`container mx-auto  py-8 ${
+          isMobile ? "px-2 max-w-[100vw]" : "px-8"
+        }`}
+      >
         <Breadcrumb
           items={[
             { label: "Home", href: "/" },
@@ -715,7 +719,9 @@ export default function ProductPage() {
         {/* Product Details Tabs */}
         <Tabs defaultValue="description" className="mb-12 ">
           <TabsList>
-            <TabsTrigger value="about">About the item</TabsTrigger>
+            <TabsTrigger value="about">
+              {isMobile ? "About" : "About the item"}
+            </TabsTrigger>
             <TabsTrigger value="description">Description</TabsTrigger>
             <TabsTrigger value="specifications">Specifications</TabsTrigger>
             <TabsTrigger value="reviews">
@@ -733,8 +739,11 @@ export default function ProductPage() {
             )}
           </TabsContent>
 
-          <TabsContent value="description" className="prose max-w-none px-4">
-            <div dangerouslySetInnerHTML={{ __html: product.description }} />
+          <TabsContent value="description" className="prose px-4">
+            <div
+              className="w-[90%] max-w-[100%]"
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            />
           </TabsContent>
 
           <TabsContent value="specifications" className="px-4">

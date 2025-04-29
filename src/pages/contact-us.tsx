@@ -209,7 +209,7 @@ export default function ContactPage() {
                 </div>
                 <h3 className="text-lg font-semibold mb-2">Call us</h3>
                 <p className="text-gray-600 text-sm mb-2">
-                  Mon-Fri from 8am to 5pm
+                  Mon-Fri from 10am to 7pm
                 </p>
                 <a
                   href="tel:+917377017377"
@@ -227,11 +227,11 @@ export default function ContactPage() {
                     <MapPin className="h-6 w-6 text-[#4280ef]" />
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">Visit us</h3>
-                <p className="text-gray-600 text-sm mb-2">Visit our office</p>
+                <h3 className="text-lg font-semibold mb-2">Visit our office</h3>
+                {/* <p className="text-gray-600 text-sm mb-2">Visit our office</p> */}
                 <address className="text-sm not-italic">
                   <p>SARATECH</p>
-                  <p>B-85, Sector-5</p>
+                  <p>B-80, Sector-5</p>
                   <p>Noida-201301</p>
                   <p>Gautam Budh Nagar</p>
                   <p>Uttar Pradesh 201301</p>
