@@ -1,3 +1,5 @@
+"use client";
+
 import type React from "react";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -229,10 +231,46 @@ export default function ProductPage() {
   };
 
   const handleCheckDelivery = async () => {
-    if (!pincode.trim()) return;
+    if (!pincode.trim() || !product) return;
     try {
       setCheckingDelivery(true);
-      const response = await checkDeliveryAvailability(pincode);
+
+      // Extract dimensions and weight from product
+      const weight = product.weight ? Number.parseFloat(product.weight) : 0.5; // Default to 0.5kg if not specified
+
+      // Extract dimensions, defaulting to 10cm if not specified
+      const length = product.dimensions?.length
+        ? Number.parseFloat(product.dimensions.length)
+        : 10;
+      const breadth = product.dimensions?.width
+        ? Number.parseFloat(product.dimensions.width)
+        : 10;
+      const height = product.dimensions?.height
+        ? Number.parseFloat(product.dimensions.height)
+        : 10;
+
+      // Calculate declared value based on product pricing
+      let declared_value = 0;
+      if (product.on_sale && product.sale_price) {
+        declared_value = Number.parseFloat(product.sale_price);
+      } else if (product.regular_price && product.regular_price !== "0") {
+        declared_value = Number.parseFloat(product.regular_price);
+      } else if (product.price) {
+        declared_value = Number.parseFloat(product.price);
+      } else {
+        declared_value = 500; // Default value if no price is specified
+      }
+
+      // Call the API with all parameters
+      const response = await checkDeliveryAvailability(
+        pincode,
+        weight,
+        length,
+        breadth,
+        height,
+        declared_value
+      );
+
       if (response.success) {
         setDeliveryInfo({
           available: response.available,
@@ -731,11 +769,71 @@ export default function ProductPage() {
 
           <TabsContent value="about" className="prose max-w-none px-4">
             {product.short_description && (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: product.short_description,
-                }}
-              />
+              <>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: product.short_description,
+                  }}
+                />
+                <style jsx global>{`
+                  .ProseMirror table {
+                    border-collapse: collapse;
+                    table-layout: fixed;
+                    width: 100%;
+                    margin: 0 0 1rem 0;
+                    overflow: hidden;
+                  }
+
+                  .ProseMirror ul {
+                    list-style-type: disc;
+                    padding-left: 1.5em;
+                    margin: 1em 0;
+                  }
+
+                  .ProseMirror ol {
+                    list-style-type: decimal;
+                    padding-left: 1.5em;
+                    margin: 1em 0;
+                  }
+
+                  .ProseMirror li {
+                    margin-bottom: 0.5em;
+                  }
+                  .ProseMirror table td,
+                  .ProseMirror table th {
+                    min-width: 1em;
+                    border: 1px solid #ddd;
+                    padding: 12px;
+                    vertical-align: top;
+                    box-sizing: border-box;
+                    position: relative;
+                  }
+
+                  .ProseMirror table th {
+                    font-weight: bold;
+                    background-color: #f9f9f9;
+                  }
+
+                  .ProseMirror table tr:nth-child(even) td {
+                    background-color: #f9f9f9;
+                  }
+
+                  .ProseMirror img {
+                    max-width: 100%;
+                    height: auto;
+                  }
+
+                  .table-enhanced {
+                    margin-bottom: 1.5rem !important;
+                    border-radius: 4px;
+                    overflow: hidden;
+                  }
+
+                  .table-cell-enhanced {
+                    padding: 12px !important;
+                  }
+                `}</style>
+              </>
             )}
           </TabsContent>
 

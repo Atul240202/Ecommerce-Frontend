@@ -1,3 +1,5 @@
+"use client";
+
 import type React from "react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -15,7 +17,6 @@ import {
 } from "../components/ui/select";
 import { Checkbox } from "../components/ui/checkbox";
 import { LoginModal } from "../components/utils/LoginModal";
-import { OrderConfirmation } from "../components/orders/OrderConfirmation";
 import { useCheckout } from "../contexts/CheckoutContext";
 import { Loader2, Plus } from "lucide-react";
 import Cookies from "js-cookie";
@@ -38,6 +39,7 @@ import { getCurrentUser } from "../services/auth";
 import { v4 as uuidv4 } from "uuid";
 import { format } from "date-fns";
 import phonepe from "/phonepe.png";
+import { checkDeliveryAvailability } from "../services/api";
 
 interface UserAddress {
   id: string;
@@ -60,7 +62,14 @@ interface FormErrors {
 }
 
 export default function CheckoutPage() {
-  const { products, updateQuantity, subtotal, shipping, total } = useCheckout();
+  const {
+    products,
+    updateQuantity,
+    subtotal,
+    shipping,
+    total,
+    updateShipping,
+  } = useCheckout();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   // const navigate = useNavigate();
@@ -116,6 +125,11 @@ export default function CheckoutPage() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [includeGST, setIncludeGST] = useState(false);
   const [gstNumber, setGstNumber] = useState("");
+
+  // Add these state variables inside the CheckoutPage component
+  const [isLoadingShipping, setIsLoadingShipping] = useState(false);
+  const [shippingError, setShippingError] = useState("");
+  const [calculatedShipping, setCalculatedShipping] = useState(shipping);
 
   //To sustain checkout page data
   useEffect(() => {
@@ -235,6 +249,142 @@ export default function CheckoutPage() {
     }
   };
 
+  // Add this function to calculate the declared value (product price)
+  const calculateDeclaredValue = (product) => {
+    if (product.sale_price && Number.parseFloat(product.sale_price) > 0) {
+      return Number.parseFloat(product.sale_price);
+    } else if (
+      product.regular_price &&
+      Number.parseFloat(product.regular_price) > 0
+    ) {
+      return Number.parseFloat(product.regular_price);
+    } else {
+      return Number.parseFloat(product.price);
+    }
+  };
+
+  // Add this function to fetch shipping charges
+  const fetchShippingCharges = async (postcode) => {
+    if (!postcode || products.length === 0) return;
+
+    setIsLoadingShipping(true);
+    setShippingError("");
+
+    try {
+      // Calculate total weight and dimensions
+      let totalWeight = 0;
+      let maxLength = 0;
+      let maxBreadth = 0;
+      let maxHeight = 0;
+      let totalDeclaredValue = 0;
+
+      // Process each product
+      products.forEach((product) => {
+        // Add weight
+        const productWeight = product.weight
+          ? Number.parseFloat(product.weight) * product.quantity
+          : 0.5 * product.quantity;
+        totalWeight += productWeight;
+
+        // Get dimensions
+        const dimensions = product.dimensions || {};
+        const length = dimensions.length
+          ? Number.parseFloat(dimensions.length)
+          : 0;
+        const width = dimensions.width
+          ? Number.parseFloat(dimensions.width)
+          : 0;
+        const height = dimensions.height
+          ? Number.parseFloat(dimensions.height)
+          : 0;
+
+        // Update max dimensions
+        maxLength = Math.max(maxLength, length);
+        maxBreadth = Math.max(maxBreadth, width);
+        maxHeight = Math.max(maxHeight, height);
+
+        // Calculate declared value
+        const declaredValue = calculateDeclaredValue(product);
+        totalDeclaredValue += declaredValue * product.quantity;
+      });
+
+      // If dimensions are missing, use default shipping
+      if (maxLength === 0 || maxBreadth === 0 || maxHeight === 0) {
+        // Check if any product has shipping_amount
+        let hasShippingAmount = false;
+        let productShipping = 0;
+
+        for (const product of products) {
+          if (
+            product.shipping_amount &&
+            Number.parseFloat(product.shipping_amount) > 0
+          ) {
+            hasShippingAmount = true;
+            productShipping +=
+              Number.parseFloat(product.shipping_amount) * product.quantity;
+          }
+        }
+
+        if (hasShippingAmount) {
+          setCalculatedShipping(productShipping);
+        } else {
+          setCalculatedShipping(200); // Default shipping charge
+        }
+
+        setIsLoadingShipping(false);
+        return;
+      }
+
+      // Call API to get shipping charges
+      const result = await checkDeliveryAvailability(
+        postcode,
+        totalWeight,
+        maxLength,
+        maxBreadth,
+        maxHeight,
+        totalDeclaredValue
+      );
+
+      if (result.success && result.available) {
+        setCalculatedShipping(Number.parseFloat(result.shipping_charges));
+      } else {
+        // If delivery not available, use default shipping
+        setCalculatedShipping(200);
+        setShippingError(
+          "Delivery may not be available to this pincode. Using standard shipping rate."
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching shipping charges:", error);
+      setShippingError(
+        "Failed to calculate shipping. Using standard shipping rate."
+      );
+      setCalculatedShipping(200); // Default to 200 on error
+    } finally {
+      setIsLoadingShipping(false);
+    }
+  };
+
+  // Add this effect to update the total when calculated shipping changes
+  useEffect(() => {
+    // Update the total with the new shipping charge
+    const newTotal = subtotal + calculatedShipping;
+    // We need to update the context's shipping and total values
+    if (typeof updateShipping === "function") {
+      updateShipping(calculatedShipping);
+    }
+  }, [calculatedShipping, subtotal, updateShipping]);
+
+  // Add this effect to fetch shipping charges when shipping address changes
+  useEffect(() => {
+    const selectedAddress = getSelectedShippingAddress();
+    console.log("selected address", selectedAddress);
+    if (selectedAddress && selectedAddress.postcode) {
+      fetchShippingCharges(selectedAddress.postcode);
+    }
+  }, [selectedShippingAddressId, products]);
+
+  // Modify the handleShippingAddressSelect function to fetch shipping charges
   const handleShippingAddressSelect = async (addressId: string) => {
     setSelectedShippingAddressId(addressId);
 
@@ -269,6 +419,11 @@ export default function CheckoutPage() {
           variant: "destructive",
         });
       }
+    }
+
+    // Fetch shipping charges for the selected address
+    if (selectedAddress && selectedAddress.postcode) {
+      fetchShippingCharges(selectedAddress.postcode);
     }
 
     setShowNewShippingForm(false);
@@ -477,7 +632,7 @@ export default function CheckoutPage() {
 
       // Payment and pricing information
       payment_method: paymentMethod === "cod" ? "COD" : "Prepaid",
-      shipping_charges: shipping.toString(),
+      shipping_charges: calculatedShipping.toString(), // Use calculated shipping
       giftwrap_charges: "0",
       transaction_charges: "0",
       total_discount: "0",
@@ -652,8 +807,8 @@ export default function CheckoutPage() {
             }
           : undefined,
         subtotal,
-        shipping,
-        total,
+        shipping: calculatedShipping, // Use calculated shipping
+        total: subtotal + calculatedShipping, // Update total with calculated shipping
         reason: "Process was not completed by the user.",
       };
 
@@ -1182,7 +1337,7 @@ export default function CheckoutPage() {
                               }
 
                               try {
-                                setIsSubmitting(true);
+                                setIsLoadingShipping(true);
 
                                 // If user wants to save the address, add it to their account
                                 if (saveNewShippingAddress) {
@@ -1246,7 +1401,7 @@ export default function CheckoutPage() {
                                   variant: "destructive",
                                 });
                               } finally {
-                                setIsSubmitting(false);
+                                setIsLoadingShipping(false);
                               }
                             }}
                           >
@@ -1283,7 +1438,7 @@ export default function CheckoutPage() {
                           <RadioGroupItem value="phonepe" />
                           <span>PhonePe Payment Solutions</span>
                           <img
-                            src={phonepe}
+                            src={phonepe || "/placeholder.svg"}
                             alt="PhonePe"
                             width={50}
                             height={24}
@@ -1980,6 +2135,11 @@ export default function CheckoutPage() {
                         SKU: {product.sku}
                       </p>
                     )}
+                    {product.weight && (
+                      <p className="text-xs text-gray-500">
+                        Weight: {product.weight} kg
+                      </p>
+                    )}
                     <div className="flex items-center gap-2 mt-2">
                       <Button
                         variant="outline"
@@ -2016,11 +2176,26 @@ export default function CheckoutPage() {
               </div>
               <div className="flex justify-between">
                 <span>Shipping</span>
-                <span>₹{shipping.toFixed(2)}</span>
+                <span>
+                  {isLoadingShipping ? (
+                    <span className="text-sm text-gray-500">
+                      Calculating...
+                    </span>
+                  ) : (
+                    <>
+                      ₹{calculatedShipping.toFixed(2)}
+                      {shippingError && (
+                        <span className="block text-xs text-red-500">
+                          {shippingError}
+                        </span>
+                      )}
+                    </>
+                  )}
+                </span>
               </div>
               <div className="flex justify-between font-semibold text-lg">
                 <span>Total</span>
-                <span>₹{total.toFixed(2)}</span>
+                <span>₹{(subtotal + calculatedShipping).toFixed(2)}</span>
               </div>
             </div>
           </div>

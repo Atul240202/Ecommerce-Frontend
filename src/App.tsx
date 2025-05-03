@@ -9,7 +9,7 @@ import ProductPage from "./pages/product/[id]";
 import CartPage from "./pages/cart";
 import BlogPage from "./pages/blog";
 import GoogleRegisterPage from "./pages/register/google";
-import BlogPostPage from "./pages/blog/[id]";
+import BlogPostPage from "./pages/blog/[slug]";
 import ContactPage from "./pages/contact-us";
 import TermsAndConditionsPage from "./pages/terms-and-condition";
 import ShippingAndReturnsPage from "./pages/shipping-and-returns";
@@ -66,7 +66,7 @@ function App() {
             <Route path="/product/:id" element={<ProductPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/blog" element={<BlogPage />} />
-            <Route path="/blog/:id" element={<BlogPostPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/wishlist" element={<WishlistPage />} />
             <Route path="/about-us" element={<AboutUs />} />

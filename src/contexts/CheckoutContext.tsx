@@ -1,3 +1,5 @@
+"use client";
+
 import type React from "react";
 
 import { createContext, useContext, useState } from "react";
@@ -10,6 +12,7 @@ interface CheckoutProduct {
   quantity: number;
   sku: string;
   shipping_amount?: number;
+  weight?: string;
 }
 
 interface CheckoutContextType {
@@ -21,6 +24,7 @@ interface CheckoutContextType {
   clearCheckout: () => void;
   subtotal: number;
   shipping: number;
+  updateShipping: (amount: number) => void; // Add this line
   total: number;
 }
 
@@ -28,23 +32,29 @@ const CheckoutContext = createContext<CheckoutContextType | undefined>(
   undefined
 );
 
+// Add updateShipping to the context provider
 export function CheckoutProvider({ children }: { children: React.ReactNode }) {
   const [products, setProducts] = useState<CheckoutProduct[]>([]);
-  // const shippingRate = 200; // ₹200 flat rate shipping
+  const [shipping, setShipping] = useState<number>(0);
+
+  // Add updateShipping function
+  const updateShipping = (amount: number) => {
+    setShipping(amount);
+  };
 
   const subtotal = products.reduce(
     (sum, product) => sum + product.price * product.quantity,
     0
   );
-  const shipping =
-    products.length > 0
-      ? (() => {
-          const shippingValues = products
-            .map((p) => (p as any).shipping_amount)
-            .filter((v) => typeof v === "number");
-          return shippingValues.length > 0 ? Math.max(...shippingValues) : 200;
-        })()
-      : 0;
+  // const shipping =
+  //   products.length > 0
+  //     ? (() => {
+  //         const shippingValues = products
+  //           .map((p) => (p as any).shipping_amount)
+  //           .filter((v) => typeof v === "number");
+  //         return shippingValues.length > 0 ? Math.max(...shippingValues) : 200;
+  //       })()
+  //     : 0;
 
   const total = subtotal + shipping;
 
@@ -70,20 +80,22 @@ export function CheckoutProvider({ children }: { children: React.ReactNode }) {
     setProducts([]);
   };
 
+  // Include updateShipping in the context value
+  const value = {
+    products,
+    addProduct,
+    addProducts,
+    removeProduct,
+    updateQuantity,
+    clearCheckout,
+    subtotal,
+    shipping,
+    updateShipping, // Add this line
+    total,
+  };
+
   return (
-    <CheckoutContext.Provider
-      value={{
-        products,
-        addProduct,
-        addProducts,
-        removeProduct,
-        updateQuantity,
-        clearCheckout,
-        subtotal,
-        shipping,
-        total,
-      }}
-    >
+    <CheckoutContext.Provider value={value}>
       {children}
     </CheckoutContext.Provider>
   );

@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { MainLayout } from "../layouts/MainLayout";
@@ -9,21 +11,10 @@ import { BlogCard } from "../components/Blogs/BlogCard";
 import {
   fetchFeaturedProducts,
   fetchBestSellerProducts,
-  fetchVariableProducts,
   type Product,
 } from "../services/api";
 import { BrandSlider } from "../components/Home/BrandSlider";
-interface Blog {
-  id: number;
-  title: string;
-  thumbnail: string;
-  subTitle: string;
-  content: string[];
-  tags: string[];
-  priorityStatus: "High" | "Medium" | "Low";
-  createdDateTime: string;
-  insidePageImage: string;
-}
+import { fetchBlogs, type Blog } from "../services/blogService";
 
 export default function HomePage() {
   const [promotions, setPromotions] = useState<any>(null);
@@ -71,19 +62,31 @@ export default function HomePage() {
     };
 
     fetchProducts();
-    // Fetch blogs
-    fetch("/tempData/blog.json")
-      .then((res) => res.json())
-      .then((data) => {
-        // Sort blogs by createdDateTime, newest first
-        const sortedBlogs = data.blogs.sort(
-          (a: Blog, b: Blog) =>
-            new Date(b.createdDateTime).getTime() -
-            new Date(a.createdDateTime).getTime()
+
+    // Fetch blogs from backend API
+    const fetchLatestBlogs = async () => {
+      try {
+        const blogs = await fetchBlogs();
+
+        // Filter blogs to only show published ones
+        const publishedBlogs = blogs.filter(
+          (blog) => blog.status === "published"
         );
+
+        // Sort blogs by createdAt, newest first
+        const sortedBlogs = publishedBlogs.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+
         // Get the 5 latest blogs
         setLatestBlogs(sortedBlogs.slice(0, 5));
-      });
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      }
+    };
+
+    fetchLatestBlogs();
   }, []);
 
   if (
@@ -145,9 +148,15 @@ export default function HomePage() {
           <section className="container my-12 px-4">
             <h2 className="text-2xl font-bold mb-6">Latest from Our Blog</h2>
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-6">
-              {latestBlogs.map((blog) => (
-                <BlogCard key={blog.id} blog={blog} />
-              ))}
+              {latestBlogs.length > 0 ? (
+                latestBlogs.map((blog) => (
+                  <BlogCard key={blog._id} blog={blog} />
+                ))
+              ) : (
+                <p className="col-span-5 text-center text-gray-500">
+                  No blog posts available at the moment.
+                </p>
+              )}
             </div>
             <div className="text-center mt-8">
               <Link

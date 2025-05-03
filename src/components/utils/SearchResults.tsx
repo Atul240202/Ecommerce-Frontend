@@ -1,10 +1,12 @@
-import Link from 'next/link';
-import { Loader2 } from 'lucide-react';
+import Link from "next/link";
+import { Loader2 } from "lucide-react";
 
 interface Product {
   id: number;
   name: string;
   price: string;
+  sale_price: string;
+  regular_price: string;
   images: Array<{ src: string }>;
   categories: Array<{ name: string }>;
 }
@@ -44,7 +46,7 @@ export function SearchResults({
                 >
                   <div className="w-20 h-20 flex-shrink-0 mr-3">
                     <img
-                      src={product.images[0]?.src || '/placeholder.svg'}
+                      src={product.images[0]?.src || "/placeholder.svg"}
                       alt={product.name}
                       width={80}
                       height={80}
@@ -54,9 +56,14 @@ export function SearchResults({
                   <div className="flex-1">
                     <p className="text-lg font-medium">{product.name}</p>
                     <p className="text-md text-gray-500">
-                      {product.categories.map((cat) => cat.name).join(', ')}
+                      {product.categories.map((cat) => cat.name).join(", ")}
                     </p>
-                    <p className="text-md font-bold">Rs. {product.price}</p>
+                    <p className="text-md font-bold">
+                      Rs.{" "}
+                      {product.sale_price ||
+                        product.regular_price ||
+                        product.price}
+                    </p>
                   </div>
                 </Link>
               </li>

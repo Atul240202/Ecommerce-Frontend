@@ -425,14 +425,28 @@ export const searchProducts = async (keyword: string, limit = 10) => {
   }
 };
 
-export const checkDeliveryAvailability = async (pincode: string) => {
+export const checkDeliveryAvailability = async (
+  pincode: string,
+  weight?: number,
+  length?: string | number,
+  breadth?: string | number,
+  height?: string | number,
+  declared_value?: string | number
+) => {
   try {
     const response = await fetch(`${API_URL}/shiprocket/check-delivery`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ deliveryPostcode: pincode }),
+      body: JSON.stringify({
+        deliveryPostcode: pincode,
+        weight: weight || 0.5, // Default weight if not provided
+        length: length || "",
+        breadth: breadth || "",
+        height: height || "",
+        declared_value: declared_value || "",
+      }),
     });
 
     if (!response.ok) {
