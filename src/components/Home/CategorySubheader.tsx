@@ -1,12 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
-import { ChevronDown, ChevronRight, ChevronLeft } from 'lucide-react';
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import { ChevronDown, ChevronRight, ChevronLeft } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../components/ui/dropdown-menu';
+} from "../../components/ui/dropdown-menu";
 
 interface Subcategory {
   name: string;
@@ -29,13 +29,13 @@ export const CategorySubheader = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    fetch('/tempData/categories.json')
+    fetch("/tempData/categories.json")
       .then((res) => res.json())
       .then((data) => {
         setCategories(data.categories);
       })
       .catch((error) => {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       });
   }, []);
 
@@ -44,8 +44,8 @@ export const CategorySubheader = () => {
       setIsMobile(window.innerWidth < 768);
     };
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -60,36 +60,36 @@ export const CategorySubheader = () => {
 
     const scrollContainer = scrollContainerRef.current;
     if (scrollContainer) {
-      scrollContainer.addEventListener('scroll', checkScroll);
+      scrollContainer.addEventListener("scroll", checkScroll);
       checkScroll();
     }
 
     return () => {
       if (scrollContainer) {
-        scrollContainer.removeEventListener('scroll', checkScroll);
+        scrollContainer.removeEventListener("scroll", checkScroll);
       }
     };
   }, [categories]);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+      scrollContainerRef.current.scrollBy({ left: -200, behavior: "smooth" });
     }
   };
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+      scrollContainerRef.current.scrollBy({ left: 200, behavior: "smooth" });
     }
   };
 
   return (
     <nav className="relative bg-white border-b border-gray-200 z-40">
-      <div className="container mx-auto px-4 relative">
+      <div className="container mx-auto relative">
         <div
           ref={scrollContainerRef}
-          className="flex justify-between gap-4 overflow-x-auto py-3 scrollbar-hide scroll-smooth"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          className="flex justify-between gap-4 overflow-x-auto border-0 scrollbar-hide scroll-smooth"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {categories.map((category, index) => (
             <div
@@ -104,17 +104,17 @@ export const CategorySubheader = () => {
                     <button
                       className={`flex flex-col items-center px-4 py-2 ${
                         isMobile
-                          ? 'h-20 w-20 text-[0.75rem]'
-                          : 'h-auto w-28 text-sm'
+                          ? "h-20 w-20 text-[0.75rem]"
+                          : "h-auto w-28 text-sm"
                       } text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap bg-transparent border-0 cursor-pointer`}
                     >
                       <div
                         className={`mb-1 overflow-hidden  ${
-                          isMobile ? 'gap-2 w-10 h-10' : 'w-18 h-18'
+                          isMobile ? "gap-2 w-10 h-10" : "w-18 h-18"
                         }`}
                       >
                         <img
-                          src={category.icon || '/placeholder.svg'}
+                          src={category.icon || "/placeholder.svg"}
                           alt={category.name}
                           width={80}
                           height={80}
@@ -125,7 +125,7 @@ export const CategorySubheader = () => {
                         <span>{category.name}</span>
                         <ChevronDown
                           className={`ml-1 h-3 w-3 transition-transform ${
-                            openDropdown === index ? 'rotate-180' : ''
+                            openDropdown === index ? "rotate-180" : ""
                           }`}
                         />
                       </div>
@@ -162,11 +162,11 @@ export const CategorySubheader = () => {
                 >
                   <div
                     className={`mb-1 overflow-hidden ${
-                      isMobile ? 'gap-2 w-10 h-10' : 'w-18 h-18'
+                      isMobile ? "gap-2 w-10 h-10" : "w-18 h-18"
                     }`}
                   >
                     <img
-                      src={category.icon || '/placeholder.svg'}
+                      src={category.icon || "/placeholder.svg"}
                       alt={category.name}
                       width={80}
                       height={80}

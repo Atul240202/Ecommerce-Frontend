@@ -72,10 +72,10 @@ export const BrandSubheader = () => {
 
   return (
     <nav className="relative bg-white border-b border-gray-200 z-40">
-      <div className="container mx-auto px-4 relative">
+      <div className="container mx-auto relative">
         <div
           ref={scrollContainerRef}
-          className="flex justify-between gap-4 overflow-x-auto py-3 scrollbar-hide scroll-smooth"
+          className="flex justify-between gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {brands.map((brand, index) => (

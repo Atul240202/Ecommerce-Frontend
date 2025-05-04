@@ -522,7 +522,7 @@ export default function ProductPage() {
                   ({product.rating_count} reviews)
                 </span>
               </div>
-              {product.regular_price === "0" || product.regular_price === "" ? (
+              {product.price === "0" || product.price === "" ? (
                 <div className="mb-4">
                   <span
                     className={`font-bold ${isMobile ? "text-xl" : "text-3xl"}`}
