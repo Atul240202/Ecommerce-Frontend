@@ -534,11 +534,7 @@ export default function ProductPage() {
                 <>
                   {exclusiveOfGST && (
                     <>
-                      <span
-                        className={`line-through ${
-                          isMobile ? "text-xl" : "text-2xl"
-                        }`}
-                      >
+                      <span className={` ${isMobile ? "text-xl" : "text-2xl"}`}>
                         ₹{exclusiveOfGST.toFixed(2)}
                       </span>
                       <p className="text-sm text-gray-500 mt-1">

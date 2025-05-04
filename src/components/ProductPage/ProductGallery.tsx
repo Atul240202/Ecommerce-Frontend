@@ -128,48 +128,39 @@ export function ProductGallery({
             <img
               src={allImages[selectedImage] || "/placeholder.svg"}
               alt="Product main view"
-              className="absolute inset-0 w-full h-full object-contain"
+              className={`absolute inset-0 w-full h-full object-contain transition-transform duration-300 ${
+                !isMobile && showZoom ? "scale-[2.5]" : "scale-100"
+              }`}
+              style={{
+                transformOrigin: `${zoomPosition.x * 100}% ${
+                  zoomPosition.y * 100
+                }%`,
+              }}
             />
           )}
         </div>
 
         {/* Zoom View (Fixed position) */}
-        {showZoom && !isVideoSelected && !isMobile && (
+        {/* {showZoom && !isVideoSelected && !isMobile && (
           <div
-            ref={zoomRef}
-            className="fixed top-1/2 left-3/4 transform -translate-x-1/2 -translate-y-1/2 z-50 w-[500px] h-[500px] bg-white border border-gray-300 rounded-lg shadow-xl"
+            className="absolute pointer-events-none z-20 rounded-full border-2 border-white shadow-lg"
             style={{
+              top: `${zoomPosition.y * 100}%`,
+              left: `${zoomPosition.x * 100}%`,
+              transform: "translate(-50%, -50%)",
+              width: "150px",
+              height: "150px",
               backgroundImage: `url(${
                 allImages[selectedImage] || "/placeholder.svg"
               })`,
+              backgroundRepeat: "no-repeat",
+              backgroundSize: `${zoomLevel * 100}%`,
               backgroundPosition: `${zoomPosition.x * 100}% ${
                 zoomPosition.y * 100
               }%`,
-              backgroundSize: `${zoomLevel * 100}%`,
-              backgroundRepeat: "no-repeat",
             }}
-          >
-            <button
-              className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-md"
-              onClick={() => setShowZoom(false)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
-          </div>
-        )}
+          />
+        )} */}
       </div>
     </div>
   );
