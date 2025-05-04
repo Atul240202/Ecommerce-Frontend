@@ -24,7 +24,6 @@ export default function BrandsPage() {
         }
 
         const data = await response.json();
-        console.log("Brand data", data);
         setBrands(data);
       } catch (err) {
         console.error("Error fetching brands:", err);

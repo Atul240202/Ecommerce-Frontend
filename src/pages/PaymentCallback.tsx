@@ -11,7 +11,6 @@ export default function PaymentCallback() {
   const [verifying, setVerifying] = useState(true);
 
   useEffect(() => {
-    console.log("transaction id", transactionId);
     const verifyPayment = async () => {
       try {
         const res = await fetch(
@@ -19,9 +18,7 @@ export default function PaymentCallback() {
             import.meta.env.VITE_API_URL
           }/payment/phonepe/status/${transactionId}`
         );
-        console.log("payment res", res);
         const data = await res.json();
-        console.log("payment confirmation data", data);
 
         if (data.success) {
           navigate(`/order-confirmation/online/${data.transactionId}`);

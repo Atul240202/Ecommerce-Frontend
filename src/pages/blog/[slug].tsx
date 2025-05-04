@@ -78,8 +78,6 @@ export default function BlogPostPage() {
 
   const handleSubmitComment = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, you would send this to your backend
-    console.log({ comment, name, email });
 
     // Reset form
     setComment("");

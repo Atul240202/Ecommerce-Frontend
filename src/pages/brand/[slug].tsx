@@ -61,7 +61,6 @@ export default function BrandPage() {
     };
 
     if (slug) {
-      console.log("slug of brand", slug);
       fetchBrandInfo();
     }
   }, [slug, navigate]);
@@ -75,7 +74,6 @@ export default function BrandPage() {
       setError(null);
       try {
         const data = await searchBrandedProducts(slug, currentPage, 50);
-        console.log("branded product", data);
         setProducts(data.products || []);
         setFilteredProducts(data.products || []);
         setTotalPages(data.pages || 1);

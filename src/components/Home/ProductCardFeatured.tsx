@@ -162,16 +162,18 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
 
             <div className="mt-auto">
               {regularPrice === 0 && discountPercentage === 0 ? (
-                <Link
-                  to={`/product/${
-                    product.slug ||
-                    product.title.toLowerCase().replace(/\s+/g, "-")
-                  }-${product.id}`}
+                <Button
+                  className="w-full bg-white text-blue-500 border-2 border-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.location.href = `/product/${
+                      product.slug ||
+                      product.title.toLowerCase().replace(/\s+/g, "-")
+                    }-${product.id}`;
+                  }}
                 >
-                  <Button className="w-full bg-white text-blue-500 border-2 border-blue-500 hover:bg-blue-500 hover:text-white transition-colors">
-                    View Product
-                  </Button>
-                </Link>
+                  View Product
+                </Button>
               ) : product.variations?.length > 0 &&
                 product.type === "variable" ? (
                 <Button

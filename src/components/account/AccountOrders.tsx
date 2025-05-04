@@ -82,7 +82,6 @@ export function AccountOrders() {
       try {
         setIsLoading(true);
         const data = await getUserFinalOrders();
-        console.log("setFinalOrders", data);
         setFinalOrders(data.data);
       } catch (err) {
         setError("Failed to load your orders. Please try again later.");

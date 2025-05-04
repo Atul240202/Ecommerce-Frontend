@@ -154,7 +154,6 @@ export default function ProductPage() {
         const productId = id.split("-").pop() || id;
 
         const productData = await fetchProductById(productId);
-        console.log("Specific product", productData);
         // Transform the API data to match our UI needs
         const transformedProduct: Product = {
           ...productData,
@@ -178,7 +177,6 @@ export default function ProductPage() {
   }, [id, isInWishlist]);
 
   const handleQuantityChange = (change: number) => {
-    console.log("handleQuantityChange");
     const newQuantity = quantity + change;
 
     const isStockLimited =
@@ -301,11 +299,17 @@ export default function ProductPage() {
     addProduct({
       id: product.id,
       title: product.name,
-      thumbnail: product.images[0]?.src || "/placeholder.svg",
+      thumbnail: product.images[0]?.src,
       price: discountedPrice,
       quantity: quantity,
       sku: product.sku || "",
       shipping_amount: product.shipping_amount ?? 200,
+      weight: product.weight ?? "0.5",
+      dimensions: {
+        length: product.dimensions?.length ?? "0",
+        width: product.dimensions?.width ?? "0",
+        height: product.dimensions?.height ?? "0",
+      },
     });
 
     navigate("/checkout");

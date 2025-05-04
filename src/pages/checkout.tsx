@@ -288,21 +288,17 @@ export default function CheckoutPage() {
 
         // Get dimensions
         const dimensions = product.dimensions || {};
-        const length = dimensions.length
-          ? Number.parseFloat(dimensions.length)
-          : 0;
-        const width = dimensions.width
-          ? Number.parseFloat(dimensions.width)
-          : 0;
-        const height = dimensions.height
-          ? Number.parseFloat(dimensions.height)
-          : 0;
+        const parseDimension = (value?: string | number) =>
+          Number(value) > 0 ? Number(value) : 0;
+
+        const length = parseDimension(dimensions.length);
+        const width = parseDimension(dimensions.width);
+        const height = parseDimension(dimensions.height);
 
         // Update max dimensions
         maxLength = Math.max(maxLength, length);
         maxBreadth = Math.max(maxBreadth, width);
         maxHeight = Math.max(maxHeight, height);
-
         // Calculate declared value
         const declaredValue = calculateDeclaredValue(product);
         totalDeclaredValue += declaredValue * product.quantity;
@@ -313,15 +309,10 @@ export default function CheckoutPage() {
         // Check if any product has shipping_amount
         let hasShippingAmount = false;
         let productShipping = 0;
-
         for (const product of products) {
-          if (
-            product.shipping_amount &&
-            Number.parseFloat(product.shipping_amount) > 0
-          ) {
+          if (product.shipping_amount && product.shipping_amount > 0) {
             hasShippingAmount = true;
-            productShipping +=
-              Number.parseFloat(product.shipping_amount) * product.quantity;
+            productShipping += product.shipping_amount * product.quantity;
           }
         }
 
@@ -378,7 +369,6 @@ export default function CheckoutPage() {
   // Add this effect to fetch shipping charges when shipping address changes
   useEffect(() => {
     const selectedAddress = getSelectedShippingAddress();
-    console.log("selected address", selectedAddress);
     if (selectedAddress && selectedAddress.postcode) {
       fetchShippingCharges(selectedAddress.postcode);
     }

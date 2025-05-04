@@ -13,6 +13,11 @@ interface CheckoutProduct {
   sku: string;
   shipping_amount?: number;
   weight?: string;
+  dimensions?: {
+    length?: string;
+    width?: string;
+    height?: string;
+  };
 }
 
 interface CheckoutContextType {

@@ -16,7 +16,6 @@ export default function GoogleCallback() {
     }
 
     const payload = JSON.parse(atob(credential.split(".")[1]));
-    console.log("Payload", payload);
     const googleUser = {
       email: payload.email,
       firstName: payload.given_name,
