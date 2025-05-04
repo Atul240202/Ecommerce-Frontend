@@ -2,156 +2,187 @@
   {
     "name": "Bosch",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743811601/Industrywaala%20brand/cokoqa6kskcxnjdrnlms.png",
-    "keyword": "bosch"
+    "keyword": "bosch",
+    "banner": ""
   },
   {
     "name": "CRC",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/c_crop,ar_16:9/v1743811710/Industrywaala%20brand/xro0mt9zzww871xe9ozy.png",
-    "keyword": "crc"
+    "keyword": "crc",
+    "banner": ""
   },
   {
     "name": "Fevicol",
     "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745354089/Group-328_on12r8.webp",
-    "keyword": "fevicol"
+    "keyword": "fevicol",
+    "banner": ""
   },
   {
     "name": "Pidilite",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743811511/Industrywaala%20brand/otpoqugvgfcivvjngyie.webp",
-    "keyword": "pidilite"
+    "keyword": "pidilite",
+    "banner": ""
   },
   {
     "name": "Autofit",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743811400/Industrywaala%20brand/ltyec1lorxaiu4p2ytc5.png",
-    "keyword": "autofit"
+    "keyword": "autofit",
+    "banner": ""
   },
   {
     "name": "Abro",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743811355/Industrywaala%20brand/eza1b5cjyefi6laqrkol.png",
-    "keyword": "abro"
+    "keyword": "abro",
+    "banner": ""
   },
   {
     "name": "Stanley",
     "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745579456/LOGO_1_cly7cw.png",
-    "keyword": "stanley"
+    "keyword": "stanley",
+    "banner": ""
   },
   {
     "name": "Black & Decker",
     "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745757632/Black_Decker_Logo.svg_mwtlk9.png",
-    "keyword": "black&decker"
+    "keyword": "black&decker",
+    "banner": ""
   },
   {
     "name": "3M",
     "image": "https://res.cloudinary.com/da3r1iagy/image/upload/c_thumb,w_200,g_face/v1745354132/Trifecta_3M_001_Logo_CMYK_y3ajil.jpg",
-    "keyword": "3m"
+    "keyword": "3m",
+    "banner": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745424359/POWER_ikq6cs.png"
   },
   {
     "name": "Spectroline",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743811270/Industrywaala%20brand/jdhvo6tietehfeh1iw8r.png",
-    "keyword": "spectroline"
+    "keyword": "spectroline",
+    "banner": ""
   },
   {
     "name": "Daikin",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743810942/Industrywaala%20brand/ac3ygowh8hzdmziniu6u.png",
-    "keyword": "daikin"
+    "keyword": "daikin",
+    "banner": ""
   },
   {
     "name": "Lapox",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/c_crop,ar_16:9/v1743810872/Industrywaala%20brand/hogx4cv4itxmlcwp2n7g.png",
-    "keyword": "lapox"
+    "keyword": "lapox",
+    "banner": ""
   },
   {
     "name": "Aerol",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743810625/Industrywaala%20brand/af47kuxdwbydfsidh2ms.png",
-    "keyword": "aerol"
+    "keyword": "aerol",
+    "banner": ""
   },
   {
     "name": "Aerofoam",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743810577/Industrywaala%20brand/tnlcwjdnvftmvu18cjje.webp",
-    "keyword": "aerofoam"
+    "keyword": "aerofoam",
+    "banner": ""
   },
   {
     "name": "Hilti",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743810306/Industrywaala%20brand/btgrrncfqps6awqxmhfm.png",
-    "keyword": "hilti"
+    "keyword": "hilti",
+    "banner": ""
   },
   {
     "name": "Totaline",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743810235/Industrywaala%20brand/zcgfydcl6oz4qvkj1x92.png",
-    "keyword": "totaline"
+    "keyword": "totaline",
+    "banner": ""
   },
   {
     "name": "Afra",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743810122/Industrywaala%20brand/bbxmmvvfpy1ygvwct8zr.png",
-    "keyword": "afra"
+    "keyword": "afra",
+    "banner": ""
   },
   {
     "name": "Alutix",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743809868/Industrywaala%20brand/culatmnn3rvxpz0o3fq9.png",
-    "keyword": "alutix"
+    "keyword": "alutix",
+    "banner": ""
   },
   {
     "name": "Loctite",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743809815/Industrywaala%20brand/rpcammdtvdynxurdzac7.png",
-    "keyword": "loctite"
+    "keyword": "loctite",
+    "banner": ""
   },
   {
     "name": "Kent",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743809530/Industrywaala%20brand/umfvpt50jdm7feivtx4m.png",
-    "keyword": "kent"
+    "keyword": "kent",
+    "banner": ""
   },
   {
     "name": "Tiemme",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743809378/Industrywaala%20brand/gcdmfmwouxpwcfifir8f.png",
-    "keyword": "tiemme"
+    "keyword": "tiemme",
+    "banner": ""
   },
   {
     "name": "DeWalt",
     "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745354089/dewalt-logo_brandlogos.net_whugt_yr7jvg.png",
-    "keyword": "dewalt"
+    "keyword": "dewalt",
+    "banner": ""
   },
   {
     "name": "Totem",
     "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745579456/LOGO_psvfob.png",
-    "keyword": "totem"
+    "keyword": "totem",
+    "banner": ""
   },
   {
     "name": "Rajco",
     "image": "https://res.cloudinary.com/da3r1iagy/image/upload/v1745354089/Group-369_c4tamf.webp",
-    "keyword": "rajco"
+    "keyword": "rajco",
+    "banner": ""
   },
   {
     "name": "Neoseal",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743809268/Industrywaala%20brand/hvolaqc3hegqevqrlrb9.png",
-    "keyword": "neoseal"
+    "keyword": "neoseal",
+    "banner": ""
   },
   {
     "name": "Nanova",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743809193/Industrywaala%20brand/izeklku2z9ataqudr5qi.jpg",
-    "keyword": "nanova"
+    "keyword": "nanova",
+    "banner": ""
   },
   {
     "name": "Taparia",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743807423/Industrywaala%20brand/ilveg8od1wsq96ezev93.png",
-    "keyword": "taparia"
+    "keyword": "taparia",
+    "banner": ""
   },
   {
     "name": "Astral",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743807197/Industrywaala%20brand/muvsgchlkqvgtchpxmbh.png",
-    "keyword": "astral"
+    "keyword": "astral",
+    "banner": ""
   },
   {
     "name": "Indolit",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743807041/Industrywaala%20brand/zvnqbpyavky09w7jwi2p.webp",
-    "keyword": "indolit"
+    "keyword": "indolit",
+    "banner": ""
   },
   {
     "name": "Five star",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743806774/Industrywaala%20brand/ryk88rcsj8hdabtp1gu3.png",
-    "keyword": "five star"
+    "keyword": "five star",
+    "banner": ""
   },
   {
     "name": "ALP",
     "image": "https://res.cloudinary.com/djgqvtvkz/image/upload/v1743806774/Industrywaala%20brand/xi0bsmaun4cusratwpfs.png",
-    "keyword": "alp"
+    "keyword": "alp",
+    "banner": ""
   }
 ]

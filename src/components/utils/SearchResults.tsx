@@ -58,12 +58,14 @@ export function SearchResults({
                     <p className="text-md text-gray-500">
                       {product.categories.map((cat) => cat.name).join(", ")}
                     </p>
-                    <p className="text-md font-bold">
-                      Rs.{" "}
-                      {product.sale_price ||
-                        product.regular_price ||
-                        product.price}
-                    </p>
+                    {product.price !== "0" && product.price !== "" && (
+                      <p className="text-md font-bold">
+                        Rs.{" "}
+                        {product.sale_price ||
+                          product.regular_price ||
+                          product.price}
+                      </p>
+                    )}
                   </div>
                 </Link>
               </li>

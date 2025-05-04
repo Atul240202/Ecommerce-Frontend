@@ -13,6 +13,7 @@ interface Brand {
   name: string;
   image: string;
   keyword: string;
+  banner: string;
 }
 
 export default function BrandPage() {
@@ -60,6 +61,7 @@ export default function BrandPage() {
     };
 
     if (slug) {
+      console.log("slug of brand", slug);
       fetchBrandInfo();
     }
   }, [slug, navigate]);
@@ -72,7 +74,8 @@ export default function BrandPage() {
       setLoading(true);
       setError(null);
       try {
-        const data = await searchBrandedProducts(slug, currentPage, 12);
+        const data = await searchBrandedProducts(slug, currentPage, 50);
+        console.log("branded product", data);
         setProducts(data.products || []);
         setFilteredProducts(data.products || []);
         setTotalPages(data.pages || 1);
@@ -310,6 +313,9 @@ export default function BrandPage() {
             </div>
 
             <div className="w-full md:w-3/4">
+              <div>
+                <img src={brand?.banner} />
+              </div>
               {/* Desktop sort */}
               <div className="hidden md:flex justify-end mb-4">
                 <ProductSort onSortChange={handleSortChange} />
@@ -328,15 +334,17 @@ export default function BrandPage() {
                       //     (cat: any) => cat.name === 'Brand'
                       //   )?.name || 'Unknown',
                       thumbnail: product.images?.[0]?.src || "/placeholder.svg",
-                      price: Number.parseFloat(
-                        product.regular_price || product.price
-                      ),
-                      regularPrice: Number.parseFloat(
-                        product.regular_price || product.price
-                      ),
+                      price:
+                        Number.parseFloat(
+                          product.regular_price || product.price
+                        ) || 0,
+                      regularPrice:
+                        Number.parseFloat(
+                          product.regular_price || product.price
+                        ) || 0,
                       salePrice: product.on_sale
                         ? Number.parseFloat(product.sale_price)
-                        : null,
+                        : 0,
                       discountPercentage: product.on_sale
                         ? Math.round(
                             ((Number.parseFloat(product.regular_price) -

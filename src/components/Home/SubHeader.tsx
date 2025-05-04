@@ -212,12 +212,12 @@ export function SubHeader() {
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-            <Link
+            {/* <Link
               to="/"
               className="h-12 flex items-center hover:text-[#4280ef]"
             >
               Home
-            </Link>
+            </Link> */}
             <Link
               to="/brand"
               className="h-12 flex items-center hover:text-[#4280ef]"

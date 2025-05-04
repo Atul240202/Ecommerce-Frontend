@@ -127,40 +127,51 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
                 <span className="text-xs text-gray-500 ml-1"></span>
               </div>
               {/* Price */}
-              <div className="mb-2">
+              <div>
                 <div className="flex items-baseline gap-2">
-                  <span
-                    className={`text-lg font-bold text-[#1a2030] ${
-                      isMobile ? "text-sm" : "text-lg"
-                    }`}
-                  >
-                    Rs. {discountedPrice.toFixed(2)}
-                  </span>
-                  {(product.salePrice &&
-                    product.regularPrice >= product.salePrice && (
-                      <span className="text-sm text-gray-500 line-through">
-                        Rs. {product.regularPrice.toFixed(2)}
+                  {regularPrice === 0 && discountPercentage === 0 ? (
+                    <span className="text-xl font-semibold text-blue-600">
+                      Ask for quote
+                    </span>
+                  ) : (
+                    <>
+                      <span
+                        className={`text-lg font-bold text-[#1a2030] ${
+                          isMobile ? "text-sm" : "text-lg"
+                        }`}
+                      >
+                        Rs. {discountedPrice.toFixed(2)}
                       </span>
-                    )) || (
-                    <span className="text-sm text-gray-500 line-through"></span>
+                      {product.salePrice &&
+                        product.regularPrice >= product.salePrice && (
+                          <span className="text-sm text-gray-500 line-through">
+                            Rs. {product.regularPrice.toFixed(2)}
+                          </span>
+                        )}
+                    </>
                   )}
                 </div>
-                <p className="text-xs text-gray-500">Inclusive of GST</p>
+
+                {!(regularPrice === 0 && discountPercentage === 0) && (
+                  <p className="text-xs text-gray-500">Inclusive of GST</p>
+                )}
               </div>
             </div>
 
-            {/* Add to Cart Button */}
-            {product.variations?.length > 0 && product.type === "variable" ? (
-              // <div className="mt-auto">
-              //   <Button
-              //     className="w-full hover:bg-white hover:text-blue-500 border-2 border-blue-500 bg-blue-500 text-white transition-colors"
-              //     onClick={handleAddToCart}
-              //     disabled={isAddingToCart}
-              //   >
-              //     {isAddingToCart ? "Selecting...." : "Select Options"}
-              //   </Button>
-              // </div>
-              <div className="mt-auto">
+            <div className="mt-auto">
+              {regularPrice === 0 && discountPercentage === 0 ? (
+                <Link
+                  to={`/product/${
+                    product.slug ||
+                    product.title.toLowerCase().replace(/\s+/g, "-")
+                  }-${product.id}`}
+                >
+                  <Button className="w-full bg-white text-blue-500 border-2 border-blue-500 hover:bg-blue-500 hover:text-white transition-colors">
+                    View Product
+                  </Button>
+                </Link>
+              ) : product.variations?.length > 0 &&
+                product.type === "variable" ? (
                 <Button
                   className="w-full bg-white text-blue-500 border-2 border-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
                   onClick={handleAddToCart}
@@ -168,9 +179,7 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
                 >
                   {isAddingToCart ? "Adding..." : "Add To Cart"}
                 </Button>
-              </div>
-            ) : (
-              <div className="mt-auto">
+              ) : (
                 <Button
                   className="w-full bg-white text-blue-500 border-2 border-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
                   onClick={handleAddToCart}
@@ -178,8 +187,8 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
                 >
                   {isAddingToCart ? "Adding..." : "Add To Cart"}
                 </Button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </Link>

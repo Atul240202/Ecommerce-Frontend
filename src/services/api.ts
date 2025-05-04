@@ -27,6 +27,7 @@ export interface Product {
   sku: string;
   type: string;
   variations: number[];
+  status: string;
 }
 
 export interface ProductImage {
@@ -388,7 +389,7 @@ export const searchBrandedProducts = async (
 ) => {
   try {
     const response = await fetch(
-      `${API_URL}/products?keyword=${encodeURIComponent(
+      `${API_URL}/products/searchbybrand?keyword=${encodeURIComponent(
         keyword
       )}&page=${page}&limit=${limit}`
     );

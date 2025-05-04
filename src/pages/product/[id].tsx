@@ -592,72 +592,75 @@ export default function ProductPage() {
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleWishlistClick}
-              >
-                <Heart
-                  className={`h-5 w-5 ${
-                    isWishlisted ? "fill-red-500 text-red-500" : "text-gray-500"
-                  }`}
-                />
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              <div className={`  gap-2 ${isMobile ? "flex-col " : "flex"}`}>
+              {product.price !== "0" && product.price !== "" && (
                 <Button
-                  className={`flex-grow-[7] ${isMobile ? "mb-4 w-full" : ""}`}
-                  size="lg"
-                  onClick={handleAddToCart}
-                  disabled={
-                    product.stock_status !== "instock" ||
-                    isAddingToCart ||
-                    product.regular_price == "0"
-                  }
-                >
-                  {product.stock_status === "instock"
-                    ? isAddingToCart
-                      ? "Adding to Cart..."
-                      : "Add to Cart"
-                    : "Out of Stock"}
-                </Button>
-                <Button
-                  variant={isWishlisted ? "default" : "outline"}
-                  className={`flex-grow-[3] ${
-                    isWishlisted ? "bg-red-500 hover:bg-red-600" : ""
-                  } ${isMobile ? "w-full" : ""}`}
-                  size="lg"
+                  variant="outline"
+                  size="icon"
                   onClick={handleWishlistClick}
                 >
                   <Heart
-                    className={`h-5 w-5 ${isWishlisted ? "fill-white" : ""}`}
+                    className={`h-5 w-5 ${
+                      isWishlisted
+                        ? "fill-red-500 text-red-500"
+                        : "text-gray-500"
+                    }`}
                   />
-                  <span className="ml-2">
-                    {isWishlisted ? "Wishlisted" : "Add to Wishlist"}
-                  </span>
                 </Button>
+              )}
+            </div>
+
+            <div className="space-y-4">
+              <div className={`gap-2 ${isMobile ? "flex-col" : "flex"}`}>
+                {product.price !== "0" && product.price !== "" && (
+                  <Button
+                    className={`flex-grow-[7] ${isMobile ? "mb-4 w-full" : ""}`}
+                    size="lg"
+                    onClick={handleAddToCart}
+                    disabled={
+                      product.stock_status !== "instock" || isAddingToCart
+                    }
+                  >
+                    {product.stock_status === "instock"
+                      ? isAddingToCart
+                        ? "Adding to Cart..."
+                        : "Add to Cart"
+                      : "Out of Stock"}
+                  </Button>
+                )}
+
+                {product.price !== "0" && product.price !== "" && (
+                  <Button
+                    variant={isWishlisted ? "default" : "outline"}
+                    className={`flex-grow-[3] ${
+                      isWishlisted ? "bg-red-500 hover:bg-red-600" : ""
+                    } ${isMobile ? "w-full" : ""}`}
+                    size="lg"
+                    onClick={handleWishlistClick}
+                  >
+                    <Heart
+                      className={`h-5 w-5 ${isWishlisted ? "fill-white" : ""}`}
+                    />
+                    <span className="ml-2">
+                      {isWishlisted ? "Wishlisted" : "Add to Wishlist"}
+                    </span>
+                  </Button>
+                )}
               </div>
 
-              {!(
-                product.regular_price === "0" || product.regular_price === ""
-              ) && (
+              {!(product.price === "0" || product.price === "") && (
                 <Button
                   variant="secondary"
                   className="w-full hover:bg-[#D2EEFF]"
                   size="lg"
                   onClick={handleBuyNow}
                   disabled={
-                    product.stock_status !== "instock" ||
-                    product.regular_price == "0"
+                    product.stock_status !== "instock" || product.price == "0"
                   }
                 >
                   Buy Now
                 </Button>
               )}
-              {(product.regular_price === "0" ||
-                product.regular_price === "") && (
+              {(product.price === "0" || product.price === "") && (
                 <Button
                   variant="secondary"
                   className="w-full hover:bg-[#D2EEFF]"

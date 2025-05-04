@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
-import { MainLayout } from '../layouts/MainLayout';
-import { Breadcrumb } from '../components/Breadcrumb';
-import { ProductCardFeatured } from '../components/Home/ProductCardFeatured';
-import { ProductFilter } from '../components/ProductPage/ProductFilter';
-import { ProductSort } from '../components/ProductPage/ProductSort';
-import { fetchBestSellerProducts, type Product } from '../services/api';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { MainLayout } from "../layouts/MainLayout";
+import { Breadcrumb } from "../components/Breadcrumb";
+import { ProductCardFeatured } from "../components/Home/ProductCardFeatured";
+import { ProductFilter } from "../components/ProductPage/ProductFilter";
+import { ProductSort } from "../components/ProductPage/ProductSort";
+import { fetchBestSellerProducts, type Product } from "../services/api";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function BestSellersPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -36,9 +36,9 @@ export default function BestSellersPage() {
         const endIndex = startIndex + productsPerPage;
         setFilteredProducts(data.slice(startIndex, endIndex));
       } catch (err) {
-        console.error('Failed to fetch best seller products:', err);
+        console.error("Failed to fetch best seller products:", err);
         setError(
-          'Failed to load best seller products. Please try again later.'
+          "Failed to load best seller products. Please try again later."
         );
       } finally {
         setLoading(false);
@@ -92,15 +92,15 @@ export default function BestSellersPage() {
     // Sort filtered products
     const sorted = [...filteredProducts].sort((a, b) => {
       switch (sortOption) {
-        case 'name-asc':
+        case "name-asc":
           return a.name.localeCompare(b.name);
-        case 'name-desc':
+        case "name-desc":
           return b.name.localeCompare(a.name);
-        case 'price-asc':
+        case "price-asc":
           return Number.parseFloat(a.price) - Number.parseFloat(b.price);
-        case 'price-desc':
+        case "price-desc":
           return Number.parseFloat(b.price) - Number.parseFloat(a.price);
-        case 'rating-desc':
+        case "rating-desc":
           return (
             Number.parseFloat(b.average_rating) -
             Number.parseFloat(a.average_rating)
@@ -125,8 +125,8 @@ export default function BestSellersPage() {
         onClick={() => setCurrentPage(1)}
         className={`w-10 h-10 flex items-center justify-center border ${
           currentPage === 1
-            ? 'bg-[#4280ef] text-white'
-            : 'bg-white text-gray-700'
+            ? "bg-[#4280ef] text-white"
+            : "bg-white text-gray-700"
         }`}
       >
         1
@@ -145,8 +145,8 @@ export default function BestSellersPage() {
     if (startPage > 2) {
       items.push(
         <span
-          key='ellipsis-1'
-          className='w-10 h-10 flex items-center justify-center'
+          key="ellipsis-1"
+          className="w-10 h-10 flex items-center justify-center"
         >
           ...
         </span>
@@ -161,8 +161,8 @@ export default function BestSellersPage() {
           onClick={() => setCurrentPage(i)}
           className={`w-10 h-10 flex items-center justify-center border ${
             currentPage === i
-              ? 'bg-[#4280ef] text-white'
-              : 'bg-white text-gray-700'
+              ? "bg-[#4280ef] text-white"
+              : "bg-white text-gray-700"
           }`}
         >
           {i}
@@ -174,8 +174,8 @@ export default function BestSellersPage() {
     if (endPage < totalPages - 1) {
       items.push(
         <span
-          key='ellipsis-2'
-          className='w-10 h-10 flex items-center justify-center'
+          key="ellipsis-2"
+          className="w-10 h-10 flex items-center justify-center"
         >
           ...
         </span>
@@ -190,8 +190,8 @@ export default function BestSellersPage() {
           onClick={() => setCurrentPage(totalPages)}
           className={`w-10 h-10 flex items-center justify-center border ${
             currentPage === totalPages
-              ? 'bg-[#4280ef] text-white'
-              : 'bg-white text-gray-700'
+              ? "bg-[#4280ef] text-white"
+              : "bg-white text-gray-700"
           }`}
         >
           {totalPages}
@@ -205,9 +205,9 @@ export default function BestSellersPage() {
   if (loading) {
     return (
       <MainLayout>
-        <div className='container mx-auto px-4 py-8'>
-          <div className='flex justify-center items-center h-64'>
-            <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#4280ef]'></div>
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#4280ef]"></div>
           </div>
         </div>
       </MainLayout>
@@ -217,12 +217,12 @@ export default function BestSellersPage() {
   if (error) {
     return (
       <MainLayout>
-        <div className='container mx-auto px-4 py-8'>
-          <div className='text-center py-12'>
-            <p className='text-lg text-red-600'>{error}</p>
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center py-12">
+            <p className="text-lg text-red-600">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className='mt-4 px-4 py-2 bg-[#4280ef] text-white rounded-md hover:bg-[#3270df]'
+              className="mt-4 px-4 py-2 bg-[#4280ef] text-white rounded-md hover:bg-[#3270df]"
             >
               Try Again
             </button>
@@ -234,34 +234,34 @@ export default function BestSellersPage() {
 
   return (
     <MainLayout>
-      <div className='container mx-auto px-4 py-8'>
+      <div className="container mx-auto px-4 py-8">
         <Breadcrumb
           items={[
-            { label: 'Home', href: '/' },
-            { label: 'Best Sellers', href: '/best-sellers' },
+            { label: "Home", href: "/" },
+            { label: "Best Sellers", href: "/best-sellers" },
           ]}
         />
 
         {/* <h1 className='text-3xl font-bold mb-8'>Best Selling Products</h1> */}
 
         {filteredProducts.length === 0 ? (
-          <div className='text-center py-12'>
-            <p className='text-lg text-gray-600'>
+          <div className="text-center py-12">
+            <p className="text-lg text-gray-600">
               No best seller products found.
             </p>
           </div>
         ) : (
-          <div className='flex flex-col md:flex-row gap-8'>
-            <div className='w-full md:w-1/4'>
+          <div className="flex flex-col md:flex-row gap-8">
+            <div className="w-full md:w-1/4">
               <ProductFilter
                 products={products}
                 onFilterChange={handleFilterChange}
               />
             </div>
-            <div className='w-full md:w-3/4'>
+            <div className="w-full md:w-3/4">
               <ProductSort onSortChange={handleSortChange} />
 
-              <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {filteredProducts.map((product) => (
                   <ProductCardFeatured
                     key={product.id}
@@ -269,13 +269,15 @@ export default function BestSellersPage() {
                       id: product.id,
                       title: product.name,
                       description: product.description,
-                      thumbnail: product.images?.[0]?.src || '/placeholder.svg',
-                      price: Number.parseFloat(
-                        product.regular_price || product.price
-                      ),
-                      regularPrice: Number.parseFloat(
-                        product.regular_price || product.price
-                      ),
+                      thumbnail: product.images?.[0]?.src || "/placeholder.svg",
+                      price:
+                        Number.parseFloat(
+                          product.regular_price || product.price
+                        ) || 0,
+                      regularPrice:
+                        Number.parseFloat(
+                          product.regular_price || product.price
+                        ) || 0,
                       salePrice: product.on_sale
                         ? Number.parseFloat(product.sale_price)
                         : 0,
@@ -288,7 +290,7 @@ export default function BestSellersPage() {
                           )
                         : 0,
                       rating: Number.parseFloat(product.average_rating),
-                      stock: product.stock_status === 'instock' ? 100 : 0,
+                      stock: product.stock_status === "instock" ? 100 : 0,
                     }}
                   />
                 ))}
@@ -296,16 +298,16 @@ export default function BestSellersPage() {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className='flex justify-center mt-8'>
-                  <div className='flex border rounded-md overflow-hidden'>
+                <div className="flex justify-center mt-8">
+                  <div className="flex border rounded-md overflow-hidden">
                     <button
                       onClick={() =>
                         setCurrentPage((prev) => Math.max(prev - 1, 1))
                       }
                       disabled={currentPage === 1}
-                      className='px-4 py-2 border-r flex items-center justify-center disabled:opacity-50 bg-white'
+                      className="px-4 py-2 border-r flex items-center justify-center disabled:opacity-50 bg-white"
                     >
-                      <ChevronLeft className='h-4 w-4 mr-1' /> Previous
+                      <ChevronLeft className="h-4 w-4 mr-1" /> Previous
                     </button>
 
                     {getPaginationItems()}
@@ -315,9 +317,9 @@ export default function BestSellersPage() {
                         setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                       }
                       disabled={currentPage === totalPages}
-                      className='px-4 py-2 border-l flex items-center justify-center disabled:opacity-50 bg-white'
+                      className="px-4 py-2 border-l flex items-center justify-center disabled:opacity-50 bg-white"
                     >
-                      Next <ChevronRight className='h-4 w-4 ml-1' />
+                      Next <ChevronRight className="h-4 w-4 ml-1" />
                     </button>
                   </div>
                 </div>

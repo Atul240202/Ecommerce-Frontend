@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { MainLayout } from '../layouts/MainLayout';
-import { Breadcrumb } from '../components/Breadcrumb';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { MainLayout } from "../layouts/MainLayout";
+import { Breadcrumb } from "../components/Breadcrumb";
 
 interface Brand {
   name: string;
   image: string;
   keyword: string;
+  banner: string;
 }
 
 export default function BrandsPage() {
@@ -17,17 +18,17 @@ export default function BrandsPage() {
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const response = await fetch('/tempData/brand.json');
+        const response = await fetch("/tempData/brand.json");
         if (!response.ok) {
-          throw new Error('Failed to fetch brands');
+          throw new Error("Failed to fetch brands");
         }
 
         const data = await response.json();
-        console.log('Brand data', data);
+        console.log("Brand data", data);
         setBrands(data);
       } catch (err) {
-        console.error('Error fetching brands:', err);
-        setError('Failed to load brands. Please try again later.');
+        console.error("Error fetching brands:", err);
+        setError("Failed to load brands. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -76,8 +77,8 @@ export default function BrandsPage() {
       <div className="container mx-auto px-4 py-8">
         <Breadcrumb
           items={[
-            { label: 'Home', href: '/' },
-            { label: 'Shop by Brand', href: '#' },
+            { label: "Home", href: "/" },
+            { label: "Shop by Brand", href: "#" },
           ]}
         />
 

@@ -270,12 +270,14 @@ export default function CategoryPage() {
                       title: product.name,
                       description: product.description,
                       thumbnail: product.images[0]?.src || "/placeholder.svg",
-                      price: Number.parseFloat(
-                        product.regular_price || product.price
-                      ),
-                      regularPrice: Number.parseFloat(
-                        product.regular_price || product.price
-                      ),
+                      price:
+                        Number.parseFloat(
+                          product.regular_price || product.price
+                        ) || 0,
+                      regularPrice:
+                        Number.parseFloat(
+                          product.regular_price || product.price
+                        ) || 0,
                       salePrice: product.on_sale
                         ? Number.parseFloat(product.sale_price)
                         : 0,
