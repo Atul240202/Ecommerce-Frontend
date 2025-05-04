@@ -545,7 +545,21 @@ export default function CheckoutPage() {
   const prepareFinalOrderData = () => {
     const selectedShippingAddress = getSelectedShippingAddress();
     const selectedBillingAddress = getSelectedBillingAddress();
-
+    const dimensionsFromProducts = products.map((p) => ({
+      length: Number(p.dimensions?.length || 0),
+      breadth: Number(p.dimensions?.width || 0),
+      height: Number(p.dimensions?.height || 0),
+      weight: Number(p.weight || 0.5),
+    }));
+    const maxLength = Math.max(...dimensionsFromProducts.map((d) => d.length));
+    const maxBreadth = Math.max(
+      ...dimensionsFromProducts.map((d) => d.breadth)
+    );
+    const maxHeight = Math.max(...dimensionsFromProducts.map((d) => d.height));
+    const totalWeight = dimensionsFromProducts.reduce(
+      (sum, d) => sum + d.weight,
+      0
+    );
     if (!selectedShippingAddress) {
       throw new Error("Shipping address is required");
     }
@@ -626,13 +640,13 @@ export default function CheckoutPage() {
       giftwrap_charges: "0",
       transaction_charges: "0",
       total_discount: "0",
-      sub_total: subtotal,
+      sub_total: subtotal.toFixed(2),
 
       // Package information
-      length: "",
-      breadth: "",
-      height: "",
-      weight: "",
+      length: maxLength.toString(),
+      breadth: maxBreadth.toString(),
+      height: maxHeight.toString(),
+      weight: totalWeight.toFixed(2),
 
       // Additional information
       ewaybill_no: "",
