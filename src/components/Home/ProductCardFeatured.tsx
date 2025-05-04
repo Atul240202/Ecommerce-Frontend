@@ -142,12 +142,14 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
                       >
                         Rs. {discountedPrice.toFixed(2)}
                       </span>
-                      {product.salePrice &&
+                      {(product.salePrice &&
                         product.regularPrice >= product.salePrice && (
                           <span className="text-sm text-gray-500 line-through">
                             Rs. {product.regularPrice.toFixed(2)}
                           </span>
-                        )}
+                        )) || (
+                        <span className="text-sm text-gray-500 line-through"></span>
+                      )}
                     </>
                   )}
                 </div>
