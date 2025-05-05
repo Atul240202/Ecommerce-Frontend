@@ -37,7 +37,7 @@ export default function CategoryPage() {
       try {
         let data;
         if (slug === "search" && query) {
-          data = await fetchProducts(1, 100, query);
+          data = await fetchProducts(currentPage, 50, query);
         } else {
           data = await fetchProductsByCategory(slug, currentPage);
         }

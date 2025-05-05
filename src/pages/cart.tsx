@@ -126,7 +126,13 @@ export default function CartPage() {
         price: item.price,
         quantity: item.quantity,
         sku: item.sku || "",
-        shipping_amount: item.shipping_amount ?? 200,
+        shipping_amount: item.shipping_amount,
+        weight: item.weight ?? "0.5",
+        dimensions: {
+          length: item.dimensions?.length ?? "0",
+          width: item.dimensions?.width ?? "0",
+          height: item.dimensions?.height ?? "0",
+        },
       }));
 
       // Add to checkout context
@@ -161,12 +167,12 @@ export default function CartPage() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const shipping =
-    cart.length > 0
-      ? Math.max(...cart.map((item) => item.shipping_amount ?? 200), 200)
-      : 0;
+  // const shipping =
+  //   cart.length > 0
+  //     ? Math.max(...cart.map((item) => item.shipping_amount ?? 200), 200)
+  //     : 0;
 
-  const total = subtotal + shipping;
+  const total = subtotal;
 
   if (isCartLoading || isProcessing) {
     return (
@@ -383,10 +389,10 @@ export default function CartPage() {
                 <span className="text-gray-600">Subtotal</span>
                 <span className="font-medium">₹{subtotal.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-sm">
+              {/* <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Shipping</span>
                 <span className="font-medium">₹{shipping.toFixed(2)}</span>
-              </div>
+              </div> */}
               <div className="border-t pt-2 mt-2">
                 <div className="flex justify-between">
                   <span className="font-bold">Total</span>
@@ -543,10 +549,10 @@ export default function CartPage() {
                   <span className="text-gray-600">Subtotal</span>
                   <span className="font-medium">₹{subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between">
+                {/* <div className="flex justify-between">
                   <span className="text-gray-600">Shipping</span>
                   <span className="font-medium">₹{shipping.toFixed(2)}</span>
-                </div>
+                </div> */}
                 <div className="border-t pt-3 mt-3">
                   <div className="flex justify-between">
                     <span className="font-bold">Total</span>
