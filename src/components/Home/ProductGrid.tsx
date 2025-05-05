@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { ProductCardFeatured } from './ProductCardFeatured';
+import { useState, useEffect } from "react";
+import { ProductCardFeatured } from "./ProductCardFeatured";
 import {
   fetchFeaturedProducts,
   fetchBestSellerProducts,
-} from '../../services/api';
-import { Button } from '../../components/ui/button';
+} from "../../services/api";
+import { Button } from "../../components/ui/button";
 
 interface ApiProduct {
   id: number;
@@ -36,8 +36,8 @@ interface Product {
 }
 
 export function ProductGrid() {
-  const [activeTab, setActiveTab] = useState<'featured' | 'bestseller'>(
-    'featured'
+  const [activeTab, setActiveTab] = useState<"featured" | "bestseller">(
+    "featured"
   );
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [bestSellerProducts, setBestSellerProducts] = useState<Product[]>([]);
@@ -46,8 +46,8 @@ export function ProductGrid() {
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -65,26 +65,25 @@ export function ProductGrid() {
             id: product.id,
             title: product.name,
             description: product.description,
-            thumbnail: product.images?.[0]?.src || '/placeholder.svg',
-            price: Number.parseFloat(product.price || '0'),
-            regularPrice: Number.parseFloat(product.regular_price || '0'),
-            salePrice: Number.parseFloat(product.sale_price || '0'),
+            thumbnail: product.images?.[0]?.src || "/placeholder.svg",
+            price: Number.parseFloat(product.price || "0"),
+            regularPrice: Number.parseFloat(product.regular_price || "0"),
+            salePrice: Number.parseFloat(product.sale_price || "0"),
             discountPercentage: product.on_sale
-              ? ((Number.parseFloat(product.regular_price || '0') -
-                  Number.parseFloat(product.sale_price || '0')) /
-                  Number.parseFloat(product.regular_price || '1')) *
+              ? ((Number.parseFloat(product.regular_price || "0") -
+                  Number.parseFloat(product.sale_price || "0")) /
+                  Number.parseFloat(product.regular_price || "1")) *
                 100
               : 0,
-            rating: Number.parseFloat(product.average_rating || '0'),
-            stock: product.stock_status === 'instock' ? 100 : 0,
-            slug:
-              product.slug || product.name.toLowerCase().replace(/\s+/g, '-'),
+            rating: Number.parseFloat(product.average_rating || "0"),
+            stock: product.stock_status === "instock" ? 100 : 0,
+            slug: product.slug,
           }));
 
         setFeaturedProducts(transformProducts(featured || []));
         setBestSellerProducts(transformProducts(bestSellers || []));
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error("Error fetching products:", error);
       } finally {
         setLoading(false);
       }
@@ -102,7 +101,7 @@ export function ProductGrid() {
           ) : (
             <h2
               className={`font-semibold text-[#1a2030] ${
-                isMobile ? 'text-lg' : 'text-3xl'
+                isMobile ? "text-lg" : "text-3xl"
               }`}
             >
               Buy our featured products
@@ -111,28 +110,28 @@ export function ProductGrid() {
 
           <div
             className={`flex ml-auto  ${
-              isMobile ? 'w-[100%] justify-between' : 'gap-8'
+              isMobile ? "w-[100%] justify-between" : "gap-8"
             }`}
           >
             <Button
               // variant={activeTab === 'featured' ? 'bg-[#2D81FF] text-white' : 'outline'}
               className={` ${
-                activeTab === 'featured'
-                  ? 'bg-[#2D81FF] text-white hover:bg-[#2D81FF]'
-                  : 'text-[#2D81FF] bg-white hover:bg-[#eaf2ff]'
+                activeTab === "featured"
+                  ? "bg-[#2D81FF] text-white hover:bg-[#2D81FF]"
+                  : "text-[#2D81FF] bg-white hover:bg-[#eaf2ff]"
               }`}
-              onClick={() => setActiveTab('featured')}
+              onClick={() => setActiveTab("featured")}
             >
               Featured
             </Button>
             <Button
               // variant={activeTab === 'bestseller' ? 'default' : 'outline'}
               className={`  ${
-                activeTab === 'bestseller'
-                  ? 'bg-[#2D81FF] text-white hover:bg-[#2D81FF]'
-                  : 'text-[#2D81FF] bg-white hover:bg-[#eaf2ff]'
+                activeTab === "bestseller"
+                  ? "bg-[#2D81FF] text-white hover:bg-[#2D81FF]"
+                  : "text-[#2D81FF] bg-white hover:bg-[#eaf2ff]"
               }`}
-              onClick={() => setActiveTab('bestseller')}
+              onClick={() => setActiveTab("bestseller")}
             >
               Best Seller
             </Button>
@@ -145,7 +144,7 @@ export function ProductGrid() {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {(activeTab === 'featured'
+            {(activeTab === "featured"
               ? featuredProducts
               : bestSellerProducts
             ).map((product) => (

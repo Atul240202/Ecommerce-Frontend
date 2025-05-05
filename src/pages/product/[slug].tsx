@@ -22,6 +22,7 @@ import { useCheckout } from "../../contexts/CheckoutContext";
 import {
   fetchProductById,
   submitProductReview,
+  fetchProductBySlug,
   checkDeliveryAvailability,
 } from "../../services/api";
 import { toast } from "../../components/ui/use-toast";
@@ -107,7 +108,8 @@ export default function ProductPage() {
     useShop();
   const { addProduct } = useCheckout();
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  // const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -134,7 +136,7 @@ export default function ProductPage() {
   useEffect(() => {
     // Scroll to the top of the page when the component mounts
     window.scrollTo(0, 0);
-  }, [id]); // Re-run when the product ID changes
+  }, [slug]); // Re-run when the product ID changes
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
@@ -144,16 +146,18 @@ export default function ProductPage() {
   }, []);
 
   useEffect(() => {
-    if (!id) return;
+    //if (!id) return;
+    if (!slug) return;
 
     const getProduct = async () => {
       setIsLoading(true);
       setError(null);
       try {
         // const productData = await fetchProductById(Number.parseInt(id));
-        const productId = id.split("-").pop() || id;
+        // const productId = id.split("-").pop() || id;
 
-        const productData = await fetchProductById(productId);
+        // const productData = await fetchProductById(id);
+        const productData = await fetchProductBySlug(slug);
         // Transform the API data to match our UI needs
         const transformedProduct: Product = {
           ...productData,
@@ -163,7 +167,7 @@ export default function ProductPage() {
         // Check if product is in wishlist
         if (isInWishlist) {
           // setIsWishlisted(isInWishlist(Number.parseInt(id)));
-          setIsWishlisted(isInWishlist(Number.parseInt(productId)));
+          setIsWishlisted(isInWishlist(productData.id));
         }
       } catch (err) {
         console.error("Error fetching product:", err);
@@ -174,7 +178,7 @@ export default function ProductPage() {
     };
 
     getProduct();
-  }, [id, isInWishlist]);
+  }, [slug, isInWishlist]);
 
   const handleQuantityChange = (change: number) => {
     const newQuantity = quantity + change;
@@ -931,9 +935,7 @@ export default function ProductPage() {
                 // Refresh product data to update ratings
                 const getProduct = async () => {
                   try {
-                    const productData = await fetchProductById(
-                      Number.parseInt(id)
-                    );
+                    const productData = await fetchProductById(product.id);
                     setProduct({
                       ...productData,
                       reviews: productData.reviews || [],

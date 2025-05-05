@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '../../components/ui/button';
-import { ProductCardFeatured } from './ProductCardFeatured';
-import { fetchBestSellerProducts } from '../../services/api';
+import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "../../components/ui/button";
+import { ProductCardFeatured } from "./ProductCardFeatured";
+import { fetchBestSellerProducts } from "../../services/api";
 
 interface ApiProduct {
   id: number;
@@ -18,6 +18,7 @@ interface ApiProduct {
   categories: Array<{ name: string }>;
   type: string;
   variations: Array<{ id: number }>;
+  slug: string;
 }
 
 interface Product {
@@ -34,6 +35,7 @@ interface Product {
   stock: number;
   type: string;
   variations: number[];
+  slug: string;
 }
 
 export function MonthFeaturedGrid() {
@@ -56,29 +58,30 @@ export function MonthFeaturedGrid() {
             title: product.name,
             description: product.description,
             brand:
-              product.categories?.find((cat) => cat.name === 'Brand')?.name ||
-              'Unknown',
-            thumbnail: product.images?.[0]?.src || '/placeholder.svg',
-            price: Number.parseFloat(product.price || '0'),
-            regularPrice: Number.parseFloat(product.regular_price || '0'),
-            salePrice: Number.parseFloat(product.sale_price || '0'),
+              product.categories?.find((cat) => cat.name === "Brand")?.name ||
+              "Unknown",
+            thumbnail: product.images?.[0]?.src || "/placeholder.svg",
+            price: Number.parseFloat(product.price || "0"),
+            regularPrice: Number.parseFloat(product.regular_price || "0"),
+            salePrice: Number.parseFloat(product.sale_price || "0"),
             discountPercentage: product.on_sale
-              ? ((Number.parseFloat(product.regular_price || '0') -
-                  Number.parseFloat(product.sale_price || '0')) /
-                  Number.parseFloat(product.regular_price || '1')) *
+              ? ((Number.parseFloat(product.regular_price || "0") -
+                  Number.parseFloat(product.sale_price || "0")) /
+                  Number.parseFloat(product.regular_price || "1")) *
                 100
               : 0,
-            rating: Number.parseFloat(product.average_rating || '0'),
-            stock: product.stock_status === 'instock' ? 100 : 0,
+            rating: Number.parseFloat(product.average_rating || "0"),
+            stock: product.stock_status === "instock" ? 100 : 0,
             type: product.type,
             variations:
               product.variations?.map((variation) => variation.id) || [],
+            slug: product.slug,
           })
         );
 
         setProducts(transformedProducts);
       } catch (error) {
-        console.error('Error fetching month-featured products:', error);
+        console.error("Error fetching month-featured products:", error);
       }
     };
 

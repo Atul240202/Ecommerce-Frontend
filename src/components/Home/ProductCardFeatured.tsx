@@ -10,7 +10,7 @@ interface Product {
   id: number;
   title: string;
   description: string;
-  // brand: string;
+  brand: string;
   type: string;
   thumbnail: string;
   price: number;
@@ -19,7 +19,7 @@ interface Product {
   discountPercentage: number;
   rating: number;
   stock: number;
-  slug?: string;
+  slug: string;
   variations: number[];
 }
 
@@ -72,12 +72,7 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
   }, []);
   return (
     <>
-      <Link
-        to={`/product/${
-          product.slug || product.title.toLowerCase().replace(/\s+/g, "-")
-        }-${product.id}`}
-        className="block"
-      >
+      <Link to={`/product/${product.slug}`} className="block">
         <div
           className={`bg-white rounded-lg  border border-gray-200 hover:border-blue-500 transition-colors flex flex-col ${
             isMobile ? "p-2 h-[375px] " : "p-4 h-[450px] "
@@ -166,10 +161,7 @@ export function ProductCardFeatured({ product }: ProductCardFeaturedProps) {
                   className="w-full bg-white text-blue-500 border-2 border-blue-500 hover:bg-blue-500 hover:text-white transition-colors"
                   onClick={(e) => {
                     e.stopPropagation();
-                    window.location.href = `/product/${
-                      product.slug ||
-                      product.title.toLowerCase().replace(/\s+/g, "-")
-                    }-${product.id}`;
+                    window.location.href = `/product/${product.slug}`;
                   }}
                 >
                   View Product

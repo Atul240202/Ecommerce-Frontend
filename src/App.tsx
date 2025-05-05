@@ -5,7 +5,7 @@ import { getFirestore } from "firebase/firestore";
 import { ShopProvider } from "./contexts/ShopContext";
 import HomePage from "./pages/home";
 import CategoryPage from "./pages/category/[slug]";
-import ProductPage from "./pages/product/[id]";
+import ProductPage from "./pages/product/[slug]";
 import CartPage from "./pages/cart";
 import BlogPage from "./pages/blog";
 import GoogleRegisterPage from "./pages/register/google";
@@ -63,7 +63,8 @@ function App() {
             <Route path="/bestseller" element={<BestSellersPage />} />
             <Route path="/categories/:slug" element={<CategoryPage />} />
             <Route path="/categories" element={<CategoriesPage />} />
-            <Route path="/product/:id/*" element={<ProductPage />} />
+            {/* <Route path="/product/:id/*" element={<ProductPage />} /> */}
+            <Route path="/product/:slug/*" element={<ProductPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />

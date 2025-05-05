@@ -268,6 +268,7 @@ export default function CategoryPage() {
                     product={{
                       id: product.id,
                       title: product.name,
+                      brand: product.name,
                       description: product.description,
                       thumbnail: product.images[0]?.src || "/placeholder.svg",
                       price:

@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
-import { fetchBestSellerProducts } from '../../services/api';
-import { Button } from '../../components/ui/button';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { fetchBestSellerProducts } from "../../services/api";
+import { Button } from "../../components/ui/button";
+import { Link } from "react-router-dom";
 
 interface ApiProduct {
   id: number;
@@ -13,6 +13,7 @@ interface ApiProduct {
   on_sale: boolean;
   average_rating: string;
   images: Array<{ src: string }>;
+  slug: string;
 }
 
 interface Product {
@@ -23,6 +24,7 @@ interface Product {
   regularPrice: number;
   salePrice: number;
   rating: number;
+  slug: string;
 }
 
 export function BestSellerSidebar() {
@@ -43,17 +45,18 @@ export function BestSellerSidebar() {
           (product: ApiProduct) => ({
             id: product.id,
             title: product.name,
-            thumbnail: product.images?.[0]?.src || '/placeholder.svg',
-            price: Number.parseFloat(product.price || '0'),
-            regularPrice: Number.parseFloat(product.regular_price || '0'),
-            salePrice: Number.parseFloat(product.sale_price || '0'),
-            rating: Number.parseFloat(product.average_rating || '0'),
+            thumbnail: product.images?.[0]?.src || "/placeholder.svg",
+            price: Number.parseFloat(product.price || "0"),
+            regularPrice: Number.parseFloat(product.regular_price || "0"),
+            salePrice: Number.parseFloat(product.sale_price || "0"),
+            rating: Number.parseFloat(product.average_rating || "0"),
+            slug: product.slug,
           })
         );
 
         setProducts(transformedProducts);
       } catch (error) {
-        console.error('Error fetching bestseller products:', error);
+        console.error("Error fetching bestseller products:", error);
       }
     };
 
@@ -96,7 +99,7 @@ export function BestSellerSidebar() {
       <div className="p-4 space-y-4">
         {currentProducts.length > 0 ? (
           currentProducts.map((product) => (
-            <Link to={`/product/${product.id}`} className="block">
+            <Link to={`/product/${product.slug}`} className="block">
               <div className="flex gap-3 group cursor-pointer">
                 <div className="relative w-20 h-20 flex-shrink-0">
                   <img
@@ -115,8 +118,8 @@ export function BestSellerSidebar() {
                         key={i}
                         className={`h-3 w-3 ${
                           i < Math.round(product.rating)
-                            ? 'text-yellow-400 fill-current'
-                            : 'text-gray-300'
+                            ? "text-yellow-400 fill-current"
+                            : "text-gray-300"
                         }`}
                       />
                     ))}

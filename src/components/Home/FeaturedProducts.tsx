@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '../../components/ui/button';
-import { ProductCardFeatured } from './ProductCardFeatured';
-import { fetchBestSellerProducts } from '../../services/api';
+import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "../../components/ui/button";
+import { ProductCardFeatured } from "./ProductCardFeatured";
+import { fetchBestSellerProducts } from "../../services/api";
 
 interface ApiProduct {
   id: number;
@@ -20,6 +20,7 @@ interface ApiProduct {
   categories: Array<{
     name: string;
   }>;
+  slug: string;
 }
 
 interface TransformedProduct {
@@ -33,6 +34,7 @@ interface TransformedProduct {
   discountPercentage: number;
   rating: number;
   stock: number;
+  slug: string;
 }
 
 export function FeaturedProducts() {
@@ -45,8 +47,8 @@ export function FeaturedProducts() {
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -65,18 +67,19 @@ export function FeaturedProducts() {
             id: product.id,
             title: product.name,
             description: product.description,
-            thumbnail: product.images?.[0]?.src || '/placeholder.svg',
-            price: Number.parseFloat(product.price || '0'),
-            regularPrice: Number.parseFloat(product.regular_price || '0'),
-            salePrice: Number.parseFloat(product.sale_price || '0'),
+            thumbnail: product.images?.[0]?.src || "/placeholder.svg",
+            price: Number.parseFloat(product.price || "0"),
+            regularPrice: Number.parseFloat(product.regular_price || "0"),
+            salePrice: Number.parseFloat(product.sale_price || "0"),
             discountPercentage: product.on_sale
-              ? ((Number.parseFloat(product.regular_price || '0') -
-                  Number.parseFloat(product.sale_price || '0')) /
-                  Number.parseFloat(product.regular_price || '1')) *
+              ? ((Number.parseFloat(product.regular_price || "0") -
+                  Number.parseFloat(product.sale_price || "0")) /
+                  Number.parseFloat(product.regular_price || "1")) *
                 100
               : 0,
-            rating: Number.parseFloat(product.average_rating || '0'),
-            stock: product.stock_status === 'instock' ? 100 : 0,
+            rating: Number.parseFloat(product.average_rating || "0"),
+            stock: product.stock_status === "instock" ? 100 : 0,
+            slug: product.slug,
           })
         );
 
@@ -85,7 +88,7 @@ export function FeaturedProducts() {
           setProducts(transformedProducts);
         }
       } catch (error) {
-        console.error('Error fetching featured products:', error);
+        console.error("Error fetching featured products:", error);
       } finally {
         setLoading(false);
       }
@@ -94,10 +97,10 @@ export function FeaturedProducts() {
     getProducts();
   }, []);
 
-  const scroll = (direction: 'left' | 'right') => {
+  const scroll = (direction: "left" | "right") => {
     if (scrollContainer) {
-      const scrollAmount = direction === 'left' ? -320 : 320;
-      scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      const scrollAmount = direction === "left" ? -320 : 320;
+      scrollContainer.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
 
@@ -128,7 +131,7 @@ export function FeaturedProducts() {
                   <div
                     key={product.id}
                     className={`flex-none  ${
-                      isMobile ? 'w-[200px]' : 'w-[280px]'
+                      isMobile ? "w-[200px]" : "w-[280px]"
                     }`}
                   >
                     <ProductCardFeatured product={product} />
@@ -150,7 +153,7 @@ export function FeaturedProducts() {
                 variant="ghost"
                 size="icon"
                 className="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full"
-                onClick={() => scroll('left')}
+                onClick={() => scroll("left")}
               >
                 <ChevronLeft className="h-6 w-6" />
               </Button>
@@ -158,7 +161,7 @@ export function FeaturedProducts() {
                 variant="ghost"
                 size="icon"
                 className="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-full"
-                onClick={() => scroll('right')}
+                onClick={() => scroll("right")}
               >
                 <ChevronRight className="h-6 w-6" />
               </Button>

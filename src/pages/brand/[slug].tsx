@@ -327,10 +327,7 @@ export default function BrandPage() {
                       id: product.id,
                       title: product.name,
                       description: product.description,
-                      // brand:
-                      //   product.categories?.find(
-                      //     (cat: any) => cat.name === 'Brand'
-                      //   )?.name || 'Unknown',
+                      brand: product.brand || "",
                       thumbnail: product.images?.[0]?.src || "/placeholder.svg",
                       price:
                         Number.parseFloat(
@@ -353,6 +350,7 @@ export default function BrandPage() {
                         : 0,
                       rating: Number.parseFloat(product.average_rating),
                       stock: product.stock_status === "instock" ? 100 : 0,
+                      slug: product.slug,
                     }}
                   />
                 ))}
