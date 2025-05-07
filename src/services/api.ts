@@ -151,17 +151,77 @@ export const fetchFeaturedProducts = async (limit = 8): Promise<Product[]> => {
   }
 };
 
+// export const fetchBestSellerProducts = async (
+//   limit = 8
+// ): Promise<Product[]> => {
+//   try {
+//     const response = await fetch(
+//       `${API_URL}/products/bestsellers?limit=${limit}`
+//     );
+//     if (!response.ok) {
+//       throw new Error("Failed to fetch bestseller products");
+//     }
+//     return await response.json();
+//   } catch (error) {
+//     console.error("Error fetching bestseller products:", error);
+//     throw error;
+//   }
+// };
+
 export const fetchBestSellerProducts = async (
-  limit = 8
+  limit = 20
 ): Promise<Product[]> => {
   try {
     const response = await fetch(
-      `${API_URL}/products/bestsellers?limit=${limit}`
+      `${API_URL}/products/bestsellers-range?range=lifetime&limit=${limit}`
     );
+    console.log("response", response);
     if (!response.ok) {
       throw new Error("Failed to fetch bestseller products");
     }
-    return await response.json();
+
+    const data = await response.json();
+    return data.products || [];
+  } catch (error) {
+    console.error("Error fetching bestseller products:", error);
+    throw error;
+  }
+};
+
+export const fetchWeeklyBestSellerProducts = async (
+  limit = 20
+): Promise<Product[]> => {
+  try {
+    const response = await fetch(
+      `${API_URL}/products/bestsellers-range?range=week&limit=${limit}`
+    );
+    console.log("response", response);
+    if (!response.ok) {
+      throw new Error("Failed to fetch bestseller products");
+    }
+
+    const data = await response.json();
+    return data.products || [];
+  } catch (error) {
+    console.error("Error fetching bestseller products:", error);
+    throw error;
+  }
+};
+
+export const fetchMonthlyBestSellerProducts = async (
+  limit = 20
+): Promise<Product[]> => {
+  try {
+    const response = await fetch(
+      `${API_URL}/products/bestsellers-range?range=month&limit=${limit}`
+    );
+    console.log("response", response);
+    if (!response.ok) {
+      throw new Error("Failed to fetch bestseller products");
+    }
+
+    const data = await response.json();
+    return data.products || [];
   } catch (error) {
     console.error("Error fetching bestseller products:", error);
     throw error;

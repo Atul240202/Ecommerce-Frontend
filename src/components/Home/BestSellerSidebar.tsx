@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
-import { fetchBestSellerProducts } from "../../services/api";
+import { fetchMonthlyBestSellerProducts } from "../../services/api";
 import { Button } from "../../components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -30,12 +30,12 @@ interface Product {
 export function BestSellerSidebar() {
   const [products, setProducts] = useState<Product[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const productsPerPage = 11;
+  const productsPerPage = 9;
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const bestSellers = await fetchBestSellerProducts(10);
+        const bestSellers = await fetchMonthlyBestSellerProducts(18);
 
         if (!bestSellers || bestSellers.length === 0) {
           return;
@@ -76,7 +76,7 @@ export function BestSellerSidebar() {
   return (
     <div className="w-[350px] bg-white rounded-lg border border-gray-200">
       <div className="bg-blue-500 p-4 rounded-t-lg flex items-center justify-between">
-        <h2 className="text-white font-semibold">Best Seller</h2>
+        <h2 className="text-white font-semibold">Trending this Month</h2>
         <div className="flex gap-2">
           <Button
             variant="ghost"

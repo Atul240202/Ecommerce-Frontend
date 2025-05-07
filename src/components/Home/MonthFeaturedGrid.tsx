@@ -101,9 +101,7 @@ export function MonthFeaturedGrid() {
   return (
     <div className="flex-1">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-semibold text-[#1a2030]">
-          Trending Products This Month
-        </h2>
+        <h2 className="text-2xl font-semibold text-[#1a2030]">Best Seller</h2>
         <div className="flex gap-2">
           <Button
             variant="outline"

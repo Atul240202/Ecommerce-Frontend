@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { ProductCardFeatured } from "./ProductCardFeatured";
-import { fetchBestSellerProducts } from "../../services/api";
+import { fetchWeeklyBestSellerProducts } from "../../services/api";
 
 interface ApiProduct {
   id: number;
@@ -55,7 +55,7 @@ export function FeaturedProducts() {
     const getProducts = async () => {
       try {
         setLoading(true);
-        const featuredProducts = await fetchBestSellerProducts(8);
+        const featuredProducts = await fetchWeeklyBestSellerProducts(8);
 
         if (!featuredProducts || featuredProducts.length === 0) {
           return;
