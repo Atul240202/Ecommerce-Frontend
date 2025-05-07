@@ -94,19 +94,20 @@ export default function BrandPage() {
   }, [slug, currentPage]);
 
   const handleFilterChange = (filters: any) => {
-    // Apply filters to products
     const filtered = products.filter((product) => {
-      // Price filter
-      if (filters.priceRange) {
-        const productPrice = Number.parseFloat(product.price);
-        if (
-          productPrice < filters.priceRange[0] ||
-          productPrice > filters.priceRange[1]
-        ) {
-          return false;
-        }
-      }
-      return true;
+      const price = parseFloat(product.price || product.regular_price || "0");
+      const categoryNames = product.categories?.map((c: any) => c.name) || [];
+
+      const priceMatch =
+        price >= filters.priceRange[0] && price <= filters.priceRange[1];
+
+      const categoryMatch =
+        filters.selectedCategories.length === 0 ||
+        filters.selectedCategories.some((cat: string) =>
+          categoryNames.includes(cat)
+        );
+
+      return priceMatch && categoryMatch;
     });
 
     setFilteredProducts(filtered);
@@ -319,7 +320,7 @@ export default function BrandPage() {
                 <ProductSort onSortChange={handleSortChange} />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                 {filteredProducts.map((product) => (
                   <ProductCardFeatured
                     key={product.id}

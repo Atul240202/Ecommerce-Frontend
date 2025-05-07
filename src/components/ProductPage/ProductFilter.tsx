@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
-import { Slider } from '@radix-ui/react-slider'; // ya wherever your Slider is from
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
+import { useState, useEffect } from "react";
+import { Slider } from "@radix-ui/react-slider";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
 
 interface FilterState {
   priceRange: [number, number];
+  selectedCategories: string[];
 }
 
 interface FilterProps {
@@ -15,18 +16,28 @@ interface FilterProps {
 export function ProductFilter({ products, onFilterChange }: FilterProps) {
   const [filters, setFilters] = useState<FilterState>({
     priceRange: [0, 0],
+    selectedCategories: [],
   });
+  const [allCategories, setAllCategories] = useState<string[]>([]);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
 
   useEffect(() => {
     if (products.length) {
-      const prices = products.map((p) => p.price);
-      const min = Math.floor(Math.min(...prices) * 0.9);
-      const max = Math.ceil(Math.max(...prices) * 1.1);
+      const prices = products.map((p) =>
+        parseFloat(p.price || p.regular_price || "0")
+      );
+      const min = Math.floor(Math.min(...prices));
+      const max = Math.ceil(Math.max(...prices));
       setMinPrice(min);
       setMaxPrice(max);
-      setFilters({ priceRange: [min, max] });
+      setFilters((prev) => ({ ...prev, priceRange: [min, max] }));
+
+      const categorySet = new Set<string>();
+      products.forEach((p) => {
+        p.categories?.forEach((c: any) => categorySet.add(c.name));
+      });
+      setAllCategories([...categorySet]);
     }
   }, [products]);
 
@@ -36,6 +47,18 @@ export function ProductFilter({ products, onFilterChange }: FilterProps) {
 
   const handleApplyFilters = () => {
     onFilterChange(filters);
+  };
+
+  const toggleCategory = (category: string) => {
+    setFilters((prev) => {
+      const alreadySelected = prev.selectedCategories.includes(category);
+      return {
+        ...prev,
+        selectedCategories: alreadySelected
+          ? prev.selectedCategories.filter((c) => c !== category)
+          : [...prev.selectedCategories, category],
+      };
+    });
   };
 
   return (
@@ -71,9 +94,9 @@ export function ProductFilter({ products, onFilterChange }: FilterProps) {
               key={idx}
               className="block h-4 w-4 rounded-full border-2 border-white bg-[#2D81FF] shadow transition-all"
               style={{
-                position: 'absolute',
+                position: "absolute",
                 left: `${((val - minPrice) / (maxPrice - minPrice)) * 100}%`,
-                transform: 'translateX(-50%)',
+                transform: "translateX(-50%)",
               }}
             />
           ))}
@@ -99,7 +122,21 @@ export function ProductFilter({ products, onFilterChange }: FilterProps) {
           />
         </div>
       </div>
-
+      <div>
+        <h3 className="font-semibold mb-4">Categories</h3>
+        <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+          {allCategories.map((cat) => (
+            <label key={cat} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={filters.selectedCategories.includes(cat)}
+                onChange={() => toggleCategory(cat)}
+              />
+              <span>{cat}</span>
+            </label>
+          ))}
+        </div>
+      </div>
       <Button className="w-full bg-[#2D81FF]" onClick={handleApplyFilters}>
         Apply Filters
       </Button>

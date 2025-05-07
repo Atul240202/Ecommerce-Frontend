@@ -8,6 +8,7 @@ import { Footer } from "../components/utils/Footer";
 import CategorySubheader from "../components/Home/CategorySubheader";
 import BrandSubheader from "../components/Home/BrandSubheader";
 import { Phone, MessageCircle, Send } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -49,9 +50,9 @@ export function MainLayout({ children }: MainLayoutProps) {
             href="https://wa.me/917377017377" // replace with your WhatsApp number
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg transition-all"
+            className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full shadow-lg transition-all"
           >
-            <Send className="w-5 h-5" />
+            <FaWhatsapp className="w-8 h-8" />
           </a>
 
           {/* Call */}

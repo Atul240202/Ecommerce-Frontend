@@ -4,6 +4,7 @@ import { Facebook, Instagram, Youtube } from "lucide-react";
 import { Features } from "./Features";
 import logo from "../../assets/logo.webp";
 import { useLocation } from "react-router-dom";
+import { FaLinkedinIn } from "react-icons/fa";
 
 export function Footer() {
   const location = useLocation();
@@ -52,7 +53,7 @@ export function Footer() {
                 <h3 className="font-semibold text-gray-800 mb-3">Follow us</h3>
                 <div className="flex gap-4">
                   <Link
-                    href="https://www.facebook.com/industrywaala.com1"
+                    href="https://www.facebook.com/industrywaala.com"
                     className="text-gray-600 hover:text-gray-800"
                   >
                     <Facebook className="h-5 w-5" />
@@ -68,6 +69,12 @@ export function Footer() {
                     className="text-gray-600 hover:text-gray-800"
                   >
                     <Youtube className="h-5 w-5" />
+                  </Link>
+                  <Link
+                    href="https://www.linkedin.com/in/industry-waala-326034275/"
+                    className="text-gray-600 hover:text-gray-800"
+                  >
+                    <FaLinkedinIn className="h-5 w-5" />
                   </Link>
                 </div>
               </div>
@@ -160,10 +167,10 @@ export function Footer() {
             {/* Contact Column */}
             <div
               className={`flex  ${
-                isMobile ? "text-sm justify-between" : "justify-around"
+                isMobile ? "justify-between text-sm gap-5" : " justify-around"
               }`}
             >
-              <div>
+              <div className="">
                 <h3 className="font-bold text-lg text-gray-800">MAIL US</h3>
                 <p className="text-gray-600">sales@industrywaala.com</p>
                 <p className="text-gray-600 mt-2">Want to place an order?</p>
@@ -171,15 +178,14 @@ export function Footer() {
                 <p className="text-gray-600">GSTIN- 09ACUPT6154G1ZV</p>
               </div>
 
-              <div>
+              <div className="">
                 <div className="flex gap-2">
                   {/* <MapPin className='h-5 w-5 text-gray-600 mt-0.5 flex-shrink-0' /> */}
                   <h3 className="font-bold text-lg text-gray-800">
                     OFFICE ADDRESS
                   </h3>
                 </div>
-
-                <div className="flex items-start gap-2">
+                <div className="flexgap-2 ">
                   <div className="">
                     <p className="text-gray-600 font-semibold">SARATECH</p>
                     <p className="text-gray-600">B -80, Sector- 5,</p>
@@ -188,31 +194,55 @@ export function Footer() {
                     <p className="text-gray-600">Uttar Pradesh, 201301</p>
                   </div>
                 </div>
-
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3503.3221178506546!2d77.31936527495522!3d28.59011188600672!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce52bdffd3635%3A0x52ca46b16e63fb2a!2sIndustrywaala!5e0!3m2!1sen!2sin!4v1745867546254!5m2!1sen!2sin"
-                  width="200"
-                  height="150"
-                  className="border-1"
-                  allowfullscreen=""
-                  loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade"
-                ></iframe>
+                <div className={`${isMobile ? "hidden" : ""}`}>
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3503.3221178506546!2d77.31936527495522!3d28.59011188600672!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce52bdffd3635%3A0x52ca46b16e63fb2a!2sIndustrywaala!5e0!3m2!1sen!2sin!4v1745867546254!5m2!1sen!2sin"
+                    width="200"
+                    height="150"
+                    className="border-1"
+                    loading="lazy"
+                  ></iframe>
+                </div>{" "}
               </div>
+            </div>
+
+            <div className={`${isMobile ? "justify-items-center" : "hidden"}`}>
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3503.3221178506546!2d77.31936527495522!3d28.59011188600672!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce52bdffd3635%3A0x52ca46b16e63fb2a!2sIndustrywaala!5e0!3m2!1sen!2sin!4v1745867546254!5m2!1sen!2sin"
+                width="300"
+                height="200"
+                className="border-1"
+                loading="lazy"
+              ></iframe>
             </div>
 
             {/* Social Media - Mobile Only */}
             <div className="md:hidden justify-items-center">
               <h3 className="font-semibold text-gray-800 mb-3">Follow us</h3>
               <div className="flex gap-4">
-                <Link href="#" className="text-gray-600 hover:text-gray-800">
+                <Link
+                  href="https://www.facebook.com/industrywaala.com"
+                  className="text-gray-600 hover:text-gray-800"
+                >
                   <Facebook className="h-5 w-5" />
                 </Link>
-                <Link href="#" className="text-gray-600 hover:text-gray-800">
+                <Link
+                  href="https://www.instagram.com/industrywaala/"
+                  className="text-gray-600 hover:text-gray-800"
+                >
                   <Instagram className="h-5 w-5" />
                 </Link>
-                <Link href="#" className="text-gray-600 hover:text-gray-800">
+                <Link
+                  href="https://www.youtube.com/@Industrywaala"
+                  className="text-gray-600 hover:text-gray-800"
+                >
                   <Youtube className="h-5 w-5" />
+                </Link>
+                <Link
+                  href="https://www.linkedin.com/in/industry-waala-326034275/"
+                  className="text-gray-600 hover:text-gray-800"
+                >
+                  <FaLinkedinIn className="h-5 w-5" />
                 </Link>
               </div>
             </div>
@@ -223,8 +253,8 @@ export function Footer() {
         <div className="border-t">
           <div className="container mx-auto px-4 py-4">
             <p className="text-sm text-center text-gray-600">
-              COPYRIGHT Saratech - ALL RIGHTS RESERVED || Crafted with 💙 Just
-              Charge
+              CopyRight Industrywaala - ALL RIGHTS RESERVED || Crafted with 💙
+              Just Charge
             </p>
           </div>
         </div>
