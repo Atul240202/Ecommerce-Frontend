@@ -7,6 +7,7 @@ interface Product {
   price: string;
   sale_price: string;
   regular_price: string;
+  slug: string;
   images: Array<{ src: string }>;
   categories: Array<{ name: string }>;
 }
@@ -40,7 +41,7 @@ export function SearchResults({
             {results.map((product) => (
               <li key={product.id} className="border-b last:border-b-0">
                 <Link
-                  href={`/product/${product.id}`}
+                  href={`/product/${product.slug}`}
                   className="flex items-center p-3 hover:bg-gray-50"
                   onClick={onClose}
                 >
