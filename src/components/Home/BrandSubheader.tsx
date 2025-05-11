@@ -85,8 +85,8 @@ export const BrandSubheader = () => {
               className="flex flex-col justify-center items-center px-4 py-2 text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap"
             >
               <div
-                className={`mb-1 overflow-hidden  ${
-                  isMobile ? "gap-2 w-10 h-10" : "w-18 h-18"
+                className={`flex items-center justify-center overflow-hidden ${
+                  isMobile ? "w-10 h-10" : "w-18 h-18"
                 }`}
               >
                 <img
@@ -94,12 +94,19 @@ export const BrandSubheader = () => {
                   alt={brand.name}
                   width={80}
                   height={80}
-                  className="object-cover"
+                  className="object-contain"
                 />
               </div>
+
               {/* <span>{brand.name}</span> */}
             </Link>
           ))}
+          <Link
+            href={`/brand/`}
+            className="flex flex-col justify-center items-center px-4 py-2 text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap"
+          >
+            <div className="text-md-center font-bold">All Brand's</div>
+          </Link>
         </div>
 
         {showLeftScroll && (

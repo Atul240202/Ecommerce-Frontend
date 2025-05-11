@@ -99,62 +99,64 @@ export const CategorySubheader = () => {
               onMouseLeave={() => setOpenDropdown(null)}
             >
               {category.subcategories.length > 0 ? (
-                <DropdownMenu open={openDropdown === index}>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      className={`flex flex-col items-center px-4 py-2 ${
-                        isMobile
-                          ? "h-20 w-20 text-[0.75rem]"
-                          : "h-auto w-28 text-sm"
-                      } text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap bg-transparent border-0 cursor-pointer`}
-                    >
-                      <div
-                        className={`mb-1 overflow-hidden  ${
-                          isMobile ? "gap-2 w-10 h-10" : "w-18 h-18"
-                        }`}
+                <>
+                  <DropdownMenu open={openDropdown === index}>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        className={`flex flex-col items-center px-4 py-2 ${
+                          isMobile
+                            ? "h-20 w-20 text-[0.75rem]"
+                            : "h-auto w-28 text-sm"
+                        } text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap bg-transparent border-0 cursor-pointer`}
                       >
-                        <img
-                          src={category.icon || "/placeholder.svg"}
-                          alt={category.name}
-                          width={80}
-                          height={80}
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="flex items-center">
-                        <span>{category.name}</span>
-                        <ChevronDown
-                          className={`ml-1 h-3 w-3 transition-transform ${
-                            openDropdown === index ? "rotate-180" : ""
+                        <div
+                          className={`mb-1 overflow-hidden  ${
+                            isMobile ? "gap-2 w-10 h-10" : "w-18 h-18"
                           }`}
-                        />
-                      </div>
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-56 z-50">
-                    {/* Parent Category Link */}
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href={category.href}
-                        className="font-semibold text-blue-600"
-                      >
-                        {category.name} →
-                      </Link>
-                    </DropdownMenuItem>
-
-                    {/* Subcategories */}
-                    {category.subcategories.map((subcategory, subIndex) => (
-                      <DropdownMenuItem key={subIndex} asChild>
-                        <Link
-                          href={subcategory.href}
-                          className="w-full cursor-pointer"
                         >
-                          {subcategory.name}
+                          <img
+                            src={category.icon || "/placeholder.svg"}
+                            alt={category.name}
+                            width={80}
+                            height={80}
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="flex items-center">
+                          <span>{category.name}</span>
+                          <ChevronDown
+                            className={`ml-1 h-3 w-3 transition-transform ${
+                              openDropdown === index ? "rotate-180" : ""
+                            }`}
+                          />
+                        </div>
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="w-56 z-50">
+                      {/* Parent Category Link */}
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={category.href}
+                          className="font-semibold text-blue-600"
+                        >
+                          {category.name} →
                         </Link>
                       </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+
+                      {/* Subcategories */}
+                      {category.subcategories.map((subcategory, subIndex) => (
+                        <DropdownMenuItem key={subIndex} asChild>
+                          <Link
+                            href={subcategory.href}
+                            className="w-full cursor-pointer"
+                          >
+                            {subcategory.name}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </>
               ) : (
                 <Link
                   href={category.href}
@@ -178,7 +180,14 @@ export const CategorySubheader = () => {
               )}
             </div>
           ))}
+          <Link
+            href={`/categories/`}
+            className="flex flex-col justify-center items-center px-4 py-2 text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap"
+          >
+            <div className="text-md-center font-bold">All Categories</div>
+          </Link>
         </div>
+
         {showLeftScroll && (
           <button
             onClick={scrollLeft}
