@@ -537,3 +537,9 @@ export const checkDeliveryAvailability = async (
     throw new Error(error.message || "Failed to check delivery availability");
   }
 };
+
+export const fetchVariationsByParentId = async (parentId: number) => {
+  const res = await fetch(`${API_URL}/variations/parent/${parentId}`);
+  if (!res.ok) throw new Error("Failed to fetch variations");
+  return res.json();
+};

@@ -24,6 +24,7 @@ import {
   submitProductReview,
   fetchProductBySlug,
   checkDeliveryAvailability,
+  fetchVariationsByParentId,
 } from "../../services/api";
 import { toast } from "../../components/ui/use-toast";
 import LoginPopup from "../../components/utils/LoginPopup";
@@ -101,6 +102,7 @@ interface Product {
   youtubeId?: string;
   shipping_amount?: number;
   short_description?: string;
+  type?: string;
 }
 
 export default function ProductPage() {
@@ -133,10 +135,19 @@ export default function ProductPage() {
     shippingCharges?: number;
   } | null>(null);
   const [checkingDelivery, setCheckingDelivery] = useState(false);
+  const [variations, setVariations] = useState<any[]>([]);
+  const [selectedAttribute, setSelectedAttribute] = useState<string>("");
+  const [selectedVariation, setSelectedVariation] = useState<any | null>(null);
+
   useEffect(() => {
     // Scroll to the top of the page when the component mounts
     window.scrollTo(0, 0);
   }, [slug]); // Re-run when the product ID changes
+
+  useEffect(() => {
+    // Scroll to the top of the page when the component mounts
+    console.log("Selected Variation:", selectedVariation);
+  }, [selectedVariation]); // Re-run when the product ID changes
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
@@ -164,6 +175,11 @@ export default function ProductPage() {
         };
         setProduct(transformedProduct);
 
+        if (productData.type === "variable") {
+          const variationData = await fetchVariationsByParentId(productData.id);
+          console.log("Variations data:", variationData);
+          setVariations(variationData);
+        }
         // Check if product is in wishlist
         if (isInWishlist) {
           // setIsWishlisted(isInWishlist(Number.parseInt(id)));
@@ -296,9 +312,13 @@ export default function ProductPage() {
   const handleBuyNow = () => {
     if (!product) return;
 
-    const discountedPrice = product.on_sale
-      ? Number.parseFloat(product.sale_price)
-      : Number.parseFloat(product.price);
+    const discountedPrice = selectedVariation
+      ? selectedVariation.on_sale
+        ? parseFloat(selectedVariation.sale_price)
+        : parseFloat(selectedVariation.price)
+      : product?.on_sale
+      ? parseFloat(product.sale_price)
+      : parseFloat(product?.price ?? "0");
 
     addProduct({
       id: product.id,
@@ -306,7 +326,7 @@ export default function ProductPage() {
       thumbnail: product.images[0]?.src,
       price: discountedPrice,
       quantity: quantity,
-      sku: product.sku || "",
+      sku: selectedVariation?.sku || product.sku || "",
       shipping_amount: product.shipping_amount ?? 200,
       weight: product.weight ?? "0.5",
       dimensions: {
@@ -445,10 +465,13 @@ export default function ProductPage() {
     );
   }
 
-  const discountedPrice = product.on_sale
-    ? Number.parseFloat(product.sale_price)
-    : Number.parseFloat(product.price);
-
+  const discountedPrice = selectedVariation
+    ? selectedVariation.on_sale
+      ? parseFloat(selectedVariation.sale_price)
+      : parseFloat(selectedVariation.price)
+    : product?.on_sale
+    ? parseFloat(product.sale_price)
+    : parseFloat(product?.price ?? "0");
   let exclusiveOfGST: number | null = null;
 
   if (product.tax_status === "taxable" && product.tax_class?.trim() !== "") {
@@ -530,6 +553,42 @@ export default function ProductPage() {
                   ({product.rating_count} reviews)
                 </span>
               </div>
+              {/* {product?.type === "variable" && priceRange && (
+                <p className="text-sm text-gray-500 mb-2">
+                  Price Range: ₹{priceRange.min} – ₹{priceRange.max}
+                </p>
+              )} */}
+              {product.type === "variable" && (
+                <div className="mb-4">
+                  <label
+                    htmlFor="variation"
+                    className="block text-sm font-medium mb-1"
+                  >
+                    {variations[0]?.attributes[0]?.name || "Select Option"}
+                  </label>
+                  <select
+                    id="variation"
+                    className="border px-4 py-2 rounded w-full"
+                    value={selectedAttribute}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setSelectedAttribute(value);
+                      const found = variations.find(
+                        (v) => v.attributes[0]?.option === value
+                      );
+                      setSelectedVariation(found || null);
+                    }}
+                  >
+                    <option value="">-- Select --</option>
+                    {variations.map((v) => (
+                      <option key={v.id} value={v.attributes[0]?.option}>
+                        {v.attributes[0]?.option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               {product.price === "0" || product.price === "" ? (
                 <div className="mb-4">
                   <span
