@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 interface Brand {
   name: string;
@@ -12,12 +13,12 @@ export function BrandSlider() {
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const response = await fetch('/tempData/brand.json');
-        if (!response.ok) throw new Error('Failed to fetch brands');
+        const response = await fetch("/tempData/brand.json");
+        if (!response.ok) throw new Error("Failed to fetch brands");
         const data: Brand[] = await response.json();
         setBrands(data);
       } catch (error) {
-        console.error('Error fetching brands:', error);
+        console.error("Error fetching brands:", error);
       }
     };
 
@@ -29,18 +30,21 @@ export function BrandSlider() {
       <div className="flex w-max animate-marquee whitespace-nowrap">
         {/* Original List */}
         {brands.concat(brands).map((brand, index) => (
-          <div
+          <Link
+            to={`/brand/${brand.keyword}`}
             key={`${brand.name}-${index}`}
             className="flex items-center justify-center w-[220px] px-4 py-2"
           >
-            <img
-              src={brand.image || '/placeholder.svg'}
-              alt={brand.name}
-              width={160}
-              height={80}
-              className="object-contain"
-            />
-          </div>
+            <div key={`${brand.name}-${index}`}>
+              <img
+                src={brand.image || "/placeholder.svg"}
+                alt={brand.name}
+                width={160}
+                height={80}
+                className="object-contain"
+              />
+            </div>
+          </Link>
         ))}
       </div>
     </div>
