@@ -337,7 +337,9 @@ export default function CheckoutPage() {
       );
 
       if (result.success && result.available) {
-        setCalculatedShipping(Number.parseFloat(result.shipping_charges));
+        setCalculatedShipping(
+          parseFloat(Number(result.shipping_charges).toFixed(2))
+        );
       } else {
         // If delivery not available, use default shipping
         setCalculatedShipping(200);
@@ -358,11 +360,9 @@ export default function CheckoutPage() {
 
   // Add this effect to update the total when calculated shipping changes
   useEffect(() => {
-    // Update the total with the new shipping charge
     const newTotal = subtotal + calculatedShipping;
-    // We need to update the context's shipping and total values
     if (typeof updateShipping === "function") {
-      updateShipping(calculatedShipping);
+      updateShipping(parseFloat(calculatedShipping.toFixed(2)));
     }
   }, [calculatedShipping, subtotal, updateShipping]);
 
@@ -636,7 +636,7 @@ export default function CheckoutPage() {
 
       // Payment and pricing information
       payment_method: paymentMethod === "cod" ? "COD" : "Prepaid",
-      shipping_charges: calculatedShipping.toString(), // Use calculated shipping
+      shipping_charges: calculatedShipping.toFixed(2), // Use calculated shipping
       giftwrap_charges: "0",
       transaction_charges: "0",
       total_discount: "0",
@@ -812,7 +812,7 @@ export default function CheckoutPage() {
           : undefined,
         subtotal,
         shipping: calculatedShipping, // Use calculated shipping
-        total: subtotal + calculatedShipping, // Update total with calculated shipping
+        total: parseFloat((subtotal + calculatedShipping).toFixed(2)),
         reason: "Process was not completed by the user.",
       };
 
