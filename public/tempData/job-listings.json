@@ -1,0 +1,28 @@
+[
+  {
+    "id": 1,
+    "title": "Sales Executive",
+    "department": "Sales",
+    "location": "Noida, UP",
+    "type": "Full-time",
+    "experience": "2-4 years",
+    "description": "We are looking for a Sales Executive to join our growing team. The ideal candidate will be responsible for developing and maintaining relationships with clients, identifying new business opportunities, and achieving sales targets.",
+    "responsibilities": [
+      "Develop and maintain relationships with clients",
+      "Identify new business opportunities",
+      "Achieve sales targets",
+      "Prepare and present sales proposals",
+      "Negotiate contracts and close agreements",
+      "Maintain records of sales, revenue, and other important metrics"
+    ],
+    "requirements": [
+      "2-4 years of experience in sales, preferably in the industrial sector",
+      "Strong communication and negotiation skills",
+      "Ability to build and maintain relationships",
+      "Result-oriented with a proven track record of achieving targets",
+      "Bachelor's degree in business, marketing, or related field",
+      "Willingness to travel as needed"
+    ],
+    "postedDate": "2025-05-01"
+  }
+]

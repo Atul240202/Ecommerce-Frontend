@@ -152,14 +152,14 @@ export function Footer() {
                       Contact Us
                     </Link>
                   </li>
-                  {/* <li>
+                  <li>
                     <Link
                       href="/career"
                       className="text-gray-600 hover:text-gray-800"
                     >
                       Career
                     </Link>
-                  </li> */}
+                  </li>
                 </ul>
               </div>
             </div>
