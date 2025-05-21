@@ -24,6 +24,7 @@ import {
   submitProductReview,
   fetchProductBySlug,
   checkDeliveryAvailability,
+  fetchVariationsByParentId,
 } from "../../services/api";
 import { toast } from "../../components/ui/use-toast";
 import LoginPopup from "../../components/utils/LoginPopup";
@@ -101,6 +102,7 @@ interface Product {
   youtubeId?: string;
   shipping_amount?: number;
   short_description?: string;
+  type?: string;
 }
 
 export default function ProductPage() {
@@ -133,10 +135,13 @@ export default function ProductPage() {
     shippingCharges?: number;
   } | null>(null);
   const [checkingDelivery, setCheckingDelivery] = useState(false);
+  const [variations, setVariations] = useState<any[]>([]);
+  const [selectedAttribute, setSelectedAttribute] = useState<string>("");
+  const [selectedVariation, setSelectedVariation] = useState<any | null>(null);
+
   useEffect(() => {
-    // Scroll to the top of the page when the component mounts
     window.scrollTo(0, 0);
-  }, [slug]); // Re-run when the product ID changes
+  }, [slug]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
@@ -164,6 +169,10 @@ export default function ProductPage() {
         };
         setProduct(transformedProduct);
 
+        if (productData.type === "variable") {
+          const variationData = await fetchVariationsByParentId(productData.id);
+          setVariations(variationData);
+        }
         // Check if product is in wishlist
         if (isInWishlist) {
           // setIsWishlisted(isInWishlist(Number.parseInt(id)));
@@ -296,9 +305,13 @@ export default function ProductPage() {
   const handleBuyNow = () => {
     if (!product) return;
 
-    const discountedPrice = product.on_sale
-      ? Number.parseFloat(product.sale_price)
-      : Number.parseFloat(product.price);
+    const discountedPrice = selectedVariation
+      ? selectedVariation?.on_sale
+        ? parseFloat(selectedVariation.sale_price)
+        : parseFloat(selectedVariation.price)
+      : product?.on_sale
+      ? parseFloat(product.sale_price)
+      : parseFloat(product?.price ?? "0");
 
     addProduct({
       id: product.id,
@@ -306,13 +319,13 @@ export default function ProductPage() {
       thumbnail: product.images[0]?.src,
       price: discountedPrice,
       quantity: quantity,
-      sku: product.sku || "",
+      sku: productSku || "",
       shipping_amount: product.shipping_amount ?? 200,
-      weight: product.weight ?? "0.5",
+      weight: productWeight ?? "0.5",
       dimensions: {
-        length: product.dimensions?.length ?? "0",
-        width: product.dimensions?.width ?? "0",
-        height: product.dimensions?.height ?? "0",
+        length: ProductDimensions?.length ?? "0",
+        width: ProductDimensions?.width ?? "0",
+        height: ProductDimensions?.height ?? "0",
       },
     });
 
@@ -445,11 +458,15 @@ export default function ProductPage() {
     );
   }
 
-  const discountedPrice = product.on_sale
-    ? Number.parseFloat(product.sale_price)
-    : Number.parseFloat(product.price);
-
+  const productSku = selectedVariation ? selectedVariation.sku : product.sku;
   let exclusiveOfGST: number | null = null;
+  const discountedPrice = selectedVariation
+    ? selectedVariation.on_sale
+      ? parseFloat(selectedVariation.sale_price)
+      : parseFloat(selectedVariation.price)
+    : product?.on_sale
+    ? parseFloat(product.sale_price)
+    : parseFloat(product?.price ?? "0");
 
   if (product.tax_status === "taxable" && product.tax_class?.trim() !== "") {
     const taxPercentage = Number(product.tax_class);
@@ -460,12 +477,27 @@ export default function ProductPage() {
     }
   }
 
-  const regularPrice = Number.parseFloat(
-    product.regular_price || product.price
-  );
+  const regularPrice = selectedVariation
+    ? Number.parseFloat(
+        selectedVariation.regular_price || selectedVariation.price
+      )
+    : Number.parseFloat(product.regular_price || product.price);
+
   const discountPercentage = product.on_sale
     ? ((regularPrice - discountedPrice) / regularPrice) * 100
     : 0;
+
+  const ProductDimensions = selectedVariation
+    ? selectedVariation.dimensions
+    : product.dimensions;
+
+  const productWeight = selectedVariation
+    ? selectedVariation.weight
+    : product.weight;
+
+  const productImages = selectedVariation
+    ? selectedVariation.image
+    : product.images;
 
   return (
     <MainLayout>
@@ -493,8 +525,8 @@ export default function ProductPage() {
           }`}
         >
           <ProductGallery
-            images={product.images.map((img) => img.src)}
-            thumbnail={product.images[0]?.src || "/placeholder.svg"}
+            images={productImages.map((img) => img.src)}
+            thumbnail={productImages[0]?.src || "/placeholder.svg"}
             youtubeVid={product.youtube_vid}
             youtubeId={product.youtubeId}
           />
@@ -530,6 +562,43 @@ export default function ProductPage() {
                   ({product.rating_count} reviews)
                 </span>
               </div>
+              {/* {product?.type === "variable" && priceRange && (
+                <p className="text-sm text-gray-500 mb-2">
+                  Price Range: ₹{priceRange.min} – ₹{priceRange.max}
+                </p>
+              )} */}
+              {product.type === "variable" && (
+                <div className="mb-4">
+                  <label
+                    htmlFor="variation"
+                    className="block text-sm font-medium mb-1"
+                  >
+                    Other Variants:{" "}
+                    {variations[0]?.attributes[0]?.name || "Select Option"}
+                  </label>
+                  <select
+                    id="variation"
+                    className="border px-4 py-2 rounded w-full"
+                    value={selectedAttribute}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setSelectedAttribute(value);
+                      const found = variations.find(
+                        (v) => v.attributes[0]?.option === value
+                      );
+                      setSelectedVariation(found || null);
+                    }}
+                  >
+                    <option value="">-- Default --</option>
+                    {variations.map((v) => (
+                      <option key={v.id} value={v.attributes[0]?.option}>
+                        {v.attributes[0]?.option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               {product.price === "0" || product.price === "" ? (
                 <div className="mb-4">
                   <span
@@ -688,9 +757,9 @@ export default function ProductPage() {
                   {product.stock_status ? "In Stock" : "Not Available"}
                 </span>
               </p>
-              {product.sku && (
+              {productSku && (
                 <p className="text-sm text-gray-500">
-                  SKU: <span className="font-medium">{product.sku}</span>
+                  SKU: <span className="font-medium">{productSku}</span>
                 </p>
               )}
             </div>
@@ -862,18 +931,17 @@ export default function ProductPage() {
                       <dd className="w-2/3">{product.brand}</dd>
                     </div>
                   )}
-                  {product.weight && (
-                    <div className="flex">
-                      <dt className="w-1/3 text-gray-500">Weight</dt>
-                      <dd className="w-2/3">{product.weight} kg</dd>
-                    </div>
-                  )}
-                  {product.dimensions && (
+
+                  <div className="flex">
+                    <dt className="w-1/3 text-gray-500">Weight</dt>
+                    <dd className="w-2/3">{productWeight} kg</dd>
+                  </div>
+                  {ProductDimensions && (
                     <div className="flex">
                       <dt className="w-1/3 text-gray-500">Dimensions</dt>
                       <dd className="w-2/3">
-                        {product.dimensions.height} x{" "}
-                        {product.dimensions.length} x {product.dimensions.width}
+                        {ProductDimensions.height} x {ProductDimensions.length}{" "}
+                        x {ProductDimensions.width}
                       </dd>
                     </div>
                   )}
