@@ -56,6 +56,30 @@ export interface ProductCategory {
   count: number;
 }
 
+export interface JobListing {
+  id: number;
+  title: string;
+  department: string;
+  location: string;
+  type: string;
+  experience: string;
+  description: string;
+  responsibilities: string[];
+  requirements: string[];
+  postedDate: string;
+}
+
+export interface JobApplicationFormData {
+  jobId: number;
+  jobTitle: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  resume: File | null;
+  coverLetter: string;
+}
+
 // Fetch all product categories
 export const fetchProductCategories = async () => {
   try {
@@ -538,8 +562,28 @@ export const checkDeliveryAvailability = async (
   }
 };
 
+
 export const fetchVariationsByParentId = async (parentId: number) => {
   const res = await fetch(`${API_URL}/variations/parent/${parentId}`);
   if (!res.ok) throw new Error("Failed to fetch variations");
   return res.json();
+
+export const sendJobApplication = async (formData: FormData) => {
+  try {
+    const response = await fetch(`${API_URL}/apply-job/apply`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData?.message || "Failed to send job application");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    console.error("Error in sendJobApplication():", error.message);
+    throw new Error(error.message || "Failed to send job application");
+  }
 };

@@ -53,11 +53,6 @@ export default function ShippingAndReturnsPage() {
                 and destination of your order. You can view the shipping options
                 and costs during the checkout process.
               </p>
-              <p className="text-gray-700 mb-4">
-                For orders above ₹5,000, we offer free standard shipping within
-                India. International shipping rates vary by country and will be
-                calculated at checkout.
-              </p>
             </section>
 
             <section>

@@ -184,7 +184,9 @@ export const CategorySubheader = () => {
             href={`/categories/`}
             className="flex flex-col justify-center items-center px-4 py-2 text-sm text-gray-700 hover:text-blue-600 whitespace-nowrap"
           >
-            <div className="text-md-center font-bold">All Categories</div>
+            <div className="text-md-center font-bold">
+              Browse All Categories
+            </div>
           </Link>
         </div>
 
