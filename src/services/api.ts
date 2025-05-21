@@ -199,7 +199,6 @@ export const fetchBestSellerProducts = async (
     const response = await fetch(
       `${API_URL}/products/bestsellers-range?range=lifetime&limit=${limit}`
     );
-    console.log("response", response);
     if (!response.ok) {
       throw new Error("Failed to fetch bestseller products");
     }
@@ -219,7 +218,6 @@ export const fetchWeeklyBestSellerProducts = async (
     const response = await fetch(
       `${API_URL}/products/bestsellers-range?range=week&limit=${limit}`
     );
-    console.log("response", response);
     if (!response.ok) {
       throw new Error("Failed to fetch bestseller products");
     }
@@ -239,7 +237,6 @@ export const fetchMonthlyBestSellerProducts = async (
     const response = await fetch(
       `${API_URL}/products/bestsellers-range?range=month&limit=${limit}`
     );
-    console.log("response", response);
     if (!response.ok) {
       throw new Error("Failed to fetch bestseller products");
     }
@@ -562,12 +559,11 @@ export const checkDeliveryAvailability = async (
   }
 };
 
-
 export const fetchVariationsByParentId = async (parentId: number) => {
   const res = await fetch(`${API_URL}/variations/parent/${parentId}`);
   if (!res.ok) throw new Error("Failed to fetch variations");
   return res.json();
-}
+};
 
 export const sendJobApplication = async (formData: FormData) => {
   try {
