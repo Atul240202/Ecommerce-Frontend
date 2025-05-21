@@ -567,6 +567,7 @@ export const fetchVariationsByParentId = async (parentId: number) => {
   const res = await fetch(`${API_URL}/variations/parent/${parentId}`);
   if (!res.ok) throw new Error("Failed to fetch variations");
   return res.json();
+}
 
 export const sendJobApplication = async (formData: FormData) => {
   try {
