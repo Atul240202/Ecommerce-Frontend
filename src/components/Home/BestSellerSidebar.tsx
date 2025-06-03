@@ -99,7 +99,11 @@ export function BestSellerSidebar() {
       <div className="p-4 space-y-4">
         {currentProducts.length > 0 ? (
           currentProducts.map((product) => (
-            <Link to={`/product/${product.slug}`} className="block">
+            <Link
+              key={product.id}
+              to={`/product/${product.slug}`}
+              className="block"
+            >
               <div className="flex gap-3 group cursor-pointer">
                 <div className="relative w-20 h-20 flex-shrink-0">
                   <img

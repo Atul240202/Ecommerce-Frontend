@@ -319,13 +319,14 @@ export default function ProductPage() {
       thumbnail: product.images[0]?.src,
       price: discountedPrice,
       quantity: quantity,
-      sku: productSku || "",
+      sku: selectedVariation?.sku || product.sku || "",
       shipping_amount: product.shipping_amount ?? 200,
-      weight: productWeight ?? "0.5",
+      weight:
+        selectedVariation?.weight?.trim() ?? product.weight.trim() ?? "0.5",
       dimensions: {
-        length: ProductDimensions?.length ?? "0",
-        width: ProductDimensions?.width ?? "0",
-        height: ProductDimensions?.height ?? "0",
+        length: ProductDimensions?.length.trim() ?? "0",
+        width: ProductDimensions?.width.trim() ?? "0",
+        height: ProductDimensions?.height.trim() ?? "0",
       },
     });
 
@@ -487,13 +488,17 @@ export default function ProductPage() {
     ? ((regularPrice - discountedPrice) / regularPrice) * 100
     : 0;
 
-  const ProductDimensions = selectedVariation
-    ? selectedVariation.dimensions
-    : product.dimensions;
+  const selectedDims = selectedVariation?.dimensions || {};
 
-  const productWeight = selectedVariation
-    ? selectedVariation.weight
-    : product.weight;
+  const ProductDimensions = {
+    length: selectedDims.length?.trim() || product?.dimensions.length || "0",
+    width: selectedDims.width?.trim() || product?.dimensions.width || "0",
+    height: selectedDims.height?.trim() || product?.dimensions.height || "0",
+  };
+
+  const productWeight = selectedVariation?.weight?.trim()
+    ? selectedVariation.weight.trim()
+    : product.weight?.trim() || "0.5";
 
   const productImages = selectedVariation
     ? selectedVariation.image
