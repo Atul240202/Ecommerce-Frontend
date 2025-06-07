@@ -501,7 +501,7 @@ export default function ProductPage() {
     : product.weight?.trim() || "0.5";
 
   const productImages = selectedVariation
-    ? selectedVariation.image
+    ? selectedVariation.image.length != 0 || selectedVariation.images
     : product.images;
 
   return (
