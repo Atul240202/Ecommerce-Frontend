@@ -500,10 +500,13 @@ export default function ProductPage() {
     ? selectedVariation.weight.trim()
     : product.weight?.trim() || "0.5";
 
-  const productImages = selectedVariation
-    ? selectedVariation.image.length != 0 || selectedVariation.images
-    : product.images;
-
+  const productImages =
+    selectedVariation &&
+    (selectedVariation.image?.length || selectedVariation.images?.length)
+      ? selectedVariation.image?.length
+        ? selectedVariation.image
+        : selectedVariation.images
+      : product.images;
   return (
     <MainLayout>
       <div
