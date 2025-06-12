@@ -126,12 +126,12 @@ export default function CartPage() {
         price: item.price,
         quantity: item.quantity,
         sku: item.sku || "",
-        shipping_amount: item.shipping_amount,
+        shipping_amount: item.shipping_amount ?? 200,
         weight: item.weight ?? "0.5",
         dimensions: {
-          length: item.dimensions?.length ?? "0",
-          width: item.dimensions?.width ?? "0",
-          height: item.dimensions?.height ?? "0",
+          length: item.dimensions?.length ?? "10",
+          width: item.dimensions?.width ?? "10",
+          height: item.dimensions?.height ?? "10",
         },
       }));
 
