@@ -377,11 +377,25 @@ export default function CheckoutPage() {
 
   // Add this effect to fetch shipping charges when shipping address changes
   useEffect(() => {
+    if (!selectedShippingAddressId || savedAddresses.length === 0) return;
+
     const selectedAddress = getSelectedShippingAddress();
-    if (selectedAddress && selectedAddress.postcode) {
+    if (selectedAddress?.postcode) {
       fetchShippingCharges(selectedAddress.postcode);
     }
-  }, [selectedShippingAddressId, products]);
+  }, [selectedShippingAddressId, savedAddresses, products]);
+
+  //temporary function only for testing
+  useEffect(() => {
+    console.log("selectedShippingAddressId:", selectedShippingAddressId);
+    console.log("savedAddresses:", savedAddresses);
+    const selectedAddress = getSelectedShippingAddress();
+    console.log("selectedAddress:", selectedAddress);
+
+    if (selectedAddress?.postcode) {
+      fetchShippingCharges(selectedAddress.postcode);
+    }
+  }, [selectedShippingAddressId, savedAddresses, products]);
 
   // Modify the handleShippingAddressSelect function to fetch shipping charges
   const handleShippingAddressSelect = async (addressId: string) => {
