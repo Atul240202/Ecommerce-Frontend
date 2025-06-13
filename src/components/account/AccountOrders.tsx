@@ -213,14 +213,14 @@ export function AccountOrders() {
                           />
                         </div> */}
                         <div className="flex-1 min-w-0">
-                          <Link
-                            to={`/product/${item.id}`}
+                          <div
+                            // to={`/product/${item.slug}`}
                             className="text-blue-500 text-sm"
                           >
                             <h4 className="font-medium text-sm line-clamp-1">
                               {item.name}
                             </h4>
-                          </Link>
+                          </div>
                           <div className="flex items-center justify-between mt-1">
                             <span className="text-xs text-gray-500">
                               Qty: {item.units}
@@ -334,11 +334,13 @@ export function AccountOrders() {
                         />
                       </div> */}
                       <div>
-                        <Link to={`/product/${item.id}`}>
+                        <div
+                        // to={`/product/${item.slug}`}
+                        >
                           <h4 className="font-medium line-clamp-1 hover:text-blue-500">
                             {item.name}
                           </h4>
-                        </Link>
+                        </div>
                         <p className="text-xs text-gray-500">
                           Qty: {item.units}
                         </p>
@@ -400,8 +402,10 @@ export function AccountOrders() {
                   <h5 className="font-medium text-sm">Total Amount:</h5>
                   <p className="text-lg font-bold">
                     ₹
-                    {Number(finalOrder.sub_total) +
-                      Number(finalOrder.shipping_charges)}
+                    {(
+                      Number(finalOrder.sub_total) +
+                      Number(finalOrder.shipping_charges)
+                    ).toFixed(2)}
                   </p>
                 </div>
               </div>

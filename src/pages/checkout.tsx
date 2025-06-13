@@ -89,6 +89,7 @@ export default function CheckoutPage() {
   const [saveNewShippingAddress, setSaveNewShippingAddress] = useState(true);
   const [saveNewBillingAddress, setSaveNewBillingAddress] = useState(true);
   const [showAddressSelection, setShowAddressSelection] = useState(false);
+  const [undeliverableAddress, setUndeliverableAddress] = useState(false);
   const [showBillingAddressSelection, setShowBillingAddressSelection] =
     useState(false);
   const navigate = useNavigate();
@@ -319,7 +320,11 @@ export default function CheckoutPage() {
         if (hasShippingAmount) {
           setCalculatedShipping(productShipping);
         } else {
-          setCalculatedShipping(200); // Default shipping charge
+          const totalQty = products.reduce(
+            (acc, product) => acc + product.quantity,
+            0
+          );
+          setCalculatedShipping(200 * totalQty);
         }
 
         setIsLoadingShipping(false);
@@ -341,11 +346,15 @@ export default function CheckoutPage() {
           parseFloat(Number(result.shipping_charges).toFixed(2))
         );
       } else {
-        // If delivery not available, use default shipping
-        setCalculatedShipping(200);
-        setShippingError(
-          "Delivery may not be available to this pincode. Using standard shipping rate."
+        // If delivery not available, fallback to 200 * total qty
+        const totalQty = products.reduce(
+          (acc, product) => acc + product.quantity,
+          0
         );
+
+        setCalculatedShipping(200 * totalQty);
+        setUndeliverableAddress(true);
+        setShippingError("Delivery may not be available to this pincode.");
       }
     } catch (error) {
       console.error("Error fetching shipping charges:", error);
@@ -1419,8 +1428,14 @@ export default function CheckoutPage() {
 
                 {/* Proceed to Payment Button */}
                 {!showPaymentOptions && (
-                  <Button onClick={handleProceedToPayment} className="w-full">
-                    Proceed to Payment
+                  <Button
+                    onClick={handleProceedToPayment}
+                    className="w-full"
+                    disabled={undeliverableAddress}
+                  >
+                    {undeliverableAddress
+                      ? "Pincode is not deliverable. Please try again later."
+                      : "Proceed to Payment"}
                   </Button>
                 )}
 
