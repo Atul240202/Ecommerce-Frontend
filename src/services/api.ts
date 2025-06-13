@@ -528,7 +528,6 @@ export const checkDeliveryAvailability = async (
   height?: string | number,
   declared_value?: string | number
 ) => {
-  console.log("Checking delivery availability for pincode:", pincode);
   try {
     const response = await fetch(`${API_URL}/shiprocket/check-delivery`, {
       method: "POST",

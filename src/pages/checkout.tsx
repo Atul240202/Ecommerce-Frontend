@@ -198,7 +198,7 @@ export default function CheckoutPage() {
         const user = await getCurrentUser();
         setCurrentUser(user);
       } catch (error) {
-        console.error("Error fetching current user:", error);
+        // console.error("Error fetching current user:", error);
       }
     }
   };
@@ -210,7 +210,7 @@ export default function CheckoutPage() {
         setGstNumber(cust_gst);
       }
     } catch (error) {
-      console.error("Error fetching user gst:", error);
+      // console.error("Error fetching user gst:", error);
     }
   };
 
@@ -233,7 +233,6 @@ export default function CheckoutPage() {
         setSelectedBillingAddressId(billing.id);
       }
     } catch (error) {
-      console.error("Error fetching addresses:", error);
       toast({
         title: "Error",
         description: "Failed to load your saved addresses",
@@ -357,7 +356,6 @@ export default function CheckoutPage() {
         setShippingError("Delivery may not be available to this pincode.");
       }
     } catch (error) {
-      console.error("Error fetching shipping charges:", error);
       setShippingError(
         "Failed to calculate shipping. Using standard shipping rate."
       );
@@ -380,18 +378,6 @@ export default function CheckoutPage() {
     if (!selectedShippingAddressId || savedAddresses.length === 0) return;
 
     const selectedAddress = getSelectedShippingAddress();
-    if (selectedAddress?.postcode) {
-      fetchShippingCharges(selectedAddress.postcode);
-    }
-  }, [selectedShippingAddressId, savedAddresses, products]);
-
-  //temporary function only for testing
-  useEffect(() => {
-    console.log("selectedShippingAddressId:", selectedShippingAddressId);
-    console.log("savedAddresses:", savedAddresses);
-    const selectedAddress = getSelectedShippingAddress();
-    console.log("selectedAddress:", selectedAddress);
-
     if (selectedAddress?.postcode) {
       fetchShippingCharges(selectedAddress.postcode);
     }
@@ -425,7 +411,6 @@ export default function CheckoutPage() {
         // Update default shipping address
         setDefaultShippingAddress(selectedAddress);
       } catch (error) {
-        console.error("Error setting default address:", error);
         toast({
           title: "Error",
           description: "Failed to set default address. Please try again.",
@@ -470,7 +455,6 @@ export default function CheckoutPage() {
         // Update default billing address
         setDefaultBillingAddress(selectedAddress);
       } catch (error) {
-        console.error("Error setting default address:", error);
         toast({
           title: "Error",
           description: "Failed to set default address. Please try again.",
@@ -730,9 +714,6 @@ export default function CheckoutPage() {
       //   clearCart();
       // } else {
       //   // Fallback if clearCart is not available
-      //   console.warn(
-      //     'clearCart function not available, using alternative method'
-      //   );
       //   // localClearCart();
       // }
 
@@ -743,7 +724,6 @@ export default function CheckoutPage() {
         variant: "default",
       });
     } catch (error) {
-      console.error("Error submitting order:", error);
       // Show error message to user
       toast({
         title: "Error",
@@ -1420,7 +1400,6 @@ export default function CheckoutPage() {
                                 // Close the form
                                 setShowNewShippingForm(false);
                               } catch (error) {
-                                console.error("Error saving address:", error);
                                 toast({
                                   title: "Error",
                                   description:
@@ -2041,10 +2020,6 @@ export default function CheckoutPage() {
                                           // Close the form
                                           setShowNewBillingForm(false);
                                         } catch (error) {
-                                          console.error(
-                                            "Error saving address:",
-                                            error
-                                          );
                                           toast({
                                             title: "Error",
                                             description:
