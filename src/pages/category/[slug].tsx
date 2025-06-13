@@ -53,7 +53,7 @@ export default function CategoryPage() {
     };
 
     getProducts();
-  }, [slug, currentPage]);
+  }, [slug, currentPage, query]);
 
   const handleFilterChange = (filters: any) => {
     const filtered = products.filter((product) => {
