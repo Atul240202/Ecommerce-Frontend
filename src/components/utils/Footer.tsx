@@ -253,7 +253,7 @@ export function Footer() {
         <div className="border-t">
           <div className="container mx-auto px-4 py-4">
             <p className="text-sm text-center text-gray-600">
-              CopyRight Industrywaala - ALL RIGHTS RESERVED | Created with ❤️
+              CopyRight Industrywaala - ALL RIGHTS RESERVED | Created with 💙
               <a
                 href="https://justcharge.in/"
                 target="_blank"
