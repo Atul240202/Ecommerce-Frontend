@@ -254,14 +254,14 @@ export function Footer() {
           <div className="container mx-auto px-4 py-4">
             <p className="text-sm text-center text-gray-600">
               CopyRight Industrywaala - ALL RIGHTS RESERVED
-              {/* <a
+              <a
                 href="https://justcharge.in/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-black"
               >
                 Just Charge
-              </a> */}
+              </a>
             </p>
           </div>
         </div>
